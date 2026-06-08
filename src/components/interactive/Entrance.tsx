@@ -189,8 +189,8 @@ export default function Entrance({ onDone }: EntranceProps) {
     }
 
     if (phase === 'morphing') {
-      // Hold sketch, then crossfade to bench photo (handled in JSX)
-      const t = setTimeout(() => setPhase('flashback'), 1400);
+      // Hold sketch, then crossfade with blur to bench photo
+      const t = setTimeout(() => setPhase('flashback'), 2400);
       return () => clearTimeout(t);
     }
 
@@ -252,7 +252,9 @@ export default function Entrance({ onDone }: EntranceProps) {
         className="absolute inset-0 flex items-center justify-center pointer-events-none"
         style={{
           opacity: (!canvasReady || phase === 'morphing' || phase === 'flashback' || phase === 'done') ? 0 : 1,
-          transition: 'opacity 900ms var(--ease-smooth)',
+          filter: phase === 'morphing' ? 'blur(12px)' : 'blur(0px)',
+          transform: phase === 'morphing' ? 'scale(1.05)' : 'scale(1)',
+          transition: 'opacity 1600ms var(--ease-smooth), filter 1600ms var(--ease-smooth), transform 1600ms var(--ease-smooth)',
         }}
       >
         <img
@@ -267,8 +269,10 @@ export default function Entrance({ onDone }: EntranceProps) {
       <div
         className="absolute inset-0 flex items-center justify-center pointer-events-none"
         style={{
-          opacity: phase === 'morphing' ? 1 : phase === 'flashback' ? 0 : 0,
-          transition: 'opacity 1000ms var(--ease-smooth)',
+          opacity: phase === 'morphing' ? 1 : 0,
+          filter: phase === 'morphing' ? 'blur(0px)' : 'blur(12px)',
+          transform: phase === 'morphing' ? 'scale(1)' : 'scale(1.05)',
+          transition: 'opacity 1600ms var(--ease-smooth), filter 1600ms var(--ease-smooth), transform 1600ms var(--ease-smooth)',
         }}
       >
         <img
