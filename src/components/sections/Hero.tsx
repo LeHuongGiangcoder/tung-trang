@@ -43,7 +43,7 @@ export default function Hero({ startAnimation }: HeroProps) {
           <img src="/component/right.png" alt="" className="w-16 md:w-28 h-auto mix-blend-multiply opacity-85 select-none" draggable={false} />
         </div>
 
-        <div style={revealStyle(1)} className="mt-3 md:mt-5 flex items-center gap-3">
+        <div style={revealStyle(1)} className="mt-5 md:mt-5 flex items-center gap-3">
           <span className="block w-10 md:w-16 h-px bg-ink/30" />
           <Ornament />
           <span className="block w-10 md:w-16 h-px bg-ink/30" />
@@ -51,7 +51,7 @@ export default function Hero({ startAnimation }: HeroProps) {
 
         <h1
           style={revealStyle(2)}
-          className="mt-4 md:mt-6 font-display font-light leading-[0.95] text-ink text-center"
+          className="mt-8 md:mt-6 font-display font-light leading-[0.95] text-ink text-center"
         >
           <span className="block" style={{ fontSize: 'clamp(3rem, 11vw, 8rem)' }}>
             Tùng <span className="italic font-light text-ink-soft">&amp;</span> Trang
@@ -60,7 +60,7 @@ export default function Hero({ startAnimation }: HeroProps) {
 
         <div
           style={revealStyle(3)}
-          className="relative mt-8 md:mt-12 w-full max-w-2xl md:max-w-4xl mix-blend-multiply"
+          className="relative mt-12 md:mt-12 w-full max-w-2xl md:max-w-4xl mix-blend-multiply"
         >
           {/* Map Background Layer */}
           <img
@@ -79,7 +79,7 @@ export default function Hero({ startAnimation }: HeroProps) {
           />
         </div>
 
-        <div style={revealStyle(4)} className="mt-10 md:mt-12 flex flex-col items-center gap-4">
+        <div style={revealStyle(4)} className="mt-16 md:mt-12 flex flex-col items-center gap-4">
           <div className="flex items-center gap-4 text-ink-soft">
             {/* Left Column: Month & Year */}
             <div className="flex flex-col text-right font-display leading-tight">
