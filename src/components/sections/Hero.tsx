@@ -96,7 +96,7 @@ export default function Hero({ startAnimation }: HeroProps) {
 
             {/* Right Column: Day */}
             <div className="font-display text-[clamp(2.2rem,5.5vw,3.2rem)] leading-none font-light">
-              23
+              03
             </div>
           </div>
 
