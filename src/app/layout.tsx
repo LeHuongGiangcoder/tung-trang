@@ -6,10 +6,6 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'Tung & Trang — 23.01.2027',
   description: 'We are getting married in Hanoi, Vietnam.',
-  icons: {
-    icon: '/images/logo.png',
-    apple: '/images/logo.png',
-  },
   openGraph: {
     title: 'Tung & Trang',
     description: 'Save the date — 23 January 2027, Hanoi.',
