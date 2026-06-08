@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #EDE7DA;
+  --bg-deep: #E4DCC9;
+  --bg-light: #F4F0E7;
+  --ink: #1F1B17;
+  --ink-soft: #3A332C;
+  --ink-muted: #807464;
+  --tan: #B8A584;
+
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+
+  --section-px: clamp(1.25rem, 5vw, 5rem);
+  --section-py: clamp(3rem, 8vh, 6rem);
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-feature-settings: 'kern' 1, 'liga' 1;
+  overflow-x: hidden;
+}
+
+/* Lock scroll while entrance is active */
+body.entrance-locked {
+  overflow: hidden;
+  height: 100vh;
+  touch-action: none;
+}
+
+/* Selection */
+::selection { background: var(--ink); color: var(--bg); }
+
+/* Disable text selection / image drag during sketch */
+.no-select {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Hairline divider */
+.hairline {
+  height: 1px;
+  background: var(--ink);
+  opacity: 0.15;
+}
