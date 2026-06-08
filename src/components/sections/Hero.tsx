@@ -60,22 +60,47 @@ export default function Hero({ startAnimation }: HeroProps) {
 
         <div
           style={revealStyle(3)}
-          className="mt-8 md:mt-12 w-full max-w-2xl md:max-w-4xl mix-blend-multiply"
+          className="relative mt-8 md:mt-12 w-full max-w-2xl md:max-w-4xl mix-blend-multiply"
         >
+          {/* Map Background Layer */}
           <img
-            src="/images/hero-map.webp"
-            alt="Illustrated map from New York to Vietnam"
-            className="w-full h-auto select-none"
+            src="/images/hero%20map%20back.webp"
+            alt="Illustrated map background"
+            className="w-full h-auto select-none block"
+            draggable={false}
+          />
+          {/* Couple in Car Layer */}
+          <img
+            src="/images/hero%20map%20couple.png"
+            alt="Illustrated couple in car"
+            className="absolute top-[37%] left-[10%] w-[80%] h-auto select-none"
+            style={{ animation: 'bounceCar 4.0s ease-in-out infinite' }}
             draggable={false}
           />
         </div>
 
-        <div style={revealStyle(4)} className="mt-10 md:mt-12 flex flex-col items-center gap-3">
-          <p className="font-display italic text-[clamp(1.05rem,3vw,1.5rem)] text-ink-soft">
-            {copy.dateLine}
-          </p>
-          <span className="block w-16 h-px bg-ink/25" />
-          <p className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted">
+        <div style={revealStyle(4)} className="mt-10 md:mt-12 flex flex-col items-center gap-4">
+          <div className="flex items-center gap-4 text-ink-soft">
+            {/* Left Column: Month & Year */}
+            <div className="flex flex-col text-right font-display leading-tight">
+              <span className="text-[clamp(1.2rem,2.8vw,1.5rem)] italic font-light lowercase">
+                {lang === 'en' ? 'january' : 'tháng 01'}
+              </span>
+              <span className="text-[clamp(0.95rem,2.2vw,1.2rem)] font-light tracking-wider opacity-85">
+                2027
+              </span>
+            </div>
+
+            {/* Divider */}
+            <div className="h-10 w-px bg-ink/25" />
+
+            {/* Right Column: Day */}
+            <div className="font-display text-[clamp(2.2rem,5.5vw,3.2rem)] leading-none font-light">
+              23
+            </div>
+          </div>
+
+          <p className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted mt-2">
             {copy.location}
           </p>
         </div>
@@ -95,6 +120,10 @@ export default function Hero({ startAnimation }: HeroProps) {
         @keyframes scrollLine {
           0%, 100% { transform: scaleY(0.3); transform-origin: top; opacity: 0.3; }
           50% { transform: scaleY(1); opacity: 0.7; }
+        }
+        @keyframes bounceCar {
+          0%, 100% { transform: translateY(0) rotate(0deg); }
+          50% { transform: translateY(-8px) rotate(-1deg); }
         }
       `}</style>
     </section>
