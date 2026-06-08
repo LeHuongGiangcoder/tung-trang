@@ -17,11 +17,13 @@ export default function Nav() {
   }, []);
 
   const baseOverlay = "transition-all duration-500 pointer-events-auto";
-  const pillClass = `${baseOverlay} ${
-    scrolled ? 'bg-[#EDE7DA]/80 backdrop-blur-md shadow-sm rounded-full px-4 py-2' : 'bg-transparent px-4 py-2'
+  const scrolledEffect = "bg-white/60 border border-white/40 backdrop-blur-md shadow-[0_2px_10px_rgba(0,0,0,0.03)] rounded-full";
+  
+  const pillClass = `${baseOverlay} border ${
+    scrolled ? `${scrolledEffect} px-4 py-2` : 'border-transparent bg-transparent px-4 py-2'
   }`;
-  const logoPillClass = `${baseOverlay} flex items-center justify-center ${
-    scrolled ? 'bg-[#EDE7DA]/80 backdrop-blur-md shadow-sm rounded-full p-2' : 'bg-transparent p-2'
+  const logoPillClass = `${baseOverlay} flex items-center justify-center border ${
+    scrolled ? `${scrolledEffect} p-2` : 'border-transparent bg-transparent p-2'
   }`;
 
   return (

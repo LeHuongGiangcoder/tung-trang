@@ -38,6 +38,7 @@ export default function Entrance({ onDone }: EntranceProps) {
   const [phase, setPhase] = useState<Phase>('idle');
   const [hintVisible, setHintVisible] = useState(true);
   const [flashIndex, setFlashIndex] = useState(0);
+  const [canvasReady, setCanvasReady] = useState(false);
 
   // ---- Canvas setup ----
   const setupCanvas = useCallback(() => {
@@ -56,6 +57,7 @@ export default function Entrance({ onDone }: EntranceProps) {
     ctx.fillRect(0, 0, w, h);
     ctxRef.current = ctx;
     cellSizeRef.current = { w: w / GRID_COLS, h: h / GRID_ROWS };
+    setCanvasReady(true);
   }, []);
 
   useEffect(() => {
@@ -249,7 +251,7 @@ export default function Entrance({ onDone }: EntranceProps) {
       <div
         className="absolute inset-0 flex items-center justify-center pointer-events-none"
         style={{
-          opacity: phase === 'morphing' || phase === 'flashback' || phase === 'done' ? 0 : 1,
+          opacity: (!canvasReady || phase === 'morphing' || phase === 'flashback' || phase === 'done') ? 0 : 1,
           transition: 'opacity 900ms var(--ease-smooth)',
         }}
       >
@@ -321,12 +323,14 @@ export default function Entrance({ onDone }: EntranceProps) {
           transition: 'opacity 500ms var(--ease-smooth)',
         }}
       >
-        <img
-          src="/images/logo.png"
-          alt="T & T Logo"
-          className="w-16 h-16 md:w-20 md:h-20 object-contain mix-blend-multiply mb-6 md:mb-8"
-          draggable={false}
-        />
+        <div className="absolute top-28 md:top-40 left-1/2 -translate-x-1/2">
+          <img
+            src="/images/logo.png"
+            alt="T & T Logo"
+            className="w-16 h-16 md:w-20 md:h-20 object-contain mix-blend-multiply"
+            draggable={false}
+          />
+        </div>
         <SketchHand />
         <p
           className="mt-8 font-display italic text-ink/85 text-[clamp(1.4rem,4.5vw,2.25rem)] tracking-wide text-center"

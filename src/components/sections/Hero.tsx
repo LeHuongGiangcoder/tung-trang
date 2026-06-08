@@ -32,14 +32,18 @@ export default function Hero({ startAnimation }: HeroProps) {
       className="relative min-h-[100svh] w-full flex items-center justify-center px-5 md:px-10 pt-24 md:pt-28 pb-20"
     >
       <div className="w-full max-w-3xl flex flex-col items-center text-center">
-        <span
+        <div
           style={revealStyle(0)}
-          className="font-body text-[10px] md:text-xs tracking-[0.45em] uppercase text-ink-muted"
+          className="flex items-center justify-center gap-2 md:gap-3 w-full"
         >
-          {copy.eyebrow}
-        </span>
+          <img src="/component/left.png" alt="" className="w-16 md:w-28 h-auto mix-blend-multiply opacity-85 select-none" draggable={false} />
+          <span className="font-body text-[10px] md:text-xs tracking-[0.45em] uppercase text-ink-muted shrink-0">
+            {copy.eyebrow}
+          </span>
+          <img src="/component/right.png" alt="" className="w-16 md:w-28 h-auto mix-blend-multiply opacity-85 select-none" draggable={false} />
+        </div>
 
-        <div style={revealStyle(1)} className="mt-6 md:mt-8 flex items-center gap-3">
+        <div style={revealStyle(1)} className="mt-3 md:mt-5 flex items-center gap-3">
           <span className="block w-10 md:w-16 h-px bg-ink/30" />
           <Ornament />
           <span className="block w-10 md:w-16 h-px bg-ink/30" />
@@ -47,7 +51,7 @@ export default function Hero({ startAnimation }: HeroProps) {
 
         <h1
           style={revealStyle(2)}
-          className="mt-8 md:mt-10 font-display font-light leading-[0.95] text-ink text-center"
+          className="mt-4 md:mt-6 font-display font-light leading-[0.95] text-ink text-center"
         >
           <span className="block" style={{ fontSize: 'clamp(3rem, 11vw, 8rem)' }}>
             Tùng <span className="italic font-light text-ink-soft">&amp;</span> Trang
@@ -81,9 +85,6 @@ export default function Hero({ startAnimation }: HeroProps) {
         style={revealStyle(5)}
         className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
       >
-        <span className="font-body text-[9px] tracking-[0.4em] uppercase text-ink-muted">
-          {lang === 'en' ? 'scroll' : 'cuộn'}
-        </span>
         <span
           className="block w-px h-8 bg-ink/30"
           style={{ animation: 'scrollLine 2.4s ease-in-out infinite' }}

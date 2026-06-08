@@ -6,9 +6,9 @@ const config: Config = {
     extend: {
       colors: {
         cream: {
-          DEFAULT: '#EDE7DA',
-          deep: '#E4DCC9',
-          light: '#F4F0E7',
+          DEFAULT: '#F5F2EA',
+          deep: '#EBE6D8',
+          light: '#FCFBF8',
         },
         ink: {
           DEFAULT: '#1F1B17',
