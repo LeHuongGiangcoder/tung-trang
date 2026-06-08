@@ -207,12 +207,12 @@ export default function Entrance({ onDone }: EntranceProps) {
         } else {
           setFlashIndex(i);
           const isLast = i === FLASHBACK_IMAGES.length - 1;
-          const delay = isLast ? 1400 : 350;
+          const delay = isLast ? 1400 : 500;
           timeoutId = setTimeout(next, delay);
         }
       };
 
-      timeoutId = setTimeout(next, 350);
+      timeoutId = setTimeout(next, 500);
 
       return () => clearTimeout(timeoutId);
     }
@@ -220,13 +220,11 @@ export default function Entrance({ onDone }: EntranceProps) {
     if (phase === 'done') {
       const root = rootRef.current;
       if (!root) return;
-      root.style.transition = 'opacity 1100ms var(--ease-out-quart), transform 1200ms var(--ease-out-quart), filter 1100ms var(--ease-out-quart)';
+      root.style.transition = 'opacity 1600ms var(--ease-smooth)';
       requestAnimationFrame(() => {
         root.style.opacity = '0';
-        root.style.transform = 'scale(1.1)';
-        root.style.filter = 'blur(10px)';
       });
-      const t = setTimeout(() => onDone(), 1100);
+      const t = setTimeout(() => onDone(), 1600);
       return () => clearTimeout(t);
     }
   }, [phase, onDone]);
@@ -253,8 +251,7 @@ export default function Entrance({ onDone }: EntranceProps) {
         style={{
           opacity: (!canvasReady || phase === 'morphing' || phase === 'flashback' || phase === 'done') ? 0 : 1,
           filter: phase === 'morphing' ? 'blur(12px)' : 'blur(0px)',
-          transform: phase === 'morphing' ? 'scale(1.05)' : 'scale(1)',
-          transition: 'opacity 1600ms var(--ease-smooth), filter 1600ms var(--ease-smooth), transform 1600ms var(--ease-smooth)',
+          transition: 'opacity 1600ms var(--ease-smooth), filter 1600ms var(--ease-smooth)',
         }}
       >
         <img
@@ -269,10 +266,9 @@ export default function Entrance({ onDone }: EntranceProps) {
       <div
         className="absolute inset-0 flex items-center justify-center pointer-events-none"
         style={{
-          opacity: phase === 'morphing' ? 1 : 0,
-          filter: phase === 'morphing' ? 'blur(0px)' : 'blur(12px)',
-          transform: phase === 'morphing' ? 'scale(1)' : 'scale(1.05)',
-          transition: 'opacity 1600ms var(--ease-smooth), filter 1600ms var(--ease-smooth), transform 1600ms var(--ease-smooth)',
+          opacity: (phase === 'morphing' || phase === 'flashback' || phase === 'done') ? 1 : 0,
+          filter: (phase === 'morphing' || phase === 'flashback' || phase === 'done') ? 'blur(0px)' : 'blur(12px)',
+          transition: 'opacity 1600ms var(--ease-smooth), filter 1600ms var(--ease-smooth)',
         }}
       >
         <img
@@ -290,8 +286,8 @@ export default function Entrance({ onDone }: EntranceProps) {
             key={src}
             className="absolute inset-0 flex items-center justify-center"
             style={{
-              opacity: phase === 'flashback' && flashIndex === i ? 1 : 0,
-              transition: 'opacity 140ms linear',
+              opacity: (phase === 'flashback' || phase === 'done') && flashIndex >= i ? 1 : 0,
+              transition: 'opacity 500ms var(--ease-smooth)',
             }}
           >
             <img
