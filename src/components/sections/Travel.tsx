@@ -113,14 +113,14 @@ export default function Travel() {
               setIsZoomed(!isZoomed);
               setHasInteracted(true);
             }}
-            className={`relative w-full max-w-md overflow-hidden rounded-2xl p-6 bg-white/20 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.02)] select-none transition-all duration-500 hover:shadow-[0_6px_30px_rgba(0,0,0,0.04)] ${isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
+            className={`relative w-full max-w-md overflow-hidden rounded-none p-6 bg-white/20 backdrop-blur-sm select-none transition-all duration-500 ${isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
           >
             <div className="relative overflow-hidden aspect-[3/4] w-full flex items-center justify-center">
               {/* Zoomable Wrapper Container */}
               <div 
                 className="relative w-full h-full"
                 style={{
-                  transform: isZoomed ? 'scale(1.85) translateY(-10%)' : 'scale(1) translateY(0)',
+                  transform: isZoomed ? 'scale(1.85) translateY(-2%)' : 'scale(1) translateY(0)',
                   transformOrigin: '50% 15%',
                   transition: 'transform 1000ms var(--ease-out-quart)',
                 }}
@@ -165,9 +165,15 @@ export default function Travel() {
               </div>
             </div>
             
-            {/* Hand Tap Hint */}
             {!hasInteracted && isVisible && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+              <div 
+                className="absolute pointer-events-none z-10"
+                style={{
+                  top: '60%',
+                  left: '72%',
+                  transform: 'translate(-50%, -50%)',
+                }}
+              >
                 <div className="relative flex items-center justify-center w-16 h-16">
                   {/* Pulse Rings */}
                   <div className="absolute w-12 h-12 rounded-full border border-ink/30 bg-ink/5 animate-pulse-ring"></div>
@@ -175,22 +181,24 @@ export default function Travel() {
                   
                   {/* Hand Pointer */}
                   <div className="relative text-ink animate-tap translate-x-3 translate-y-3">
-                    <svg 
-                      width="28" 
-                      height="28" 
-                      viewBox="0 0 24 24" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      strokeWidth="1.5" 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round"
-                    >
-                      <path d="M12 11V6a1.5 1.5 0 0 1 3 0v5" />
-                      <path d="M8 11v-2a1.5 1.5 0 0 1 3 0v2" />
-                      <path d="M15 11V9.5a1.5 1.5 0 0 1 3 0v1.5" />
-                      <path d="M5 14a5 5 0 0 1 5-5h1a1 1 0 0 1 1 1v4" />
-                      <path d="M18 11a1.5 1.5 0 0 1 1.5 1.5v3a5.5 5.5 0 0 1-11 0V14" />
-                    </svg>
+                    <div className="-rotate-[28deg]">
+                      <svg 
+                        width="28" 
+                        height="28" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        strokeWidth="1.5" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                      >
+                        <path d="M12 11V6a1.5 1.5 0 0 1 3 0v5" />
+                        <path d="M8 11v-2a1.5 1.5 0 0 1 3 0v2" />
+                        <path d="M15 11V9.5a1.5 1.5 0 0 1 3 0v1.5" />
+                        <path d="M5 14a5 5 0 0 1 5-5h1a1 1 0 0 1 1 1v4" />
+                        <path d="M18 11a1.5 1.5 0 0 1 1.5 1.5v3a5.5 5.5 0 0 1-11 0V14" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
               </div>
