@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useLang } from '@/hooks/useLang';
 import { COPY } from '@/lib/constants';
+import Toggle, { ToggleOption } from '@/components/ui/Toggle';
 
 export default function Nav() {
   const { lang, setLang } = useLang();
@@ -26,6 +27,11 @@ export default function Nav() {
     scrolled ? `${scrolledEffect} p-2` : 'border-transparent bg-transparent p-2'
   }`;
 
+  const langOptions: ToggleOption<'en' | 'vi'>[] = [
+    { label: 'EN', value: 'en' },
+    { label: 'VI', value: 'vi' },
+  ];
+
   return (
     <nav className="fixed top-0 inset-x-0 z-30 pointer-events-none">
       <div className="mx-auto max-w-7xl px-3 md:px-6 py-4 md:py-6 flex items-center justify-between">
@@ -47,23 +53,12 @@ export default function Nav() {
 
         {/* Lang toggle */}
         <div className={pillClass}>
-          <div className="flex items-center gap-1.5 font-body text-[10px] tracking-[0.2em] uppercase">
-            <button
-              onClick={() => setLang('en')}
-              className={lang === 'en' ? 'text-ink' : 'text-ink-muted hover:text-ink-soft transition-colors'}
-              aria-pressed={lang === 'en'}
-            >
-              EN
-            </button>
-            <span className="text-ink-muted">/</span>
-            <button
-              onClick={() => setLang('vi')}
-              className={lang === 'vi' ? 'text-ink' : 'text-ink-muted hover:text-ink-soft transition-colors'}
-              aria-pressed={lang === 'vi'}
-            >
-              VI
-            </button>
-          </div>
+          <Toggle
+            options={langOptions}
+            value={lang}
+            onChange={setLang}
+            variant="plain"
+          />
         </div>
       </div>
     </nav>

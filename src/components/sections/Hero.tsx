@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useLang } from '@/hooks/useLang';
 import { COPY, WEDDING } from '@/lib/constants';
+import { Heading, Subtitle } from '@/components/ui/Typography';
 
 interface HeroProps {
   startAnimation: boolean;
@@ -37,9 +38,9 @@ export default function Hero({ startAnimation }: HeroProps) {
           className="flex items-center justify-center gap-2 md:gap-3 w-full"
         >
           <img src="/component/left.png" alt="" className="w-16 md:w-28 h-auto mix-blend-multiply opacity-85 select-none" draggable={false} />
-          <span className="font-body text-[10px] md:text-xs tracking-[0.45em] uppercase text-ink-muted shrink-0">
+          <Subtitle as="span" className="shrink-0 tracking-[0.45em]">
             {copy.eyebrow}
-          </span>
+          </Subtitle>
           <img src="/component/right.png" alt="" className="w-16 md:w-28 h-auto mix-blend-multiply opacity-85 select-none" draggable={false} />
         </div>
 
@@ -49,14 +50,15 @@ export default function Hero({ startAnimation }: HeroProps) {
           <span className="block w-10 md:w-16 h-px bg-ink/30" />
         </div>
 
-        <h1
+        <Heading
+          variant="h1"
           style={revealStyle(2)}
-          className="mt-8 md:mt-6 font-display font-light leading-[0.95] text-ink text-center"
+          className="mt-8 md:mt-6 text-center"
         >
           <span className="block" style={{ fontSize: 'clamp(3rem, 11vw, 8rem)' }}>
             Tùng <span className="italic font-light text-ink-soft">&amp;</span> Trang
           </span>
-        </h1>
+        </Heading>
 
         <div
           style={revealStyle(3)}
@@ -100,9 +102,9 @@ export default function Hero({ startAnimation }: HeroProps) {
             </div>
           </div>
 
-          <p className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted mt-2">
+          <Subtitle className="mt-2">
             {copy.location}
-          </p>
+          </Subtitle>
         </div>
       </div>
 

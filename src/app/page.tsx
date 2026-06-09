@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Entrance from '@/components/interactive/Entrance';
 import Nav from '@/components/ui/Nav';
 import Hero from '@/components/sections/Hero';
+import Button from '@/components/ui/Button';
 
 export default function Home() {
   const [entranceDone, setEntranceDone] = useState(false);
@@ -58,9 +59,6 @@ export default function Home() {
     }
   };
 
-  const baseOverlay = "transition-all duration-500 pointer-events-auto";
-  const circleClass = `${baseOverlay} flex items-center justify-center w-10 h-10 bg-white/60 border border-white/40 backdrop-blur-md shadow-[0_2px_10px_rgba(0,0,0,0.03)] rounded-full text-ink hover:bg-white/80 transition-all`;
-
   return (
     <main className="relative bg-cream text-ink">
       <audio ref={audioRef} src="/song.mp4" loop preload="auto" />
@@ -70,9 +68,9 @@ export default function Home() {
 
       {/* Audio Toggle */}
       <div className={`fixed bottom-6 right-6 z-40 ${entranceDone ? 'opacity-100' : 'opacity-0 pointer-events-none'} transition-opacity duration-1000`}>
-        <button
+        <Button
+          variant="circle"
           onClick={toggleAudio}
-          className={circleClass}
           aria-label={isPlaying ? 'Pause music' : 'Play music'}
         >
           {isPlaying ? (
@@ -85,7 +83,7 @@ export default function Home() {
               <polygon points="5 3 19 12 5 21 5 3" />
             </svg>
           )}
-        </button>
+        </Button>
       </div>
 
       {/* Placeholder for next sections - so scroll has somewhere to land */}
