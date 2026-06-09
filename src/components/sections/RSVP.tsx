@@ -20,7 +20,7 @@ export default function RSVP() {
 
   // RSVP Form fields state
   const [attending, setAttending] = useState<'Yes' | 'No' | ''>('');
-  const [guestsCount, setGuestsCount] = useState<number>(1);
+  const [guestsCount, setGuestsCount] = useState<number | ''>(1);
   const [otherGuests, setOtherGuests] = useState<string>('');
   const [mealPreferences, setMealPreferences] = useState<string>('');
   const [wishes, setWishes] = useState<string>('');
@@ -101,8 +101,9 @@ export default function RSVP() {
           setFormStep('details');
           setStatus('idle');
         } else {
-          setSubmitError(copy.errorNotFound);
-          setStatus('error');
+          // If name is not matched, transition directly to the success (thank you) screen
+          setFormStep('success');
+          setStatus('idle');
         }
       } else {
         setSubmitError(result?.error || copy.errorWebhook);
@@ -123,7 +124,9 @@ export default function RSVP() {
       return;
     }
 
-    if (attending === 'Yes' && guestsCount > 1 && !otherGuests.trim()) {
+    const finalGuestsCount = Number(guestsCount) || 1;
+
+    if (attending === 'Yes' && finalGuestsCount > 1 && !otherGuests.trim()) {
       setValidationError(lang === 'en' ? 'Please enter the names of other guests.' : 'Vui lòng nhập tên những người đi cùng.');
       return;
     }
@@ -137,7 +140,7 @@ export default function RSVP() {
         row_number: guestData.row_number,
         "Guest name": guestData["Guest name"] || fullName,
         "No": attending,
-        "Number": attending === 'Yes' ? guestsCount : '',
+        "Number": attending === 'Yes' ? finalGuestsCount : '',
         "Note": attending === 'Yes' ? otherGuests : '',
         "Meal preferences": attending === 'Yes' ? mealPreferences : '',
         "Your wish to couples": wishes,
@@ -195,7 +198,7 @@ export default function RSVP() {
         </Heading>
         
         {formStep === 'success' ? (
-          <div className="mt-8 p-8 border border-ink/10 rounded-2xl bg-white/20 backdrop-blur-sm shadow-sm w-full flex flex-col items-center gap-4 animate-fade-in">
+          <div className="mt-8 p-8 rounded-none bg-white/20 backdrop-blur-sm w-full flex flex-col items-center gap-4 animate-fade-in">
             <svg 
               width="40" 
               height="40" 
@@ -225,7 +228,7 @@ export default function RSVP() {
             <form onSubmit={handleDetailsSubmit} className="w-full flex flex-col items-start gap-8 text-left">
               {/* Yes/No Attendance */}
               <div className="w-full flex flex-col gap-2.5">
-                <label className="font-body text-[10px] tracking-[0.25em] uppercase text-ink-soft font-medium">
+                <label className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal">
                   {copy.attendingLabel} <span className="text-tan font-normal">*</span>
                 </label>
                 <div className="flex gap-4 w-full mt-1.5">
@@ -236,10 +239,10 @@ export default function RSVP() {
                       setValidationError('');
                       if (submitError) setSubmitError('');
                     }}
-                    className={`flex-1 py-3 px-4 text-xs tracking-widest uppercase transition-all duration-300 font-body font-medium border ${
+                    className={`flex-1 py-4 px-4 text-[10px] tracking-[0.25em] uppercase transition-all duration-300 font-body font-light border ${
                       attending === 'Yes' 
                         ? 'border-ink bg-ink text-cream' 
-                        : 'border-ink/20 text-ink hover:border-ink/50 bg-transparent'
+                        : 'border-ink/10 text-ink-soft hover:border-ink/30 bg-transparent'
                     }`}
                   >
                     {copy.attendingYes}
@@ -251,10 +254,10 @@ export default function RSVP() {
                       setValidationError('');
                       if (submitError) setSubmitError('');
                     }}
-                    className={`flex-1 py-3 px-4 text-xs tracking-widest uppercase transition-all duration-300 font-body font-medium border ${
+                    className={`flex-1 py-4 px-4 text-[10px] tracking-[0.25em] uppercase transition-all duration-300 font-body font-light border ${
                       attending === 'No' 
                         ? 'border-ink bg-ink text-cream' 
-                        : 'border-ink/20 text-ink hover:border-ink/50 bg-transparent'
+                        : 'border-ink/10 text-ink-soft hover:border-ink/30 bg-transparent'
                     }`}
                   >
                     {copy.attendingNo}
@@ -266,35 +269,31 @@ export default function RSVP() {
                 <div className="w-full flex flex-col gap-8 animate-fade-in">
                   {/* Number of Guests */}
                   <div className="w-full flex flex-col gap-2.5">
-                    <label htmlFor="guestsCount" className="font-body text-[10px] tracking-[0.25em] uppercase text-ink-soft font-medium">
+                    <label htmlFor="guestsCount" className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal">
                       {copy.guestsLabel} <span className="text-tan font-normal">*</span>
                     </label>
-                    <div className="relative w-full">
-                      <select
-                        id="guestsCount"
-                        value={guestsCount}
-                        onChange={(e) => setGuestsCount(Number(e.target.value))}
-                        className="w-full bg-transparent border-b border-ink/20 focus:border-ink py-3 pr-8 text-ink focus:outline-none transition-colors font-body text-base font-light appearance-none rounded-none"
-                        style={{
-                          backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>")`,
-                          backgroundPosition: 'right 0px center',
-                          backgroundRepeat: 'no-repeat',
-                          backgroundSize: '16px'
-                        }}
-                      >
-                        {[1, 2, 3, 4, 5].map((n) => (
-                          <option key={n} value={n} className="bg-cream text-ink">
-                            {n}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <input
+                      type="number"
+                      id="guestsCount"
+                      min="1"
+                      value={guestsCount}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === '') {
+                          setGuestsCount('');
+                        } else {
+                          const num = Number(val);
+                          setGuestsCount(isNaN(num) || num <= 0 ? 1 : num);
+                        }
+                      }}
+                      className="w-full bg-transparent border-b border-ink/20 focus:border-ink py-3 text-ink-soft focus:outline-none transition-colors duration-300 font-body text-base font-light rounded-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
                   </div>
 
                   {/* Names of Other Guests */}
-                  {guestsCount > 1 && (
+                  {Number(guestsCount) > 1 && (
                     <div className="w-full flex flex-col gap-2.5 animate-fade-in">
-                      <label htmlFor="otherGuests" className="font-body text-[10px] tracking-[0.25em] uppercase text-ink-soft font-medium">
+                      <label htmlFor="otherGuests" className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal">
                         {copy.otherGuestsLabel} <span className="text-tan font-normal">*</span>
                       </label>
                       <input
@@ -314,7 +313,7 @@ export default function RSVP() {
 
                   {/* Meal Preferences */}
                   <div className="w-full flex flex-col gap-2.5">
-                    <label htmlFor="mealPreferences" className="font-body text-[10px] tracking-[0.25em] uppercase text-ink-soft font-medium">
+                    <label htmlFor="mealPreferences" className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal">
                       {copy.mealLabel}
                     </label>
                     <input
@@ -333,7 +332,7 @@ export default function RSVP() {
               {/* Wishes / Message - Always visible if attending is selected */}
               {attending !== '' && (
                 <div className="w-full flex flex-col gap-2.5 animate-fade-in">
-                  <label htmlFor="wishes" className="font-body text-[10px] tracking-[0.25em] uppercase text-ink-soft font-medium">
+                  <label htmlFor="wishes" className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal">
                     {copy.wishesLabel}
                   </label>
                   <textarea
@@ -359,7 +358,7 @@ export default function RSVP() {
               )}
 
               {status === 'error' && (
-                <div className="w-full p-4 border border-red-200 bg-red-50/30 rounded-xl flex items-start gap-3 text-red-600 animate-fade-in">
+                <div className="w-full p-4 rounded-none bg-red-50/10 flex items-start gap-3 text-red-600/90 animate-fade-in">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5">
                     <circle cx="12" cy="12" r="10"></circle>
                     <line x1="12" y1="8" x2="12" y2="12"></line>
@@ -371,22 +370,7 @@ export default function RSVP() {
                 </div>
               )}
 
-              <div className="w-full flex justify-center mt-6 gap-4">
-                <Button 
-                  type="button" 
-                  variant="secondary"
-                  className="flex items-center justify-center px-6" 
-                  onClick={() => {
-                    setFormStep('name');
-                    setValidationError('');
-                    setSubmitError('');
-                    setStatus('idle');
-                  }}
-                  disabled={status === 'loading'}
-                >
-                  {lang === 'en' ? 'Back' : 'Quay lại'}
-                </Button>
-                
+              <div className="w-full flex justify-center mt-6">
                 <Button 
                   type="submit" 
                   variant="primary" 
@@ -418,7 +402,7 @@ export default function RSVP() {
               <div className="w-full flex flex-col gap-2.5">
                 <label 
                   htmlFor="fullName" 
-                  className="font-body text-[10px] tracking-[0.25em] uppercase text-ink-soft font-medium"
+                  className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal"
                 >
                   {copy.nameLabel} <span className="text-tan font-normal">*</span>
                 </label>
@@ -459,7 +443,7 @@ export default function RSVP() {
               </div>
               
               {status === 'error' && (
-                <div className="w-full p-4 border border-red-200 bg-red-50/30 rounded-xl flex items-start gap-3 text-red-600 animate-fade-in">
+                <div className="w-full p-4 rounded-none bg-red-50/10 flex items-start gap-3 text-red-600/90 animate-fade-in">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5">
                     <circle cx="12" cy="12" r="10"></circle>
                     <line x1="12" y1="8" x2="12" y2="12"></line>
