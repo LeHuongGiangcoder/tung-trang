@@ -54,6 +54,10 @@ export const COPY: Record<Lang, {
     wishesPlaceholder: string;
     submitDetailsBtn: string;
   };
+  thankYou: {
+    title: string;
+    body: string;
+  };
 }> = {
   en: {
     entrance: {
@@ -135,6 +139,10 @@ export const COPY: Record<Lang, {
       wishesLabel: 'Your message to us',
       wishesPlaceholder: 'Write your wishes here...',
       submitDetailsBtn: 'Confirm RSVP'
+    },
+    thankYou: {
+      title: 'Thank You',
+      body: "We can't wait to see you!"
     }
   },
   vi: {
@@ -217,6 +225,10 @@ export const COPY: Record<Lang, {
       wishesLabel: 'Lời chúc gửi tới cặp đôi',
       wishesPlaceholder: 'Nhập lời chúc của bạn tại đây...',
       submitDetailsBtn: 'Gửi xác nhận'
+    },
+    thankYou: {
+      title: 'Cảm Ơn Bạn',
+      body: 'Rất mong được gặp bạn!'
     }
   },
 };

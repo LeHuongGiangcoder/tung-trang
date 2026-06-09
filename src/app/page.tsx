@@ -7,6 +7,7 @@ import Hero from '@/components/sections/Hero';
 import Visa from '@/components/sections/Visa';
 import Travel from '@/components/sections/Travel';
 import RSVP from '@/components/sections/RSVP';
+import ThankYou from '@/components/sections/ThankYou';
 import Button from '@/components/ui/Button';
 
 export default function Home() {
@@ -92,12 +93,7 @@ export default function Home() {
         </Button>
       </div>
 
-      {/* Placeholder for next sections - so scroll has somewhere to land */}
-      <section id="story" className="min-h-[60vh] flex items-center justify-center border-t border-ink/10">
-        <p className="font-display italic text-ink-muted text-xl">
-          More to come — story, countdown, travel, timeline, dresscode, RSVP, thank you.
-        </p>
-      </section>
+      <ThankYou />
     </main>
   );
 }
