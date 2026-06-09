@@ -99,7 +99,7 @@ export default function Travel() {
           </Heading>
           <div className="w-12 h-[1px] bg-ink/20 mb-8 hidden md:block"></div>
           <div className="max-w-md">
-            <Body variant="large" className="text-ink-soft leading-relaxed" dangerouslySetInnerHTML={{ __html: copy.body }} />
+            <Body variant="regular" className="text-ink-soft leading-relaxed" dangerouslySetInnerHTML={{ __html: copy.body }} />
           </div>
         </div>
 
