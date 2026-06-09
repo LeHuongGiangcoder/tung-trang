@@ -40,6 +40,7 @@ export const COPY: Record<Lang, {
     submitBtnLoading: string;
     successMsg: string;
     errorRequired: string;
+    errorNotFound: string;
     errorWebhook: string;
   };
 }> = {
@@ -110,6 +111,7 @@ export const COPY: Record<Lang, {
       submitBtnLoading: 'Sending...',
       successMsg: 'Thank you! Your RSVP has been successfully sent.',
       errorRequired: 'Please enter your full name.',
+      errorNotFound: "We couldn't find your name on the guest list. Please check the spelling or contact us directly.",
       errorWebhook: 'Something went wrong. Please try again or contact us directly.'
     }
   },
@@ -180,6 +182,7 @@ export const COPY: Record<Lang, {
       submitBtnLoading: 'Đang gửi...',
       successMsg: 'Cảm ơn bạn! Thông tin xác nhận tham dự đã được gửi thành công.',
       errorRequired: 'Vui lòng nhập họ và tên của bạn.',
+      errorNotFound: 'Chúng mình không tìm thấy tên của bạn trong danh sách khách mời. Vui lòng kiểm tra lại chính tả hoặc liên hệ trực tiếp với tụi mình nhé.',
       errorWebhook: 'Đã xảy ra sự cố. Vui lòng thử lại hoặc liên hệ trực tiếp với chúng mình.'
     }
   },

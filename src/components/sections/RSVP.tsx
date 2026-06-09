@@ -13,6 +13,7 @@ export default function RSVP() {
   const [fullName, setFullName] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [validationError, setValidationError] = useState('');
+  const [submitError, setSubmitError] = useState('');
 
   const handleBlur = () => {
     if (!fullName) return;
@@ -48,6 +49,7 @@ export default function RSVP() {
 
     setFullName(formatted);
     setValidationError('');
+    setSubmitError('');
     setStatus('loading');
 
     try {
@@ -62,13 +64,37 @@ export default function RSVP() {
         }
       );
 
-      if (response.ok) {
-        setStatus('success');
+      const result = await response.json().catch(() => null);
+
+      if (response.ok && result?.success) {
+        const n8nData = result.data;
+        
+        // n8n returns empty array [] or empty object {} or null if matching name node had 0 items
+        let isMatched = false;
+        if (n8nData) {
+          if (Array.isArray(n8nData)) {
+            // It could be an array of matching rows, must have at least 1 item and it shouldn't be empty
+            isMatched = n8nData.length > 0 && Object.keys(n8nData[0] || {}).length > 0;
+          } else if (typeof n8nData === 'object') {
+            isMatched = Object.keys(n8nData).length > 0;
+          } else if (typeof n8nData === 'string') {
+            isMatched = n8nData.trim().length > 0 && !n8nData.toLowerCase().includes('not found') && !n8nData.toLowerCase().includes('error');
+          }
+        }
+
+        if (isMatched) {
+          setStatus('success');
+        } else {
+          setSubmitError(copy.errorNotFound);
+          setStatus('error');
+        }
       } else {
+        setSubmitError(result?.error || copy.errorWebhook);
         setStatus('error');
       }
     } catch (error) {
       console.error('Error submitting RSVP:', error);
+      setSubmitError(copy.errorWebhook);
       setStatus('error');
     }
   };
@@ -131,13 +157,15 @@ export default function RSVP() {
                   {copy.nameLabel} <span className="text-tan font-normal">*</span>
                 </label>
                 
-                <input
+                 <input
                   type="text"
                   id="fullName"
                   value={fullName}
                   onChange={(e) => {
                     setFullName(e.target.value);
                     if (validationError) setValidationError('');
+                    if (submitError) setSubmitError('');
+                    if (status === 'error') setStatus('idle');
                   }}
                   onBlur={handleBlur}
                   placeholder={copy.namePlaceholder}
@@ -172,7 +200,7 @@ export default function RSVP() {
                     <line x1="12" y1="16" x2="12.01" y2="16"></line>
                   </svg>
                   <span className="text-xs font-light leading-relaxed">
-                    {copy.errorWebhook}
+                    {submitError || copy.errorWebhook}
                   </span>
                 </div>
               )}

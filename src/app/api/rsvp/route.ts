@@ -12,7 +12,7 @@ export async function POST(request: Request) {
     console.log(`[RSVP API] Submitting full name to n8n: ${fullName}`);
 
     const response = await fetch(
-      'https://n8n.giangle.site/webhook-test/087c1999-f3fb-4b16-93bd-12f06bd371df',
+      'https://n8n.giangle.site/webhook/087c1999-f3fb-4b16-93bd-12f06bd371df',
       {
         method: 'POST',
         headers: {
@@ -22,15 +22,22 @@ export async function POST(request: Request) {
       }
     );
 
+    const contentType = response.headers.get('content-type') || '';
+    let responseData: any = null;
+    if (contentType.includes('application/json')) {
+      responseData = await response.json().catch(() => null);
+    } else {
+      responseData = await response.text().catch(() => '');
+    }
+
     console.log(`[RSVP API] n8n response status: ${response.status}`);
+    console.log(`[RSVP API] n8n response payload:`, responseData);
 
     if (response.ok) {
-      return NextResponse.json({ success: true });
+      return NextResponse.json({ success: true, data: responseData });
     } else {
-      const errorText = await response.text();
-      console.error(`[RSVP API] n8n error response: ${errorText}`);
       return NextResponse.json(
-        { error: `Webhook error: ${response.status}` },
+        { error: `Webhook error: ${response.status}`, data: responseData },
         { status: response.status }
       );
     }
