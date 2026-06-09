@@ -29,6 +29,19 @@ export const COPY: Record<Lang, {
     title: string;
     body: string;
   };
+  rsvp: {
+    subtitle: string;
+    title: string;
+    description: string;
+    nameLabel: string;
+    namePlaceholder: string;
+    nameHelper: string;
+    submitBtn: string;
+    submitBtnLoading: string;
+    successMsg: string;
+    errorRequired: string;
+    errorWebhook: string;
+  };
 }> = {
   en: {
     entrance: {
@@ -85,6 +98,19 @@ export const COPY: Record<Lang, {
       subtitle: 'TRAVEL GUIDE',
       title: 'Vietnam',
       body: 'Vietnam: 100 million people, 2,000 miles of coast, and arguably the <strong><em>best street food on Earth.</em></strong>'
+    },
+    rsvp: {
+      subtitle: 'RSVP',
+      title: 'Will You Join Us?',
+      description: 'Please let us know if you can make it by completing the form below.',
+      nameLabel: 'Full Name',
+      namePlaceholder: 'e.g. John Smith',
+      nameHelper: 'Please write your full name with capitalized first letters.',
+      submitBtn: 'Send',
+      submitBtnLoading: 'Sending...',
+      successMsg: 'Thank you! Your RSVP has been successfully sent.',
+      errorRequired: 'Please enter your full name.',
+      errorWebhook: 'Something went wrong. Please try again or contact us directly.'
     }
   },
   vi: {
@@ -142,6 +168,19 @@ export const COPY: Record<Lang, {
       subtitle: 'HƯỚNG DẪN DU LỊCH',
       title: 'Việt Nam',
       body: 'Việt Nam: 100 triệu dân, hơn 3.200 km bờ biển, và có lẽ là nơi có <strong><em>ẩm thực đường phố tuyệt vời nhất hành tinh.</em></strong>'
+    },
+    rsvp: {
+      subtitle: 'XÁC NHẬN THAM DỰ',
+      title: 'Bạn sẽ tham dự chứ?',
+      description: 'Vui lòng cho chúng mình biết sự hiện diện của bạn bằng cách điền vào mẫu bên dưới.',
+      nameLabel: 'Họ và tên',
+      namePlaceholder: 'VD: Nguyễn Văn A',
+      nameHelper: 'Vui lòng viết đầy đủ họ và tên, viết hoa các chữ cái đầu.',
+      submitBtn: 'Gửi xác nhận',
+      submitBtnLoading: 'Đang gửi...',
+      successMsg: 'Cảm ơn bạn! Thông tin xác nhận tham dự đã được gửi thành công.',
+      errorRequired: 'Vui lòng nhập họ và tên của bạn.',
+      errorWebhook: 'Đã xảy ra sự cố. Vui lòng thử lại hoặc liên hệ trực tiếp với chúng mình.'
     }
   },
 };
