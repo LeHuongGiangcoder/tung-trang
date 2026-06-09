@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Entrance from '@/components/interactive/Entrance';
 import Nav from '@/components/ui/Nav';
 import Hero from '@/components/sections/Hero';
+import Visa from '@/components/sections/Visa';
 import Button from '@/components/ui/Button';
 
 export default function Home() {
@@ -65,6 +66,7 @@ export default function Home() {
       {!entranceDone && <Entrance onDone={() => setEntranceDone(true)} onSketchStart={handleSketchStart} />}
       <Nav />
       <Hero startAnimation={entranceDone} />
+      <Visa />
 
       {/* Audio Toggle */}
       <div className={`fixed bottom-6 right-6 z-40 ${entranceDone ? 'opacity-100' : 'opacity-0 pointer-events-none'} transition-opacity duration-1000`}>
@@ -89,7 +91,7 @@ export default function Home() {
       {/* Placeholder for next sections - so scroll has somewhere to land */}
       <section id="story" className="min-h-[60vh] flex items-center justify-center border-t border-ink/10">
         <p className="font-display italic text-ink-muted text-xl">
-          More to come — story, countdown, e-visa, travel, timeline, dresscode, RSVP, thank you.
+          More to come — story, countdown, travel, timeline, dresscode, RSVP, thank you.
         </p>
       </section>
     </main>

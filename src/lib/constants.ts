@@ -12,6 +12,18 @@ export const COPY: Record<Lang, {
   entrance: { hint: string; whisper: string };
   hero: { eyebrow: string; ampersand: string; dateLine: string; location: string };
   nav: { story: string; details: string; rsvp: string };
+  visa: {
+    subtitle: string;
+    title: string;
+    introParagraph1: string;
+    applyLabel: string;
+    btnPortal: string;
+    btnMoreInfo: string;
+    keyDetails: { title: string; items: { value: string; label: string; description: string }[] };
+    whatYouNeed: { title: string; items: string[] };
+    afterApproval: { title: string; items: string[] };
+    arrivalTips: { title: string; items: string[] };
+  };
 }> = {
   en: {
     entrance: {
@@ -25,6 +37,45 @@ export const COPY: Record<Lang, {
       location: 'Hanoi, Vietnam',
     },
     nav: { story: 'Story', details: 'Details', rsvp: 'RSVP' },
+    visa: {
+      subtitle: 'TRAVEL INFORMATION',
+      title: 'E-Visa Guide',
+      introParagraph1: 'If you are a US citizen, you must obtain a visa to enter Vietnam. The process is <strong><em>simple, affordable, and completed online.</em></strong>',
+      applyLabel: 'Apply here:',
+      btnPortal: 'E-Visa Portal',
+      btnMoreInfo: 'Entry/Exit Info',
+      keyDetails: {
+        title: 'Key Details',
+        items: [
+          { value: '90', label: 'DAYS', description: 'Max. Validity (Single/Multiple)' },
+          { value: '$25', label: 'FEE', description: '/ $50 (Multiple) — Non-refundable' },
+          { value: '~5', label: 'BUSINESS DAYS', description: 'Apply 1-2 weeks early for peace of mind' }
+        ]
+      },
+      whatYouNeed: {
+        title: 'What You’ll Need',
+        items: [
+          'Passport valid for 6+ months with at least one blank page',
+          'Scanned passport bio page',
+          'Passport photo (4×6 cm, white background, no glasses)',
+          'Credit/debit card for payment'
+        ]
+      },
+      afterApproval: {
+        title: 'After Approval',
+        items: [
+          'Download and print at least 2 copies of your e-visa',
+          'Present your e-visa + passport at immigration upon arrival'
+        ]
+      },
+      arrivalTips: {
+        title: 'Arrival Tips',
+        items: [
+          'You must enter/exit through designated international border gates',
+          'Keep both digital and printed copies of your visa handy'
+        ]
+      }
+    }
   },
   vi: {
     entrance: {
@@ -38,6 +89,45 @@ export const COPY: Record<Lang, {
       location: 'Hà Nội, Việt Nam',
     },
     nav: { story: 'Câu chuyện', details: 'Thông tin', rsvp: 'Xác nhận' },
+    visa: {
+      subtitle: 'THÔNG TIN DU LỊCH',
+      title: 'Hướng dẫn E-Visa',
+      introParagraph1: 'Nếu bạn là công dân Mỹ, bạn cần có visa để nhập cảnh vào Việt Nam. Quy trình xin visa <strong><em>rất đơn giản, chi phí hợp lý và được thực hiện hoàn toàn trực tuyến.</em></strong>',
+      applyLabel: 'Đăng ký tại đây:',
+      btnPortal: 'Cổng E-Visa',
+      btnMoreInfo: 'Xuất/Nhập cảnh',
+      keyDetails: {
+        title: 'Thông tin chính',
+        items: [
+          { value: '90', label: 'NGÀY', description: 'Thời hạn tối đa (Một/Nhiều lần)' },
+          { value: '$25', label: 'PHÍ', description: '/ $50 (Nhiều lần) — Không hoàn lại' },
+          { value: '~5', label: 'NGÀY LÀM VIỆC', description: 'Nên nộp trước 1-2 tuần cho an tâm' }
+        ]
+      },
+      whatYouNeed: {
+        title: 'Bạn cần chuẩn bị',
+        items: [
+          'Hộ chiếu còn hạn trên 6 tháng và còn ít nhất một trang trống',
+          'Bản scan trang thông tin cá nhân của hộ chiếu',
+          'Ảnh thẻ (4×6 cm, nền trắng, không đeo kính)',
+          'Thẻ tín dụng/ghi nợ để thanh toán'
+        ]
+      },
+      afterApproval: {
+        title: 'Sau khi được duyệt',
+        items: [
+          'Tải xuống và in ít nhất 2 bản sao e-visa của bạn',
+          'Xuất trình e-visa + hộ chiếu tại quầy nhập cảnh khi đến nơi'
+        ]
+      },
+      arrivalTips: {
+        title: 'Lưu ý khi đến',
+        items: [
+          'Bạn phải nhập cảnh/xuất cảnh qua các cửa khẩu quốc tế được chỉ định',
+          'Luôn mang theo cả bản kỹ thuật số và bản in của visa'
+        ]
+      }
+    }
   },
 };
 

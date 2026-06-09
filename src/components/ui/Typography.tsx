@@ -4,7 +4,7 @@ import React from 'react';
 interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
   variant?: 'h1' | 'h2' | 'h3';
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'div';
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export function Heading({
@@ -35,7 +35,7 @@ export function Heading({
 // Subtitle Component
 interface SubtitleProps extends React.HTMLAttributes<HTMLParagraphElement> {
   as?: 'p' | 'span' | 'div';
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export function Subtitle({
@@ -58,7 +58,7 @@ export function Subtitle({
 interface BodyProps extends React.HTMLAttributes<HTMLParagraphElement> {
   variant?: 'regular' | 'small' | 'large';
   as?: 'p' | 'span' | 'div';
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export function Body({
@@ -68,11 +68,11 @@ export function Body({
   className = '',
   ...props
 }: BodyProps) {
-  let sizeClass = "text-sm md:text-base leading-relaxed text-ink-soft";
+  let sizeClass = "text-sm md:text-base leading-relaxed text-ink-soft font-light";
   if (variant === 'small') {
-    sizeClass = "text-xs md:text-sm leading-normal text-ink-muted";
+    sizeClass = "text-xs md:text-sm leading-normal text-ink-muted font-light";
   } else if (variant === 'large') {
-    sizeClass = "text-base md:text-lg leading-relaxed text-ink";
+    sizeClass = "text-base md:text-lg leading-relaxed text-ink font-light";
   }
 
   return (
