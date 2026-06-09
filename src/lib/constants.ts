@@ -24,6 +24,11 @@ export const COPY: Record<Lang, {
     afterApproval: { title: string; items: string[] };
     arrivalTips: { title: string; items: string[] };
   };
+  travel: {
+    subtitle: string;
+    title: string;
+    body: string;
+  };
 }> = {
   en: {
     entrance: {
@@ -75,6 +80,11 @@ export const COPY: Record<Lang, {
           'Keep both digital and printed copies of your visa handy'
         ]
       }
+    },
+    travel: {
+      subtitle: 'TRAVEL GUIDE',
+      title: 'Vietnam',
+      body: 'Vietnam: 100 million people, 2,000 miles of coast, and arguably the <strong><em>best street food on Earth.</em></strong>'
     }
   },
   vi: {
@@ -127,6 +137,11 @@ export const COPY: Record<Lang, {
           'Luôn mang theo cả bản kỹ thuật số và bản in của visa'
         ]
       }
+    },
+    travel: {
+      subtitle: 'HƯỚNG DẪN DU LỊCH',
+      title: 'Việt Nam',
+      body: 'Việt Nam: 100 triệu dân, hơn 3.200 km bờ biển, và có lẽ là nơi có <strong><em>ẩm thực đường phố tuyệt vời nhất hành tinh.</em></strong>'
     }
   },
 };

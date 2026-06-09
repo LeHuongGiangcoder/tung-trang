@@ -5,6 +5,7 @@ import Entrance from '@/components/interactive/Entrance';
 import Nav from '@/components/ui/Nav';
 import Hero from '@/components/sections/Hero';
 import Visa from '@/components/sections/Visa';
+import Travel from '@/components/sections/Travel';
 import Button from '@/components/ui/Button';
 
 export default function Home() {
@@ -67,6 +68,7 @@ export default function Home() {
       <Nav />
       <Hero startAnimation={entranceDone} />
       <Visa />
+      <Travel />
 
       {/* Audio Toggle */}
       <div className={`fixed bottom-6 right-6 z-40 ${entranceDone ? 'opacity-100' : 'opacity-0 pointer-events-none'} transition-opacity duration-1000`}>
