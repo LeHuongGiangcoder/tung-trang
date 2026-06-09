@@ -3,13 +3,13 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { fullName } = body;
+    const fullName = body.fullName || body['Guest name'];
 
     if (!fullName) {
       return NextResponse.json({ error: 'Full name is required' }, { status: 400 });
     }
 
-    console.log(`[RSVP API] Submitting full name to n8n: ${fullName}`);
+    console.log(`[RSVP API] Relaying payload to n8n:`, body);
 
     const response = await fetch(
       'https://n8n.giangle.site/webhook/087c1999-f3fb-4b16-93bd-12f06bd371df',
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ fullName }),
+        body: JSON.stringify(body),
       }
     );
 

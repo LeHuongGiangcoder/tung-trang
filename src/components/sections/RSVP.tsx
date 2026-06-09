@@ -14,6 +14,16 @@ export default function RSVP() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [validationError, setValidationError] = useState('');
   const [submitError, setSubmitError] = useState('');
+  
+  const [formStep, setFormStep] = useState<'name' | 'details' | 'success'>('name');
+  const [guestData, setGuestData] = useState<any>(null);
+
+  // RSVP Form fields state
+  const [attending, setAttending] = useState<'Yes' | 'No' | ''>('');
+  const [guestsCount, setGuestsCount] = useState<number>(1);
+  const [otherGuests, setOtherGuests] = useState<string>('');
+  const [mealPreferences, setMealPreferences] = useState<string>('');
+  const [wishes, setWishes] = useState<string>('');
 
   const handleBlur = () => {
     if (!fullName) return;
@@ -29,17 +39,15 @@ export default function RSVP() {
     setValidationError('');
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLookupSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Re-verify and format on submit
     const trimmed = fullName.trim();
     if (!trimmed) {
       setValidationError(copy.errorRequired);
       return;
     }
 
-    // Capitalize again just in case
     const formatted = trimmed
       .replace(/\s+/g, ' ')
       .toLowerCase()
@@ -68,22 +76,30 @@ export default function RSVP() {
 
       if (response.ok && result?.success) {
         const n8nData = result.data;
-        
-        // n8n returns empty array [] or empty object {} or null if matching name node had 0 items
-        let isMatched = false;
-        if (n8nData) {
-          if (Array.isArray(n8nData)) {
-            // It could be an array of matching rows, must have at least 1 item and it shouldn't be empty
-            isMatched = n8nData.length > 0 && Object.keys(n8nData[0] || {}).length > 0;
-          } else if (typeof n8nData === 'object') {
-            isMatched = Object.keys(n8nData).length > 0;
-          } else if (typeof n8nData === 'string') {
-            isMatched = n8nData.trim().length > 0 && !n8nData.toLowerCase().includes('not found') && !n8nData.toLowerCase().includes('error');
-          }
+        let n8nObj = null;
+        if (Array.isArray(n8nData)) {
+          n8nObj = n8nData[0];
+        } else if (n8nData && typeof n8nData === 'object') {
+          n8nObj = n8nData;
         }
 
-        if (isMatched) {
-          setStatus('success');
+        if (n8nObj && n8nObj.found === true && n8nObj.guest) {
+          const guest = n8nObj.guest;
+          setGuestData(guest);
+          
+          // Pre-fill states from n8n guest object if they already exist
+          const existingAttending = guest.No === 'Yes' || guest.No === 'No' ? guest.No : '';
+          setAttending(existingAttending);
+          
+          const existingNumber = Number(guest.Number);
+          setGuestsCount(isNaN(existingNumber) || existingNumber <= 0 ? 1 : existingNumber);
+          
+          setOtherGuests(guest.Note || '');
+          setMealPreferences(guest["Meal preferences"] || '');
+          setWishes(guest["Your wish to couples"] || '');
+          
+          setFormStep('details');
+          setStatus('idle');
         } else {
           setSubmitError(copy.errorNotFound);
           setStatus('error');
@@ -93,7 +109,63 @@ export default function RSVP() {
         setStatus('error');
       }
     } catch (error) {
-      console.error('Error submitting RSVP:', error);
+      console.error('Error looking up RSVP:', error);
+      setSubmitError(copy.errorWebhook);
+      setStatus('error');
+    }
+  };
+
+  const handleDetailsSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!attending) {
+      setValidationError(lang === 'en' ? 'Please select if you will be attending.' : 'Vui lòng xác nhận bạn có tham dự hay không.');
+      return;
+    }
+
+    if (attending === 'Yes' && guestsCount > 1 && !otherGuests.trim()) {
+      setValidationError(lang === 'en' ? 'Please enter the names of other guests.' : 'Vui lòng nhập tên những người đi cùng.');
+      return;
+    }
+
+    setValidationError('');
+    setSubmitError('');
+    setStatus('loading');
+
+    try {
+      const payload = {
+        row_number: guestData.row_number,
+        "Guest name": guestData["Guest name"] || fullName,
+        "No": attending,
+        "Number": attending === 'Yes' ? guestsCount : '',
+        "Note": attending === 'Yes' ? otherGuests : '',
+        "Meal preferences": attending === 'Yes' ? mealPreferences : '',
+        "Your wish to couples": wishes,
+        action: 'update'
+      };
+
+      const response = await fetch(
+        '/api/rsvp',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      const result = await response.json().catch(() => null);
+
+      if (response.ok && result?.success) {
+        setFormStep('success');
+        setStatus('idle');
+      } else {
+        setSubmitError(result?.error || copy.errorWebhook);
+        setStatus('error');
+      }
+    } catch (error) {
+      console.error('Error submitting RSVP details:', error);
       setSubmitError(copy.errorWebhook);
       setStatus('error');
     }
@@ -122,7 +194,7 @@ export default function RSVP() {
           {copy.title}
         </Heading>
         
-        {status === 'success' ? (
+        {formStep === 'success' ? (
           <div className="mt-8 p-8 border border-ink/10 rounded-2xl bg-white/20 backdrop-blur-sm shadow-sm w-full flex flex-col items-center gap-4 animate-fade-in">
             <svg 
               width="40" 
@@ -142,13 +214,207 @@ export default function RSVP() {
               {copy.successMsg}
             </Body>
           </div>
+        ) : formStep === 'details' ? (
+          <div className="w-full mt-6">
+            <Body variant="regular" className="mb-10 text-ink-muted leading-relaxed">
+              {lang === 'en' 
+                ? `Hi ${guestData?.["Guest name"] || fullName}, please complete your RSVP details below:` 
+                : `Chào ${guestData?.["Guest name"] || fullName}, vui lòng hoàn thành thông tin xác nhận bên dưới:`}
+            </Body>
+            
+            <form onSubmit={handleDetailsSubmit} className="w-full flex flex-col items-start gap-8 text-left">
+              {/* Yes/No Attendance */}
+              <div className="w-full flex flex-col gap-2.5">
+                <label className="font-body text-[10px] tracking-[0.25em] uppercase text-ink-soft font-medium">
+                  {copy.attendingLabel} <span className="text-tan font-normal">*</span>
+                </label>
+                <div className="flex gap-4 w-full mt-1.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAttending('Yes');
+                      setValidationError('');
+                      if (submitError) setSubmitError('');
+                    }}
+                    className={`flex-1 py-3 px-4 text-xs tracking-widest uppercase transition-all duration-300 font-body font-medium border ${
+                      attending === 'Yes' 
+                        ? 'border-ink bg-ink text-cream' 
+                        : 'border-ink/20 text-ink hover:border-ink/50 bg-transparent'
+                    }`}
+                  >
+                    {copy.attendingYes}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAttending('No');
+                      setValidationError('');
+                      if (submitError) setSubmitError('');
+                    }}
+                    className={`flex-1 py-3 px-4 text-xs tracking-widest uppercase transition-all duration-300 font-body font-medium border ${
+                      attending === 'No' 
+                        ? 'border-ink bg-ink text-cream' 
+                        : 'border-ink/20 text-ink hover:border-ink/50 bg-transparent'
+                    }`}
+                  >
+                    {copy.attendingNo}
+                  </button>
+                </div>
+              </div>
+
+              {attending === 'Yes' && (
+                <div className="w-full flex flex-col gap-8 animate-fade-in">
+                  {/* Number of Guests */}
+                  <div className="w-full flex flex-col gap-2.5">
+                    <label htmlFor="guestsCount" className="font-body text-[10px] tracking-[0.25em] uppercase text-ink-soft font-medium">
+                      {copy.guestsLabel} <span className="text-tan font-normal">*</span>
+                    </label>
+                    <div className="relative w-full">
+                      <select
+                        id="guestsCount"
+                        value={guestsCount}
+                        onChange={(e) => setGuestsCount(Number(e.target.value))}
+                        className="w-full bg-transparent border-b border-ink/20 focus:border-ink py-3 pr-8 text-ink focus:outline-none transition-colors font-body text-base font-light appearance-none rounded-none"
+                        style={{
+                          backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>")`,
+                          backgroundPosition: 'right 0px center',
+                          backgroundRepeat: 'no-repeat',
+                          backgroundSize: '16px'
+                        }}
+                      >
+                        {[1, 2, 3, 4, 5].map((n) => (
+                          <option key={n} value={n} className="bg-cream text-ink">
+                            {n}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Names of Other Guests */}
+                  {guestsCount > 1 && (
+                    <div className="w-full flex flex-col gap-2.5 animate-fade-in">
+                      <label htmlFor="otherGuests" className="font-body text-[10px] tracking-[0.25em] uppercase text-ink-soft font-medium">
+                        {copy.otherGuestsLabel} <span className="text-tan font-normal">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="otherGuests"
+                        value={otherGuests}
+                        onChange={(e) => {
+                          setOtherGuests(e.target.value);
+                          if (validationError) setValidationError('');
+                        }}
+                        placeholder={copy.otherGuestsPlaceholder}
+                        className="w-full bg-transparent border-b border-ink/20 focus:border-ink py-3 text-ink-soft placeholder-ink-muted/30 focus:outline-none transition-colors font-body text-base font-light"
+                        autoComplete="off"
+                      />
+                    </div>
+                  )}
+
+                  {/* Meal Preferences */}
+                  <div className="w-full flex flex-col gap-2.5">
+                    <label htmlFor="mealPreferences" className="font-body text-[10px] tracking-[0.25em] uppercase text-ink-soft font-medium">
+                      {copy.mealLabel}
+                    </label>
+                    <input
+                      type="text"
+                      id="mealPreferences"
+                      value={mealPreferences}
+                      onChange={(e) => setMealPreferences(e.target.value)}
+                      placeholder={copy.mealPlaceholder}
+                      className="w-full bg-transparent border-b border-ink/20 focus:border-ink py-3 text-ink-soft placeholder-ink-muted/30 focus:outline-none transition-colors font-body text-base font-light"
+                      autoComplete="off"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Wishes / Message - Always visible if attending is selected */}
+              {attending !== '' && (
+                <div className="w-full flex flex-col gap-2.5 animate-fade-in">
+                  <label htmlFor="wishes" className="font-body text-[10px] tracking-[0.25em] uppercase text-ink-soft font-medium">
+                    {copy.wishesLabel}
+                  </label>
+                  <textarea
+                    id="wishes"
+                    value={wishes}
+                    onChange={(e) => setWishes(e.target.value)}
+                    placeholder={copy.wishesPlaceholder}
+                    rows={3}
+                    className="w-full bg-transparent border-b border-ink/20 focus:border-ink py-3 text-ink-soft placeholder-ink-muted/30 focus:outline-none transition-colors font-body text-base font-light resize-none rounded-none"
+                  />
+                </div>
+              )}
+
+              {validationError && (
+                <span className="text-xs text-red-500/80 font-light flex items-center gap-1.5 mt-1 animate-fade-in">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                  {validationError}
+                </span>
+              )}
+
+              {status === 'error' && (
+                <div className="w-full p-4 border border-red-200 bg-red-50/30 rounded-xl flex items-start gap-3 text-red-600 animate-fade-in">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                  <span className="text-xs font-light leading-relaxed">
+                    {submitError || copy.errorWebhook}
+                  </span>
+                </div>
+              )}
+
+              <div className="w-full flex justify-center mt-6 gap-4">
+                <Button 
+                  type="button" 
+                  variant="secondary"
+                  className="flex items-center justify-center px-6" 
+                  onClick={() => {
+                    setFormStep('name');
+                    setValidationError('');
+                    setSubmitError('');
+                    setStatus('idle');
+                  }}
+                  disabled={status === 'loading'}
+                >
+                  {lang === 'en' ? 'Back' : 'Quay lại'}
+                </Button>
+                
+                <Button 
+                  type="submit" 
+                  variant="primary" 
+                  className="flex items-center justify-center gap-2 px-8" 
+                  disabled={status === 'loading' || attending === ''}
+                >
+                  {status === 'loading' ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4 text-cream" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      {copy.submitBtnLoading}
+                    </>
+                  ) : (
+                    copy.submitDetailsBtn
+                  )}
+                </Button>
+              </div>
+            </form>
+          </div>
         ) : (
           <div className="w-full mt-6">
             <Body variant="regular" className="mb-10 text-ink-muted leading-relaxed">
               {copy.description}
             </Body>
             
-            <form onSubmit={handleSubmit} className="w-full flex flex-col items-start gap-8 text-left">
+            <form onSubmit={handleLookupSubmit} className="w-full flex flex-col items-start gap-8 text-left">
               <div className="w-full flex flex-col gap-2.5">
                 <label 
                   htmlFor="fullName" 
@@ -157,7 +423,7 @@ export default function RSVP() {
                   {copy.nameLabel} <span className="text-tan font-normal">*</span>
                 </label>
                 
-                 <input
+                <input
                   type="text"
                   id="fullName"
                   value={fullName}
