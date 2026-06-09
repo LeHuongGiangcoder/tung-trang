@@ -20,9 +20,10 @@ const BRUSH_RADIUS_TOUCH = 52;
 
 interface EntranceProps {
   onDone: () => void;
+  onSketchStart?: () => void;
 }
 
-export default function Entrance({ onDone }: EntranceProps) {
+export default function Entrance({ onDone, onSketchStart }: EntranceProps) {
   const { lang } = useLang();
   const copy = COPY[lang].entrance;
 
@@ -127,7 +128,10 @@ export default function Entrance({ onDone }: EntranceProps) {
     isTouchRef.current = e.pointerType === 'touch';
     (e.target as Element).setPointerCapture?.(e.pointerId);
     if (hintVisible) setHintVisible(false);
-    if (phase === 'idle') setPhase('sketching');
+    if (phase === 'idle') {
+      setPhase('sketching');
+      onSketchStart?.();
+    }
     if (drawStartRef.current === null) drawStartRef.current = performance.now();
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
     const x = e.clientX - rect.left;

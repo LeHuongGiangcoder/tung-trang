@@ -20,7 +20,7 @@ export default function Nav() {
   const scrolledEffect = "bg-white/60 border border-white/40 backdrop-blur-md shadow-[0_2px_10px_rgba(0,0,0,0.03)] rounded-full";
   
   const pillClass = `${baseOverlay} border ${
-    scrolled ? `${scrolledEffect} px-4 py-2` : 'border-transparent bg-transparent px-4 py-2'
+    scrolled ? `${scrolledEffect} px-3.5 py-1.5` : 'border-transparent bg-transparent px-3.5 py-1.5'
   }`;
   const logoPillClass = `${baseOverlay} flex items-center justify-center border ${
     scrolled ? `${scrolledEffect} p-2` : 'border-transparent bg-transparent p-2'
@@ -38,7 +38,7 @@ export default function Nav() {
 
         {/* Center links - desktop only */}
         <div className={`hidden md:block ${pillClass}`}>
-          <ul className="flex items-center gap-10 font-body text-[11px] tracking-[0.3em] uppercase text-ink-soft">
+          <ul className="flex items-center gap-8 font-body text-[10px] tracking-[0.3em] uppercase text-ink-soft">
             <li><a href="#story" className="hover:text-ink transition-colors">{nav.story}</a></li>
             <li><a href="#details" className="hover:text-ink transition-colors">{nav.details}</a></li>
             <li><a href="#rsvp" className="hover:text-ink transition-colors">{nav.rsvp}</a></li>
@@ -47,7 +47,7 @@ export default function Nav() {
 
         {/* Lang toggle */}
         <div className={pillClass}>
-          <div className="flex items-center gap-2 font-body text-[11px] tracking-[0.2em] uppercase">
+          <div className="flex items-center gap-1.5 font-body text-[10px] tracking-[0.2em] uppercase">
             <button
               onClick={() => setLang('en')}
               className={lang === 'en' ? 'text-ink' : 'text-ink-muted hover:text-ink-soft transition-colors'}
