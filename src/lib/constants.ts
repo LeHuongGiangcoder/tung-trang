@@ -11,7 +11,7 @@ export const WEDDING = {
 export const COPY: Record<Lang, {
   entrance: { hint: string; whisper: string };
   hero: { eyebrow: string; ampersand: string; dateLine: string; location: string };
-  nav: { story: string; details: string; rsvp: string };
+  nav: { visa: string; travel: string; rsvp: string; schedule: string; };
   visa: {
     subtitle: string;
     title: string;
@@ -58,6 +58,11 @@ export const COPY: Record<Lang, {
     title: string;
     body: string;
   };
+  eventDetails: {
+    schedule: string;
+    dresscode: string;
+    comingSoon: string;
+  };
 }> = {
   en: {
     entrance: {
@@ -70,11 +75,11 @@ export const COPY: Record<Lang, {
       dateLine: 'Saturday, 23 January 2027',
       location: 'Hanoi, Vietnam',
     },
-    nav: { story: 'Story', details: 'Details', rsvp: 'RSVP' },
+    nav: { visa: 'Visa', travel: 'Travel', rsvp: 'RSVP', schedule: 'Schedule' },
     visa: {
       subtitle: 'TRAVEL INFORMATION',
       title: 'E-Visa Guide',
-      introParagraph1: 'If you are a US citizen, you must obtain a visa to enter Vietnam. The process is <strong><em>simple, affordable, and completed online.</em></strong>',
+      introParagraph1: 'If you are not a Vietnamese citizen, you may need to obtain a visa to enter Vietnam. The process is <strong><em>simple, affordable, and completed online.</em></strong>',
       applyLabel: 'Apply here:',
       btnPortal: 'E-Visa Portal',
       btnMoreInfo: 'Entry/Exit Info',
@@ -143,6 +148,11 @@ export const COPY: Record<Lang, {
     thankYou: {
       title: 'Thank You',
       body: "We can't wait to see you!"
+    },
+    eventDetails: {
+      schedule: 'Schedule',
+      dresscode: 'Dresscode',
+      comingSoon: 'Coming soon...'
     }
   },
   vi: {
@@ -156,11 +166,11 @@ export const COPY: Record<Lang, {
       dateLine: 'Thứ bảy, 23 tháng 01 năm 2027',
       location: 'Hà Nội, Việt Nam',
     },
-    nav: { story: 'Câu chuyện', details: 'Thông tin', rsvp: 'Xác nhận' },
+    nav: { visa: 'Visa', travel: 'Du lịch', rsvp: 'Xác nhận', schedule: 'Lịch trình' },
     visa: {
       subtitle: 'THÔNG TIN DU LỊCH',
       title: 'Hướng dẫn E-Visa',
-      introParagraph1: 'Nếu bạn là công dân Mỹ, bạn cần có visa để nhập cảnh vào Việt Nam. Quy trình xin visa <strong><em>rất đơn giản, chi phí hợp lý và được thực hiện hoàn toàn trực tuyến.</em></strong>',
+      introParagraph1: 'Nếu bạn không phải là công dân Việt Nam, bạn có thể cần có visa để nhập cảnh vào Việt Nam. Quy trình xin visa <strong><em>rất đơn giản, chi phí hợp lý và được thực hiện hoàn toàn trực tuyến.</em></strong>',
       applyLabel: 'Đăng ký tại đây:',
       btnPortal: 'Cổng E-Visa',
       btnMoreInfo: 'Xuất/Nhập cảnh',
@@ -229,6 +239,11 @@ export const COPY: Record<Lang, {
     thankYou: {
       title: 'Cảm Ơn Bạn',
       body: 'Rất mong được gặp bạn!'
+    },
+    eventDetails: {
+      schedule: 'Lịch trình',
+      dresscode: 'Trang phục',
+      comingSoon: 'Sắp ra mắt...'
     }
   },
 };
