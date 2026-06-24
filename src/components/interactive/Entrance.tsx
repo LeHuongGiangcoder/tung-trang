@@ -6,7 +6,7 @@ import { COPY, FLASHBACK_IMAGES } from '@/lib/constants';
 
 type Phase = 'idle' | 'sketching' | 'revealing' | 'morphing' | 'flashback' | 'done';
 
-const CREAM = '#EDE7DA';
+const CREAM = '#F5F2EA';
 const GRID_COLS = 20;
 const GRID_ROWS = 30;
 // Threshold is % of full viewport cells touched. Kept low because the centered
