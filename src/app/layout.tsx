@@ -4,11 +4,12 @@ import { LangProvider } from '@/hooks/useLang';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Tung & Trang — 23.01.2027',
+  metadataBase: new URL('https://tungtrang.gloweb.site'),
+  title: 'Tung & Trang — 03.01.2027',
   description: 'We are getting married in Hanoi, Vietnam.',
   openGraph: {
     title: 'Tung & Trang',
-    description: 'Save the date — 23 January 2027, Hanoi.',
+    description: 'Save the date — 03 January 2027, Hanoi.',
     type: 'website',
     images: [
       {
