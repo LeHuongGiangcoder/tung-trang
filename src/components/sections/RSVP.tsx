@@ -426,7 +426,7 @@ export default function RSVP() {
                   autoComplete="off"
                 />
                 
-                {validationError ? (
+                {validationError && (
                   <span className="text-xs text-red-500/80 font-light flex items-center gap-1.5 mt-1 animate-fade-in">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="10"></circle>
@@ -434,10 +434,6 @@ export default function RSVP() {
                       <line x1="12" y1="16" x2="12.01" y2="16"></line>
                     </svg>
                     {validationError}
-                  </span>
-                ) : (
-                  <span className="text-[11px] text-ink-muted/60 font-light leading-relaxed mt-1">
-                    {copy.nameHelper}
                   </span>
                 )}
               </div>
