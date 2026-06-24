@@ -245,7 +245,7 @@ export default function Entrance({ onDone, onSketchStart }: EntranceProps) {
   return (
     <div
       ref={rootRef}
-      className="fixed inset-0 z-50 overflow-hidden no-select"
+      className="fixed inset-0 h-[100dvh] w-screen z-50 overflow-hidden no-select"
       style={{ background: CREAM }}
       aria-label="Sketch entrance"
     >
