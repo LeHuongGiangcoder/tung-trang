@@ -382,6 +382,10 @@ export default function RSVP() {
                   autoComplete="off"
                 />
                 
+                <span className="text-[11px] md:text-xs text-ink-muted/80 font-light mt-1.5 leading-relaxed block">
+                  {copy.nameHelper}
+                </span>
+                
                 {validationError && (
                   <span className="text-xs text-red-500/80 font-light flex items-center gap-1.5 mt-1 animate-fade-in">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
