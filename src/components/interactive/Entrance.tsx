@@ -213,7 +213,7 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
         } else {
           setFlashIndex(i);
           const isLast = i === FLASHBACK_IMAGES.length - 1;
-          const delay = isLast ? 1400 : 500;
+          const delay = isLast ? 1200 : 400;
           timeoutId = setTimeout(next, delay);
         }
       };
@@ -279,12 +279,15 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
           transition: 'opacity 1600ms var(--ease-smooth), filter 1600ms var(--ease-smooth)',
         }}
       >
-        <img
-          src="/images/bench-portrait.webp"
-          alt=""
-          className="max-h-[78vh] max-w-[88vw] aspect-[1023/1537] object-cover"
-          draggable={false}
-        />
+        {/* Gallery mat: cream passe-partout + thin ink keyline, lifted off the page */}
+        <div className="bg-cream-light p-3 md:p-5 border border-ink/10 shadow-[0_18px_50px_-12px_rgba(31,27,23,0.35)]">
+          <img
+            src="/images/bench-portrait.webp"
+            alt=""
+            className="block max-h-[68vh] max-w-[80vw] aspect-[1023/1537] object-cover border border-ink/15"
+            draggable={false}
+          />
+        </div>
       </div>
 
       {/* Layer 3: Flashback images stacked, only active during flashback phase */}
@@ -298,16 +301,20 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
               transition: 'opacity 500ms var(--ease-smooth)',
             }}
           >
-            <img
-              src={src}
-              alt=""
-              className={`max-h-[78vh] max-w-[88vw] aspect-[1023/1537] object-cover ${
-                src.includes('moment-06-street.webp') ? 'object-[60%_center]' :
-                src.includes('moment-07-ring') ? 'object-[75%_center]' :
-                'object-center'
-              }`}
-              draggable={false}
-            />
+            {/* Gallery mat: cream passe-partout + thin ink keyline, lifted off the page.
+                Shadow only on the current (top) photo so stacked frames don't pile up halos. */}
+            <div className={`bg-cream-light p-3 md:p-5 border border-ink/10 ${flashIndex === i ? 'shadow-[0_18px_50px_-12px_rgba(31,27,23,0.35)]' : ''}`}>
+              <img
+                src={src}
+                alt=""
+                className={`block max-h-[68vh] max-w-[80vw] aspect-[1023/1537] object-cover border border-ink/15 ${
+                  src.includes('moment-06-street.webp') ? 'object-[60%_center]' :
+                  src.includes('moment-07-ring') ? 'object-[75%_center]' :
+                  'object-center'
+                }`}
+                draggable={false}
+              />
+            </div>
           </div>
         ))}
       </div>
