@@ -209,7 +209,7 @@ export default function RSVP() {
         
         {formStep === 'success' ? (
           <div className="w-full flex flex-col items-center">
-            <div className="mt-8 p-8 rounded-none bg-white/20 backdrop-blur-sm w-full flex flex-col items-center gap-4 animate-fade-in">
+            <div className="mt-8 w-full flex flex-col items-center gap-4 animate-fade-in">
               <svg 
                 width="40" 
                 height="40" 

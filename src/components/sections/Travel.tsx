@@ -134,7 +134,7 @@ export default function Travel() {
               setIsZoomed(!isZoomed);
               setHasInteracted(true);
             }}
-            className={`relative w-full max-w-md overflow-hidden rounded-none p-6 bg-white/20 backdrop-blur-sm select-none transition-all duration-500 ${isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
+            className={`relative w-full max-w-md overflow-hidden rounded-none p-6 select-none transition-all duration-500 ${isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
           >
             <div className="relative overflow-hidden aspect-[3/4] w-full flex items-center justify-center">
               {/* Zoomable Wrapper Container */}
