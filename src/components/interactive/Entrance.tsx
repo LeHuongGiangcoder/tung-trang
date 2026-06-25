@@ -213,7 +213,7 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
         } else {
           setFlashIndex(i);
           const isLast = i === FLASHBACK_IMAGES.length - 1;
-          const delay = isLast ? 1200 : 400;
+          const delay = isLast ? 1200 : 500;
           timeoutId = setTimeout(next, delay);
         }
       };
@@ -284,7 +284,7 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
           <img
             src="/images/bench-portrait.webp"
             alt=""
-            className="block max-h-[68vh] max-w-[80vw] aspect-[1023/1537] object-cover border border-ink/15"
+            className="block h-[64vh] w-auto aspect-[1023/1537] object-cover border border-ink/15"
             draggable={false}
           />
         </div>
@@ -307,7 +307,7 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
               <img
                 src={src}
                 alt=""
-                className={`block max-h-[68vh] max-w-[80vw] aspect-[1023/1537] object-cover border border-ink/15 ${
+                className={`block h-[64vh] w-auto aspect-[1023/1537] object-cover border border-ink/15 ${
                   src.includes('moment-06-street.webp') ? 'object-[60%_center]' :
                   src.includes('moment-07-ring') ? 'object-[75%_center]' :
                   'object-center'
