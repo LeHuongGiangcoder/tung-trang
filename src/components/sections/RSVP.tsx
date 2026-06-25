@@ -15,12 +15,25 @@ const firstName = (full?: string) => {
   return parts.slice(0, -1).join(' ');
 };
 
+// Normalize a name to single-spaced, Title Case
+const formatName = (str: string) =>
+  str
+    .trim()
+    .replace(/\s+/g, ' ')
+    .toLowerCase()
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+
+// Coerce a sheet value to a known Yes/No answer (or empty)
+const asYesNo = (v: unknown): 'Yes' | 'No' | '' => (v === 'Yes' || v === 'No' ? v : '');
+
 export default function RSVP() {
   const { lang } = useLang();
   const copy = COPY[lang].rsvp;
 
   const [fullName, setFullName] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
   const [nameError, setNameError] = useState(false);
   // For a server-provided message; known errors use errorKey so they re-translate on language switch
   const [submitError, setSubmitError] = useState('');
@@ -47,16 +60,29 @@ export default function RSVP() {
 
   const handleBlur = () => {
     if (!fullName) return;
-    // Capitalize first letters of each word
-    const formatted = fullName
-      .trim()
-      .replace(/\s+/g, ' ') // Collapse multiple spaces
-      .toLowerCase()
-      .split(' ')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-    setFullName(formatted);
+    setFullName(formatName(fullName));
     setNameError(false);
+  };
+
+  // Load a matched guest into the form and move to the details step
+  const loadGuest = (matchObj: any) => {
+    const guest = matchObj.guest;
+    if (matchObj.displayName) {
+      guest.displayName = matchObj.displayName;
+    }
+    setGuestData(guest);
+
+    // Pre-fill states from the guest object where they already exist
+    setAttending(asYesNo(guest["Join? from Guest"]));
+    setMealPreferences(guest["Meal preferences from Guest"] || '');
+    setWishes(guest["Wish to couples from Guest"] || '');
+
+    setPartnerAttending(asYesNo(guest["Join? from Partner"]));
+    setPartnerMealPreferences(guest["Meal preferences from Partner"] || '');
+    setPartnerWishes(guest["Wish to couples from Partner"] || '');
+
+    setActiveTab('guest');
+    setFormStep('details');
   };
 
   const handleLookupSubmit = async (e: React.FormEvent) => {
@@ -68,12 +94,7 @@ export default function RSVP() {
       return;
     }
 
-    const formatted = trimmed
-      .replace(/\s+/g, ' ')
-      .toLowerCase()
-      .split(' ')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+    const formatted = formatName(trimmed);
 
     setFullName(formatted);
     setNameError(false);
@@ -109,25 +130,7 @@ export default function RSVP() {
         if (matches.length === 1) {
           const matchObj = matches[0];
           if (matchObj.found && matchObj.guest) {
-            const guest = matchObj.guest;
-            if (matchObj.displayName) {
-              guest.displayName = matchObj.displayName;
-            }
-            setGuestData(guest);
-            
-            // Pre-fill states from n8n guest object if they already exist
-            const existingAttending = guest["Join? from Guest"] === 'Yes' || guest["Join? from Guest"] === 'No' ? guest["Join? from Guest"] : '';
-            setAttending(existingAttending);
-            setMealPreferences(guest["Meal preferences from Guest"] || '');
-            setWishes(guest["Wish to couples from Guest"] || '');
-
-            const existingPartnerAttending = guest["Join? from Partner"] === 'Yes' || guest["Join? from Partner"] === 'No' ? guest["Join? from Partner"] : '';
-            setPartnerAttending(existingPartnerAttending);
-            setPartnerMealPreferences(guest["Meal preferences from Partner"] || '');
-            setPartnerWishes(guest["Wish to couples from Partner"] || '');
-
-            setActiveTab('guest');
-            setFormStep('details');
+            loadGuest(matchObj);
             setStatus('idle');
           } else {
             setErrorKey('notFound');
@@ -159,24 +162,7 @@ export default function RSVP() {
 
   const handleSelectDisambiguatedGuest = (matchObj: any) => {
     if (matchObj.found && matchObj.guest) {
-      const guest = matchObj.guest;
-      if (matchObj.displayName) {
-        guest.displayName = matchObj.displayName;
-      }
-      setGuestData(guest);
-      
-      const existingAttending = guest["Join? from Guest"] === 'Yes' || guest["Join? from Guest"] === 'No' ? guest["Join? from Guest"] : '';
-      setAttending(existingAttending);
-      setMealPreferences(guest["Meal preferences from Guest"] || '');
-      setWishes(guest["Wish to couples from Guest"] || '');
-
-      const existingPartnerAttending = guest["Join? from Partner"] === 'Yes' || guest["Join? from Partner"] === 'No' ? guest["Join? from Partner"] : '';
-      setPartnerAttending(existingPartnerAttending);
-      setPartnerMealPreferences(guest["Meal preferences from Partner"] || '');
-      setPartnerWishes(guest["Wish to couples from Partner"] || '');
-
-      setActiveTab('guest');
-      setFormStep('details');
+      loadGuest(matchObj);
     }
   };
 
@@ -258,6 +244,13 @@ export default function RSVP() {
     : errorKey === 'webhook'
       ? copy.errorWebhook
       : (submitError || copy.errorWebhook);
+
+  // Greeting names everyone in the party (guest, plus partner if there is one)
+  const greetingNames = (() => {
+    const guest = firstName(guestData?.["Guest name"] || fullName);
+    const partner = guestData?.["Name of other guest"] ? firstName(guestData["Name of other guest"]) : '';
+    return partner ? `${guest} & ${partner}` : guest;
+  })();
 
   // Success message adapts to who's actually coming
   const getSuccessMessage = () => {
@@ -375,8 +368,8 @@ export default function RSVP() {
           <div className="w-full mt-6">
             <Body variant="regular" className="mb-6 text-ink-muted leading-relaxed">
               {lang === 'en'
-                ? `Hi ${firstName(guestData?.displayName || guestData?.["Guest name"] || fullName)}! Just a couple of details and you're all set:`
-                : `Chào ${firstName(guestData?.displayName || guestData?.["Guest name"] || fullName)}! Thêm vài thông tin nữa là xong nhé:`}
+                ? `Hi ${greetingNames}! Just a couple of details and you're all set:`
+                : `Chào ${greetingNames}! Thêm vài thông tin nữa là xong nhé:`}
             </Body>
             
             {guestData?.["Name of other guest"] && (
@@ -609,23 +602,13 @@ export default function RSVP() {
               )}
 
               <div className="w-full flex justify-center mt-6">
-                <Button 
-                  type="submit" 
-                  variant="primary" 
-                  className="flex items-center justify-center gap-2 px-8" 
-                  disabled={status === 'loading'}
+                {/* Submit is optimistic (fires and goes straight to success), so no loading state here */}
+                <Button
+                  type="submit"
+                  variant="primary"
+                  className="flex items-center justify-center gap-2 px-8"
                 >
-                  {status === 'loading' ? (
-                    <>
-                      <svg className="animate-spin h-4 w-4 text-cream" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      {copy.submitBtnLoading}
-                    </>
-                  ) : (
-                    copy.submitDetailsBtn
-                  )}
+                  {copy.submitDetailsBtn}
                 </Button>
               </div>
             </form>
