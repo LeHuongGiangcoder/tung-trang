@@ -20,8 +20,7 @@ export default function RSVP() {
 
   // RSVP Form fields state
   const [attending, setAttending] = useState<'Yes' | 'No' | ''>('');
-  const [guestsCount, setGuestsCount] = useState<number | ''>(1);
-  const [otherGuests, setOtherGuests] = useState<string>('');
+
   const [mealPreferences, setMealPreferences] = useState<string>('');
   const [wishes, setWishes] = useState<string>('');
 
@@ -85,16 +84,16 @@ export default function RSVP() {
 
         if (n8nObj && n8nObj.found === true && n8nObj.guest) {
           const guest = n8nObj.guest;
+          if (n8nObj.displayName) {
+            guest.displayName = n8nObj.displayName;
+          }
           setGuestData(guest);
           
           // Pre-fill states from n8n guest object if they already exist
           const existingAttending = guest.No === 'Yes' || guest.No === 'No' ? guest.No : '';
           setAttending(existingAttending);
           
-          const existingNumber = Number(guest.Number);
-          setGuestsCount(isNaN(existingNumber) || existingNumber <= 0 ? 1 : existingNumber);
-          
-          setOtherGuests(guest.Note || '');
+
           setMealPreferences(guest["Meal preferences"] || '');
           setWishes(guest["Your wish to couples"] || '');
           
@@ -124,12 +123,7 @@ export default function RSVP() {
       return;
     }
 
-    const finalGuestsCount = Number(guestsCount) || 1;
 
-    if (attending === 'Yes' && finalGuestsCount > 1 && !otherGuests.trim()) {
-      setValidationError(lang === 'en' ? 'Please enter the names of other guests.' : 'Vui lòng nhập tên những người đi cùng.');
-      return;
-    }
 
     setValidationError('');
     setSubmitError('');
@@ -140,8 +134,7 @@ export default function RSVP() {
         row_number: guestData.row_number,
         "Guest name": guestData["Guest name"] || fullName,
         "No": attending,
-        "Number": attending === 'Yes' ? finalGuestsCount : '',
-        "Note": attending === 'Yes' ? otherGuests : '',
+
         "Meal preferences": attending === 'Yes' ? mealPreferences : '',
         "Your wish to couples": wishes,
         action: 'update'
@@ -221,8 +214,8 @@ export default function RSVP() {
           <div className="w-full mt-6">
             <Body variant="regular" className="mb-10 text-ink-muted leading-relaxed">
               {lang === 'en' 
-                ? `Hi ${guestData?.["Guest name"] || fullName}, please complete your RSVP details below:` 
-                : `Chào ${guestData?.["Guest name"] || fullName}, vui lòng hoàn thành thông tin xác nhận bên dưới:`}
+                ? `Hi ${guestData?.displayName || guestData?.["Guest name"] || fullName}, please complete your RSVP details below:` 
+                : `Chào ${guestData?.displayName || guestData?.["Guest name"] || fullName}, vui lòng hoàn thành thông tin xác nhận bên dưới:`}
             </Body>
             
             <form onSubmit={handleDetailsSubmit} className="w-full flex flex-col items-start gap-8 text-left">
@@ -267,50 +260,6 @@ export default function RSVP() {
 
               {attending === 'Yes' && (
                 <div className="w-full flex flex-col gap-8 animate-fade-in">
-                  {/* Number of Guests */}
-                  <div className="w-full flex flex-col gap-2.5">
-                    <label htmlFor="guestsCount" className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal">
-                      {copy.guestsLabel} <span className="text-tan font-normal">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      id="guestsCount"
-                      min="1"
-                      value={guestsCount}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === '') {
-                          setGuestsCount('');
-                        } else {
-                          const num = Number(val);
-                          setGuestsCount(isNaN(num) || num <= 0 ? 1 : num);
-                        }
-                      }}
-                      className="w-full bg-transparent border-b border-ink/20 focus:border-ink py-3 text-ink-soft focus:outline-none transition-colors duration-300 font-body text-base font-light rounded-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    />
-                  </div>
-
-                  {/* Names of Other Guests */}
-                  {Number(guestsCount) > 1 && (
-                    <div className="w-full flex flex-col gap-2.5 animate-fade-in">
-                      <label htmlFor="otherGuests" className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal">
-                        {copy.otherGuestsLabel} <span className="text-tan font-normal">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="otherGuests"
-                        value={otherGuests}
-                        onChange={(e) => {
-                          setOtherGuests(e.target.value);
-                          if (validationError) setValidationError('');
-                        }}
-                        placeholder={copy.otherGuestsPlaceholder}
-                        className="w-full bg-transparent border-b border-ink/20 focus:border-ink py-3 text-ink-soft placeholder-ink-muted/30 focus:outline-none transition-colors font-body text-base font-light"
-                        autoComplete="off"
-                      />
-                    </div>
-                  )}
-
                   {/* Meal Preferences */}
                   <div className="w-full flex flex-col gap-2.5">
                     <label htmlFor="mealPreferences" className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal">

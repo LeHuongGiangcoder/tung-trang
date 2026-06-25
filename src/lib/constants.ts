@@ -45,9 +45,7 @@ export const COPY: Record<Lang, {
     attendingLabel: string;
     attendingYes: string;
     attendingNo: string;
-    guestsLabel: string;
-    otherGuestsLabel: string;
-    otherGuestsPlaceholder: string;
+
     mealLabel: string;
     mealPlaceholder: string;
     wishesLabel: string;
@@ -136,9 +134,7 @@ export const COPY: Record<Lang, {
       attendingLabel: 'Will you be attending?',
       attendingYes: 'Yes, I will attend',
       attendingNo: 'No, I cannot attend',
-      guestsLabel: 'Number of guests',
-      otherGuestsLabel: 'Names of other guests',
-      otherGuestsPlaceholder: 'e.g. Guest names',
+
       mealLabel: 'Meal preferences (optional)',
       mealPlaceholder: 'e.g. Vegetarian, food allergies...',
       wishesLabel: 'Your message to us',
@@ -227,9 +223,7 @@ export const COPY: Record<Lang, {
       attendingLabel: 'Bạn sẽ tham dự chứ?',
       attendingYes: 'Có, mình sẽ tham dự',
       attendingNo: 'Rất tiếc không thể tham dự',
-      guestsLabel: 'Số lượng người tham dự',
-      otherGuestsLabel: 'Tên những người đi cùng',
-      otherGuestsPlaceholder: 'VD: Nguyễn Văn B, Nguyễn Văn C',
+
       mealLabel: 'Yêu cầu đặc biệt về ăn uống (nếu có)',
       mealPlaceholder: 'VD: Ăn chay, dị ứng hải sản...',
       wishesLabel: 'Lời chúc gửi tới cặp đôi',
