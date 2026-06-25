@@ -320,7 +320,7 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
                   transform: dealt
                     ? `translate(${t.x}px, ${t.y}px) rotate(${t.r}deg)`
                     : `translate(${t.x}px, ${t.y - 78}px) rotate(${t.r + (t.r >= 0 ? 10 : -10)}deg) scale(1.1)`,
-                  transition: 'opacity 320ms var(--ease-out-quart), transform 600ms cubic-bezier(0.34, 1.4, 0.5, 1)',
+                  transition: 'opacity 520ms var(--ease-smooth), transform 600ms cubic-bezier(0.34, 1.4, 0.5, 1)',
                 }}
               >
                 <img
