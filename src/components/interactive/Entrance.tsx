@@ -21,9 +21,11 @@ const BRUSH_RADIUS_TOUCH = 52;
 interface EntranceProps {
   onDone: () => void;
   onSketchStart?: () => void;
+  // Fired when the entrance begins its final fade-out, so the page can crossfade in
+  onReveal?: () => void;
 }
 
-export default function Entrance({ onDone, onSketchStart }: EntranceProps) {
+export default function Entrance({ onDone, onSketchStart, onReveal }: EntranceProps) {
   const { lang } = useLang();
   const copy = COPY[lang].entrance;
 
@@ -224,6 +226,8 @@ export default function Entrance({ onDone, onSketchStart }: EntranceProps) {
     if (phase === 'done') {
       const root = rootRef.current;
       if (!root) return;
+      // Reveal the page now so it crossfades in as the overlay fades out
+      onReveal?.();
       root.style.transition = 'opacity 1600ms var(--ease-smooth)';
       requestAnimationFrame(() => {
         root.style.opacity = '0';
@@ -231,7 +235,7 @@ export default function Entrance({ onDone, onSketchStart }: EntranceProps) {
       const t = setTimeout(() => onDone(), 1600);
       return () => clearTimeout(t);
     }
-  }, [phase, onDone]);
+  }, [phase, onDone, onReveal]);
 
   // Allow keyboard skip (dev convenience) — press Esc
   useEffect(() => {
@@ -349,14 +353,14 @@ export default function Entrance({ onDone, onSketchStart }: EntranceProps) {
 
       {/* Layer 6: Subtle progress hint at corner once user starts */}
       <div
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 pointer-events-none"
+        className="absolute bottom-20 left-1/2 -translate-x-1/2 pointer-events-none"
         style={{
           opacity: phase === 'sketching' ? 0.4 : 0,
           transition: 'opacity 400ms var(--ease-smooth)',
         }}
       >
         <span className="font-body text-[10px] tracking-[0.4em] uppercase text-ink-muted">
-          {lang === 'en' ? 'keep going' : 'tiếp tục vẽ'}
+          {lang === 'en' ? 'keep going...' : 'tiếp tục vẽ...'}
         </span>
       </div>
 

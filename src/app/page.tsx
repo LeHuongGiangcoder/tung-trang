@@ -12,6 +12,8 @@ import Button from '@/components/ui/Button';
 
 export default function Home() {
   const [entranceDone, setEntranceDone] = useState(false);
+  // Becomes true the moment the entrance starts fading out, so content crossfades in
+  const [revealContent, setRevealContent] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [audioStarted, setAudioStarted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -75,34 +77,46 @@ export default function Home() {
   return (
     <main className="relative bg-cream text-ink">
       <audio ref={audioRef} src="/song.mp4" loop preload="auto" />
-      {!entranceDone && <Entrance onDone={() => setEntranceDone(true)} onSketchStart={handleSketchStart} />}
-      <Nav />
-      <Hero startAnimation={entranceDone} />
-      <Visa />
-      <Travel />
-      <RSVP />
+      {!entranceDone && (
+        <Entrance
+          onDone={() => setEntranceDone(true)}
+          onReveal={() => setRevealContent(true)}
+          onSketchStart={handleSketchStart}
+        />
+      )}
 
-      {/* Audio Toggle */}
-      <div className={`fixed bottom-6 right-6 z-40 ${entranceDone ? 'opacity-100' : 'opacity-0 pointer-events-none'} transition-opacity duration-1000`}>
-        <Button
-          variant="circle"
-          onClick={toggleAudio}
-          aria-label={isPlaying ? 'Pause music' : 'Play music'}
-        >
-          {isPlaying ? (
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-              <rect x="6" y="4" width="4" height="16" />
-              <rect x="14" y="4" width="4" height="16" />
-            </svg>
-          ) : (
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden className="ml-0.5">
-              <polygon points="5 3 19 12 5 21 5 3" />
-            </svg>
-          )}
-        </Button>
+      {/* Everything else stays hidden until the entrance starts fading out, so the
+          sketch overlay owns the whole screen (no content peeking on mobile), then
+          crossfades in as the overlay fades away. */}
+      <div className={`transition-opacity duration-1000 ${revealContent ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <Nav />
+        <Hero startAnimation={revealContent} />
+        <Visa />
+        <Travel />
+        <RSVP />
+
+        {/* Audio Toggle */}
+        <div className="fixed bottom-6 right-6 z-40">
+          <Button
+            variant="circle"
+            onClick={toggleAudio}
+            aria-label={isPlaying ? 'Pause music' : 'Play music'}
+          >
+            {isPlaying ? (
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                <rect x="6" y="4" width="4" height="16" />
+                <rect x="14" y="4" width="4" height="16" />
+              </svg>
+            ) : (
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden className="ml-0.5">
+                <polygon points="5 3 19 12 5 21 5 3" />
+              </svg>
+            )}
+          </Button>
+        </div>
+
+        <ThankYou />
       </div>
-
-      <ThankYou />
     </main>
   );
 }
