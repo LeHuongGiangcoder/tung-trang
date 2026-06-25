@@ -6,15 +6,26 @@ import { COPY } from '@/lib/constants';
 import { Heading, Subtitle, Body } from '@/components/ui/Typography';
 import Button from '@/components/ui/Button';
 
+// Given a full name (given-name-first), return just the first name for friendly references.
+// Names are given-name-first with the surname last, so the first name is everything but the
+// last word (e.g. "Hien Anh Nguyen" → "Hien Anh"). Single-word names are returned as-is.
+const firstName = (full?: string) => {
+  const parts = (full || '').trim().split(/\s+/).filter(Boolean);
+  if (parts.length <= 1) return parts[0] || '';
+  return parts.slice(0, -1).join(' ');
+};
+
 export default function RSVP() {
   const { lang } = useLang();
   const copy = COPY[lang].rsvp;
 
   const [fullName, setFullName] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [validationError, setValidationError] = useState('');
+  const [nameError, setNameError] = useState(false);
+  // For a server-provided message; known errors use errorKey so they re-translate on language switch
   const [submitError, setSubmitError] = useState('');
-  
+  const [errorKey, setErrorKey] = useState<'' | 'notFound' | 'webhook'>('');
+
   const [formStep, setFormStep] = useState<'name' | 'disambiguate' | 'details' | 'success'>('name');
   const [guestData, setGuestData] = useState<any>(null);
   const [matchedGuests, setMatchedGuests] = useState<any[]>([]);
@@ -27,8 +38,12 @@ export default function RSVP() {
   const [partnerAttending, setPartnerAttending] = useState<'Yes' | 'No' | ''>('');
   const [partnerMealPreferences, setPartnerMealPreferences] = useState<string>('');
   const [partnerWishes, setPartnerWishes] = useState<string>('');
-  
+
   const [activeTab, setActiveTab] = useState<'guest' | 'partner'>('guest');
+
+  // Highlight flags for missing attendance selections
+  const [attendingError, setAttendingError] = useState(false);
+  const [partnerAttendingError, setPartnerAttendingError] = useState(false);
 
   const handleBlur = () => {
     if (!fullName) return;
@@ -41,7 +56,7 @@ export default function RSVP() {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
     setFullName(formatted);
-    setValidationError('');
+    setNameError(false);
   };
 
   const handleLookupSubmit = async (e: React.FormEvent) => {
@@ -49,7 +64,7 @@ export default function RSVP() {
 
     const trimmed = fullName.trim();
     if (!trimmed) {
-      setValidationError(copy.errorRequired);
+      setNameError(true);
       return;
     }
 
@@ -61,8 +76,9 @@ export default function RSVP() {
       .join(' ');
 
     setFullName(formatted);
-    setValidationError('');
+    setNameError(false);
     setSubmitError('');
+    setErrorKey('');
     setStatus('loading');
 
     try {
@@ -114,7 +130,7 @@ export default function RSVP() {
             setFormStep('details');
             setStatus('idle');
           } else {
-            setSubmitError(copy.errorNotFound);
+            setErrorKey('notFound');
             setStatus('error');
           }
         } else if (matches.length > 1) {
@@ -123,16 +139,20 @@ export default function RSVP() {
           setStatus('idle');
         } else {
           // If name is not matched
-          setSubmitError(copy.errorNotFound);
+          setErrorKey('notFound');
           setStatus('error');
         }
       } else {
-        setSubmitError(result?.error || copy.errorWebhook);
+        if (result?.error) {
+          setSubmitError(result.error);
+        } else {
+          setErrorKey('webhook');
+        }
         setStatus('error');
       }
     } catch (error) {
       console.error('Error looking up RSVP:', error);
-      setSubmitError(copy.errorWebhook);
+      setErrorKey('webhook');
       setStatus('error');
     }
   };
@@ -165,19 +185,20 @@ export default function RSVP() {
 
     const hasPartner = !!guestData?.["Name of other guest"];
 
-    if (!attending) {
-      setValidationError(lang === 'en' ? `Please select if ${guestData?.["Guest name"] || fullName} will be attending.` : `Vui lòng xác nhận ${guestData?.["Guest name"] || fullName} có tham dự hay không.`);
-      setActiveTab('guest');
+    const guestMissing = !attending;
+    const partnerMissing = hasPartner && !partnerAttending;
+
+    if (guestMissing || partnerMissing) {
+      setAttendingError(guestMissing);
+      setPartnerAttendingError(partnerMissing);
+
+      // Jump to the first tab that needs attention
+      setActiveTab(guestMissing ? 'guest' : 'partner');
       return;
     }
 
-    if (hasPartner && !partnerAttending) {
-      setValidationError(lang === 'en' ? `Please select if ${guestData?.["Name of other guest"]} will be attending.` : `Vui lòng xác nhận ${guestData?.["Name of other guest"]} có tham dự hay không.`);
-      setActiveTab('partner');
-      return;
-    }
-
-    setValidationError('');
+    setAttendingError(false);
+    setPartnerAttendingError(false);
     setSubmitError('');
     
     // Optimistic UI update: transition to success immediately
@@ -217,6 +238,49 @@ export default function RSVP() {
     } catch (error) {
       console.error('Error submitting RSVP details:', error);
     }
+  };
+
+  // Attendance validation message, derived from the missing flags so it re-translates on language switch
+  const attendanceError = (() => {
+    if (!attendingError && !partnerAttendingError) return '';
+    const names: string[] = [];
+    if (attendingError) names.push(firstName(guestData?.["Guest name"] || fullName));
+    if (partnerAttendingError) names.push(firstName(guestData?.["Name of other guest"]));
+    const joined = names.join(lang === 'en' ? ' and ' : ' và ');
+    return lang === 'en'
+      ? `We still need to know if ${joined} can make it.`
+      : `Chúng mình vẫn chưa biết ${joined} có tới được không nè.`;
+  })();
+
+  // Resolve known error keys through copy so they re-translate on language switch
+  const displayError = errorKey === 'notFound'
+    ? copy.errorNotFound
+    : errorKey === 'webhook'
+      ? copy.errorWebhook
+      : (submitError || copy.errorWebhook);
+
+  // Success message adapts to who's actually coming
+  const getSuccessMessage = () => {
+    const hasPartner = !!guestData?.["Name of other guest"];
+    const guestName = firstName(guestData?.["Guest name"] || fullName);
+    const partnerName = firstName(guestData?.["Name of other guest"]);
+
+    if (!hasPartner) {
+      return attending === 'No' ? copy.successMsgNo : copy.successMsg;
+    }
+
+    const bothComing = attending === 'Yes' && partnerAttending === 'Yes';
+    const noneComing = attending === 'No' && partnerAttending === 'No';
+
+    if (bothComing) return copy.successMsg;
+    if (noneComing) return copy.successMsgNo;
+
+    // Mixed: one coming, one not
+    const comingName = attending === 'Yes' ? guestName : partnerName;
+    const missingName = attending === 'Yes' ? partnerName : guestName;
+    return lang === 'en'
+      ? `So glad ${comingName} can join us! We'll miss ${missingName}, but thank you for letting us know 💛`
+      : `Càm ơn vì ${comingName} sẽ tới chung vui! Chúng mình sẽ nhớ ${missingName} lắm, cảm ơn bạn đã cho tụi mình biết nhé 💛`;
   };
 
   return (
@@ -260,11 +324,11 @@ export default function RSVP() {
                 <polyline points="22 4 12 14.01 9 11.01" />
               </svg>
               <Body variant="large" className="text-ink-soft">
-                {copy.successMsg}
+                {getSuccessMessage()}
               </Body>
             </div>
 
-            {guestData && (
+            {guestData && (attending === 'Yes' || partnerAttending === 'Yes') && (
               <div className="w-full mt-16 pt-16 border-t border-ink/10 flex flex-col items-center gap-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>
                 <Heading variant="h2" className="text-ink-soft opacity-80 text-center">
                   {COPY[lang].eventDetails.schedule} & {COPY[lang].eventDetails.dresscode}
@@ -280,8 +344,8 @@ export default function RSVP() {
           <div className="w-full mt-6 animate-fade-in flex flex-col items-center">
             <Body variant="regular" className="mb-8 text-ink-muted leading-relaxed">
               {lang === 'en'
-                ? `It looks like there are multiple guests with the name "${fullName}". Please select your correct entry below:`
-                : `Có vẻ như có nhiều hơn 1 khách trùng tên "${fullName}". Vui lòng chọn đúng thông tin của bạn bên dưới:`}
+                ? "We found a few of you — which one's you?"
+                : "Chúng mình thấy vài bạn trùng tên — bạn là ai trong số này nhỉ?"}
             </Body>
             <div className="w-full flex flex-col gap-4">
               {matchedGuests.map((match, idx) => (
@@ -310,9 +374,9 @@ export default function RSVP() {
         ) : formStep === 'details' ? (
           <div className="w-full mt-6">
             <Body variant="regular" className="mb-6 text-ink-muted leading-relaxed">
-              {lang === 'en' 
-                ? `Hi ${guestData?.displayName || guestData?.["Guest name"] || fullName}, please complete your RSVP details below:` 
-                : `Chào ${guestData?.displayName || guestData?.["Guest name"] || fullName}, vui lòng hoàn thành thông tin xác nhận bên dưới:`}
+              {lang === 'en'
+                ? `Hi ${firstName(guestData?.displayName || guestData?.["Guest name"] || fullName)}! Just a couple of details and you're all set:`
+                : `Chào ${firstName(guestData?.displayName || guestData?.["Guest name"] || fullName)}! Thêm vài thông tin nữa là xong nhé:`}
             </Body>
             
             {guestData?.["Name of other guest"] && (
@@ -321,10 +385,13 @@ export default function RSVP() {
                   type="button"
                   onClick={() => setActiveTab('guest')}
                   className={`flex-1 pb-3 text-xs tracking-widest uppercase transition-all duration-300 font-body font-light relative ${
-                    activeTab === 'guest' ? 'text-ink' : 'text-ink-muted/50 hover:text-ink-muted'
+                    activeTab === 'guest' ? 'text-ink' : attendingError ? 'text-red-500' : 'text-ink-muted/50 hover:text-ink-muted'
                   }`}
                 >
                   {guestData["Guest name"] || fullName}
+                  {attendingError && (
+                    <span className="absolute top-0 right-1 w-1.5 h-1.5 rounded-full bg-red-500 animate-fade-in" />
+                  )}
                   {activeTab === 'guest' && (
                     <div className="absolute bottom-0 left-0 w-full h-0.5 bg-ink animate-fade-in" />
                   )}
@@ -333,10 +400,13 @@ export default function RSVP() {
                   type="button"
                   onClick={() => setActiveTab('partner')}
                   className={`flex-1 pb-3 text-xs tracking-widest uppercase transition-all duration-300 font-body font-light relative ${
-                    activeTab === 'partner' ? 'text-ink' : 'text-ink-muted/50 hover:text-ink-muted'
+                    activeTab === 'partner' ? 'text-ink' : partnerAttendingError ? 'text-red-500' : 'text-ink-muted/50 hover:text-ink-muted'
                   }`}
                 >
                   {guestData["Name of other guest"]}
+                  {partnerAttendingError && (
+                    <span className="absolute top-0 right-1 w-1.5 h-1.5 rounded-full bg-red-500 animate-fade-in" />
+                  )}
                   {activeTab === 'partner' && (
                     <div className="absolute bottom-0 left-0 w-full h-0.5 bg-ink animate-fade-in" />
                   )}
@@ -350,21 +420,23 @@ export default function RSVP() {
               <div className={`w-full flex flex-col gap-8 transition-opacity duration-300 ${activeTab === 'guest' ? 'block animate-fade-in' : 'hidden'}`}>
                 {/* Yes/No Attendance */}
                 <div className="w-full flex flex-col gap-2.5">
-                  <label className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal">
-                    {copy.attendingLabel} <span className="text-tan font-normal">*</span>
+                  <label className={`font-body text-[10px] md:text-xs tracking-[0.4em] uppercase font-normal ${attendingError ? 'text-red-500' : 'text-ink-muted'}`}>
+                    {copy.attendingLabel} <span className={attendingError ? 'text-red-500 font-normal' : 'text-tan font-normal'}>*</span>
                   </label>
                   <div className="flex gap-4 w-full mt-1.5">
                     <button
                       type="button"
                       onClick={() => {
                         setAttending('Yes');
-                        setValidationError('');
+                        setAttendingError(false);
                         if (submitError) setSubmitError('');
                       }}
                       className={`flex-1 py-4 px-4 text-[10px] tracking-[0.25em] uppercase transition-all duration-300 font-body font-light border ${
-                        attending === 'Yes' 
-                          ? 'border-ink bg-ink text-cream' 
-                          : 'border-ink/10 text-ink-soft hover:border-ink/30 bg-transparent'
+                        attending === 'Yes'
+                          ? 'border-ink bg-ink text-cream'
+                          : attendingError
+                            ? 'border-red-400 text-red-500 hover:border-red-500 bg-transparent'
+                            : 'border-ink/10 text-ink-soft hover:border-ink/30 bg-transparent'
                       }`}
                     >
                       {copy.attendingYes}
@@ -373,13 +445,15 @@ export default function RSVP() {
                       type="button"
                       onClick={() => {
                         setAttending('No');
-                        setValidationError('');
+                        setAttendingError(false);
                         if (submitError) setSubmitError('');
                       }}
                       className={`flex-1 py-4 px-4 text-[10px] tracking-[0.25em] uppercase transition-all duration-300 font-body font-light border ${
-                        attending === 'No' 
-                          ? 'border-ink bg-ink text-cream' 
-                          : 'border-ink/10 text-ink-soft hover:border-ink/30 bg-transparent'
+                        attending === 'No'
+                          ? 'border-ink bg-ink text-cream'
+                          : attendingError
+                            ? 'border-red-400 text-red-500 hover:border-red-500 bg-transparent'
+                            : 'border-ink/10 text-ink-soft hover:border-ink/30 bg-transparent'
                       }`}
                     >
                       {copy.attendingNo}
@@ -430,21 +504,23 @@ export default function RSVP() {
                 <div className={`w-full flex flex-col gap-8 transition-opacity duration-300 ${activeTab === 'partner' ? 'block animate-fade-in' : 'hidden'}`}>
                   {/* Yes/No Attendance */}
                   <div className="w-full flex flex-col gap-2.5">
-                    <label className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal">
-                      {copy.attendingLabel} <span className="text-tan font-normal">*</span>
+                    <label className={`font-body text-[10px] md:text-xs tracking-[0.4em] uppercase font-normal ${partnerAttendingError ? 'text-red-500' : 'text-ink-muted'}`}>
+                      {copy.attendingLabel} <span className={partnerAttendingError ? 'text-red-500 font-normal' : 'text-tan font-normal'}>*</span>
                     </label>
                     <div className="flex gap-4 w-full mt-1.5">
                       <button
                         type="button"
                         onClick={() => {
                           setPartnerAttending('Yes');
-                          setValidationError('');
+                          setPartnerAttendingError(false);
                           if (submitError) setSubmitError('');
                         }}
                         className={`flex-1 py-4 px-4 text-[10px] tracking-[0.25em] uppercase transition-all duration-300 font-body font-light border ${
-                          partnerAttending === 'Yes' 
-                            ? 'border-ink bg-ink text-cream' 
-                            : 'border-ink/10 text-ink-soft hover:border-ink/30 bg-transparent'
+                          partnerAttending === 'Yes'
+                            ? 'border-ink bg-ink text-cream'
+                            : partnerAttendingError
+                              ? 'border-red-400 text-red-500 hover:border-red-500 bg-transparent'
+                              : 'border-ink/10 text-ink-soft hover:border-ink/30 bg-transparent'
                         }`}
                       >
                         {copy.attendingYes}
@@ -453,13 +529,15 @@ export default function RSVP() {
                         type="button"
                         onClick={() => {
                           setPartnerAttending('No');
-                          setValidationError('');
+                          setPartnerAttendingError(false);
                           if (submitError) setSubmitError('');
                         }}
                         className={`flex-1 py-4 px-4 text-[10px] tracking-[0.25em] uppercase transition-all duration-300 font-body font-light border ${
-                          partnerAttending === 'No' 
-                            ? 'border-ink bg-ink text-cream' 
-                            : 'border-ink/10 text-ink-soft hover:border-ink/30 bg-transparent'
+                          partnerAttending === 'No'
+                            ? 'border-ink bg-ink text-cream'
+                            : partnerAttendingError
+                              ? 'border-red-400 text-red-500 hover:border-red-500 bg-transparent'
+                              : 'border-ink/10 text-ink-soft hover:border-ink/30 bg-transparent'
                         }`}
                       >
                         {copy.attendingNo}
@@ -506,14 +584,14 @@ export default function RSVP() {
                 </div>
               )}
 
-              {validationError && (
+              {attendanceError && (
                 <span className="text-xs text-red-500/80 font-light flex items-center gap-1.5 mt-1 animate-fade-in">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10"></circle>
                     <line x1="12" y1="8" x2="12" y2="12"></line>
                     <line x1="12" y1="16" x2="12.01" y2="16"></line>
                   </svg>
-                  {validationError}
+                  {attendanceError}
                 </span>
               )}
 
@@ -525,7 +603,7 @@ export default function RSVP() {
                     <line x1="12" y1="16" x2="12.01" y2="16"></line>
                   </svg>
                   <span className="text-xs font-light leading-relaxed">
-                    {submitError || copy.errorWebhook}
+                    {displayError}
                   </span>
                 </div>
               )}
@@ -535,7 +613,7 @@ export default function RSVP() {
                   type="submit" 
                   variant="primary" 
                   className="flex items-center justify-center gap-2 px-8" 
-                  disabled={status === 'loading' || attending === '' || (!!guestData?.["Name of other guest"] && partnerAttending === '')}
+                  disabled={status === 'loading'}
                 >
                   {status === 'loading' ? (
                     <>
@@ -573,33 +651,34 @@ export default function RSVP() {
                   value={fullName}
                   onChange={(e) => {
                     setFullName(e.target.value);
-                    if (validationError) setValidationError('');
+                    if (nameError) setNameError(false);
                     if (submitError) setSubmitError('');
+                    if (errorKey) setErrorKey('');
                     if (status === 'error') setStatus('idle');
                   }}
                   onBlur={handleBlur}
                   placeholder={copy.namePlaceholder}
                   className={`w-full bg-transparent border-b ${
-                    validationError ? 'border-red-500/70 focus:border-red-500' : 'border-ink/20 focus:border-ink'
+                    nameError ? 'border-red-500/70 focus:border-red-500' : 'border-ink/20 focus:border-ink'
                   } py-3 text-ink-soft placeholder-ink-muted/30 focus:outline-none transition-colors duration-300 font-body text-base font-light`}
                   disabled={status === 'loading'}
                   autoComplete="off"
                 />
 
-                {!validationError && (
+                {!nameError && (
                   <span className="text-xs text-ink-muted font-light leading-relaxed mt-1">
                     {copy.nameHelper}
                   </span>
                 )}
 
-                {validationError && (
+                {nameError && (
                   <span className="text-xs text-red-500/80 font-light flex items-center gap-1.5 mt-1 animate-fade-in">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="10"></circle>
                       <line x1="12" y1="8" x2="12" y2="12"></line>
                       <line x1="12" y1="16" x2="12.01" y2="16"></line>
                     </svg>
-                    {validationError}
+                    {copy.errorRequired}
                   </span>
                 )}
               </div>
@@ -612,7 +691,7 @@ export default function RSVP() {
                     <line x1="12" y1="16" x2="12.01" y2="16"></line>
                   </svg>
                   <span className="text-xs font-light leading-relaxed">
-                    {submitError || copy.errorWebhook}
+                    {displayError}
                   </span>
                 </div>
               )}

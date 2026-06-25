@@ -39,6 +39,7 @@ export const COPY: Record<Lang, {
     submitBtn: string;
     submitBtnLoading: string;
     successMsg: string;
+    successMsgNo: string;
     errorRequired: string;
     errorNotFound: string;
     errorWebhook: string;
@@ -124,22 +125,23 @@ export const COPY: Record<Lang, {
       description: "We can't wait to celebrate with you. Let's start with your name.",
       nameLabel: 'Name',
       namePlaceholder: 'e.g. John Smith',
-      nameHelper: 'Enter the first and last name of one member of your party — you can RSVP for yourself and your guest together.',
-      submitBtn: 'Send',
-      submitBtnLoading: 'Sending...',
-      successMsg: 'Thank you! Your RSVP has been successfully sent.',
-      errorRequired: 'Please enter your full name.',
-      errorNotFound: "Hmm... we can not find your name on our list. Please check your spelling and try again!",
-      errorWebhook: 'Something went wrong. Please try again or contact us directly.',
-      attendingLabel: 'Will you be attending?',
-      attendingYes: 'Yes, I will attend',
-      attendingNo: 'No, I cannot attend',
+      nameHelper: 'Enter the first and last name of one person in your party — you can reply for you and your plus-one together.',
+      submitBtn: 'Find me',
+      submitBtnLoading: 'One sec...',
+      successMsg: "Yay — you're on the list! We can't wait to celebrate with you 💛",
+      successMsgNo: "Aw, we'll miss you — but thank you so much for letting us know 💛",
+      errorRequired: 'We just need your name to find you.',
+      errorNotFound: "Hmm, we can't find you on our list — mind double-checking the spelling?",
+      errorWebhook: 'Oops, something hiccuped. Give it another go, or just message us directly.',
+      attendingLabel: 'Can you make it?',
+      attendingYes: "Yes, I'll be there!",
+      attendingNo: "No, can't make it ˙◠˙",
 
       mealLabel: 'Dietary preferences (optional)',
       mealPlaceholder: 'e.g. Vegetarian, food allergies...',
-      wishesLabel: 'Your message to us',
-      wishesPlaceholder: 'Write your wishes here...',
-      submitDetailsBtn: 'Confirm RSVP'
+      wishesLabel: 'Leave us a note',
+      wishesPlaceholder: 'A wish, a memory, anything...',
+      submitDetailsBtn: 'Send it in'
     },
     thankYou: {
       title: 'Thank You',
@@ -213,22 +215,23 @@ export const COPY: Record<Lang, {
       description: 'Chúng mình rất mong được chung vui cùng bạn. Hãy bắt đầu với tên của bạn nhé.',
       nameLabel: 'Tên',
       namePlaceholder: 'VD: Trang Nguyen',
-      nameHelper: 'Nhập tên và họ của một thành viên trong nhóm — bạn có thể xác nhận tham dự cho cả bạn và người đi cùng.',
-      submitBtn: 'Gửi xác nhận',
-      submitBtnLoading: 'Đang gửi...',
-      successMsg: 'Cảm ơn bạn! Thông tin xác nhận tham dự đã được gửi thành công.',
-      errorRequired: 'Vui lòng nhập họ và tên của bạn.',
-      errorNotFound: 'Hmm... chúng mình chưa tìm thấy tên của bạn trong danh sách. Bạn thử kiểm tra lại chính tả xem sao nhé!',
-      errorWebhook: 'Đã xảy ra sự cố. Vui lòng thử lại hoặc liên hệ trực tiếp với chúng mình.',
-      attendingLabel: 'Bạn sẽ tham dự chứ?',
-      attendingYes: 'Sẽ tham dự',
-      attendingNo: 'Rất tiếc không thể tham dự',
+      nameHelper: 'Điền tên và họ của một người trong nhóm nhé — bạn có thể xác nhận cho cả mình và người đi cùng luôn.',
+      submitBtn: 'Tìm mình',
+      submitBtnLoading: 'Đợi xíu...',
+      successMsg: 'Tuyệt vời — đã có tên bạn rồi! Mong được sớm gặp bạn 💛',
+      successMsgNo: 'Tiếc quá, chúng mình sẽ nhớ bạn lắm — nhưng cảm ơn bạn đã cho tụi mình biết nhé 💛',
+      errorRequired: 'Cho chúng mình xin tên của bạn trước nhé.',
+      errorNotFound: 'Hmm, chúng mình chưa tìm thấy bạn trong danh sách — bạn thử kiểm tra lại chính tả nhé!',
+      errorWebhook: 'Có chút trục trặc rồi. Bạn thử lại hoặc nhắn trực tiếp cho chúng mình nha.',
+      attendingLabel: 'Bạn tới chung vui được chứ?',
+      attendingYes: 'Có chứ, mình sẽ tới!',
+      attendingNo: 'Tiếc quá, mình không tới được ˙◠˙',
 
-      mealLabel: 'Yêu cầu đặc biệt về ăn uống (nếu có)',
+      mealLabel: 'Lưu ý về ăn uống (nếu có)',
       mealPlaceholder: 'VD: Ăn chay, dị ứng hải sản...',
-      wishesLabel: 'Lời chúc gửi tới cặp đôi',
-      wishesPlaceholder: 'Nhập lời chúc của bạn tại đây...',
-      submitDetailsBtn: 'Gửi xác nhận'
+      wishesLabel: 'Để lại đôi lời nhé',
+      wishesPlaceholder: 'Một lời chúc, một kỷ niệm, gì cũng được...',
+      submitDetailsBtn: 'Gửi nhé'
     },
     thankYou: {
       title: 'Cảm Ơn Bạn',
