@@ -353,6 +353,30 @@ export default function Travel() {
                           <path d="M12 5l7 7-7 7"></path>
                         </svg>
                       </a>
+
+                      {/* Trang's Beli Profile Link */}
+                      <a
+                        href="https://beliapp.co/app/trangpnz"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full flex items-center justify-between gap-4 p-4 bg-ink/5 hover:bg-ink/10 border border-ink/10 transition-colors group shrink-0"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="text-xl text-ink/80 group-hover:text-ink transition-colors shrink-0">♡</span>
+                          <div className="flex flex-col">
+                            <span className="font-display italic text-base text-ink font-medium">
+                              {lang === 'en' ? "Trang's Beli (⚈₋₍⚈)" : 'Beli của Trang (⚈₋₍⚈)'}
+                            </span>
+                            <span className="font-body text-[8.5px] text-ink-muted uppercase tracking-[0.1em] mt-0.5 leading-snug">
+                              {lang === 'en' ? 'Locally sourced from yours truly ⋆𐙚₊˚⊹♡' : 'Sưu tầm bởi cô dâu ⋆𐙚₊˚⊹♡'}
+                            </span>
+                          </div>
+                        </div>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-ink-soft group-hover:text-ink group-hover:translate-x-1 transition-all shrink-0">
+                          <path d="M5 12h14"></path>
+                          <path d="M12 5l7 7-7 7"></path>
+                        </svg>
+                      </a>
                     </div>
 
                     <button 
