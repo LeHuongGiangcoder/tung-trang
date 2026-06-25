@@ -18,6 +18,18 @@ const MAX_DRAW_MS = 6000;
 const BRUSH_RADIUS_DESKTOP = 40;
 const BRUSH_RADIUS_TOUCH = 52;
 
+// Resting tilt/offset for each photo so the montage stacks like dealt prints
+const PILE_LAYOUT = [
+  { r: -6, x: -34, y: 20 },
+  { r: 5, x: 30, y: -16 },
+  { r: -4, x: 22, y: 28 },
+  { r: 7, x: -26, y: -22 },
+  { r: -7, x: 36, y: 14 },
+  { r: 5, x: -20, y: -28 },
+  { r: -6, x: 28, y: 24 },
+  { r: 5, x: -32, y: -18 },
+];
+
 interface EntranceProps {
   onDone: () => void;
   onSketchStart?: () => void;
@@ -213,12 +225,12 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
         } else {
           setFlashIndex(i);
           const isLast = i === FLASHBACK_IMAGES.length - 1;
-          const delay = isLast ? 1200 : 500;
+          const delay = isLast ? 1200 : 620;
           timeoutId = setTimeout(next, delay);
         }
       };
 
-      timeoutId = setTimeout(next, 500);
+      timeoutId = setTimeout(next, 620);
 
       return () => clearTimeout(timeoutId);
     }
@@ -280,7 +292,7 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
         }}
       >
         {/* Gallery mat: cream passe-partout + thin ink keyline, lifted off the page */}
-        <div className="bg-cream-light p-3 md:p-5 border border-ink/10 shadow-[0_18px_50px_-12px_rgba(31,27,23,0.35)]">
+        <div className="bg-cream p-3 md:p-5 border border-ink/10 shadow-[0_18px_50px_-12px_rgba(31,27,23,0.35)]">
           <img
             src="/images/bench-portrait.webp"
             alt=""
@@ -292,31 +304,39 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
 
       {/* Layer 3: Flashback images stacked, only active during flashback phase */}
       <div className="absolute inset-0 pointer-events-none">
-        {FLASHBACK_IMAGES.map((src, i) => (
-          <div
-            key={src}
-            className="absolute inset-0 flex items-center justify-center"
-            style={{
-              opacity: (phase === 'flashback' || phase === 'done') && flashIndex >= i ? 1 : 0,
-              transition: 'opacity 500ms var(--ease-smooth)',
-            }}
-          >
-            {/* Gallery mat: cream passe-partout + thin ink keyline, lifted off the page.
-                Shadow only on the current (top) photo so stacked frames don't pile up halos. */}
-            <div className={`bg-cream-light p-3 md:p-5 border border-ink/10 ${flashIndex === i ? 'shadow-[0_18px_50px_-12px_rgba(31,27,23,0.35)]' : ''}`}>
-              <img
-                src={src}
-                alt=""
-                className={`block h-[64vh] w-auto aspect-[1023/1537] object-cover border border-ink/15 ${
-                  src.includes('moment-06-street.webp') ? 'object-[60%_center]' :
-                  src.includes('moment-07-ring') ? 'object-[75%_center]' :
-                  'object-center'
-                }`}
-                draggable={false}
-              />
+        {FLASHBACK_IMAGES.map((src, i) => {
+          const dealt = (phase === 'flashback' || phase === 'done') && flashIndex >= i;
+          const t = PILE_LAYOUT[i % PILE_LAYOUT.length];
+          return (
+            <div
+              key={src}
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              {/* Gallery mat dealt onto the pile: drops in from above with a tilt, then settles */}
+              <div
+                className="bg-cream p-3 md:p-5 border border-ink/10 shadow-[0_10px_30px_-10px_rgba(31,27,23,0.45)]"
+                style={{
+                  opacity: dealt ? 1 : 0,
+                  transform: dealt
+                    ? `translate(${t.x}px, ${t.y}px) rotate(${t.r}deg)`
+                    : `translate(${t.x}px, ${t.y - 78}px) rotate(${t.r + (t.r >= 0 ? 10 : -10)}deg) scale(1.1)`,
+                  transition: 'opacity 320ms var(--ease-out-quart), transform 600ms cubic-bezier(0.34, 1.4, 0.5, 1)',
+                }}
+              >
+                <img
+                  src={src}
+                  alt=""
+                  className={`block h-[64vh] w-auto aspect-[1023/1537] object-cover border border-ink/15 ${
+                    src.includes('moment-06-street.webp') ? 'object-[60%_center]' :
+                    src.includes('moment-07-ring') ? 'object-[75%_center]' :
+                    'object-center'
+                  }`}
+                  draggable={false}
+                />
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Layer 4: Canvas (cream overlay user erases) */}
