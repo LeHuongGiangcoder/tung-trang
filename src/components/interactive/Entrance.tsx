@@ -101,6 +101,15 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
     };
   }, [setupCanvas]);
 
+  // Preload + decode the photos up front so they don't pop/flash when dealt
+  useEffect(() => {
+    [...FLASHBACK_IMAGES, '/images/bench-portrait.webp'].forEach((src) => {
+      const img = new Image();
+      img.src = src;
+      img.decode?.().catch(() => {});
+    });
+  }, []);
+
   // ---- Pointer handlers ----
   const eraseAt = (x: number, y: number, fromX: number | null, fromY: number | null) => {
     const ctx = ctxRef.current;

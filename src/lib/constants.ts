@@ -3,7 +3,7 @@ export type Lang = 'en' | 'vi';
 export const WEDDING = {
   groom: 'Tung',
   bride: 'Trang',
-  dateISO: '2027-01-23T16:00:00+07:00',
+  dateISO: '2027-01-03T16:00:00+07:00',
   city: 'Hanoi',
   country: 'Vietnam',
 } as const;
