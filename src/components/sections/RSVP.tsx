@@ -15,8 +15,9 @@ export default function RSVP() {
   const [validationError, setValidationError] = useState('');
   const [submitError, setSubmitError] = useState('');
   
-  const [formStep, setFormStep] = useState<'name' | 'details' | 'success'>('name');
+  const [formStep, setFormStep] = useState<'name' | 'disambiguate' | 'details' | 'success'>('name');
   const [guestData, setGuestData] = useState<any>(null);
+  const [matchedGuests, setMatchedGuests] = useState<any[]>([]);
 
   // RSVP Form fields state
   const [attending, setAttending] = useState<'Yes' | 'No' | ''>('');
@@ -87,30 +88,41 @@ export default function RSVP() {
           n8nObj = n8nData;
         }
 
-        if (n8nObj && n8nObj.found === true && n8nObj.guest) {
-          const guest = n8nObj.guest;
-          if (n8nObj.displayName) {
-            guest.displayName = n8nObj.displayName;
+        const matches = n8nObj?.matches || [];
+
+        if (matches.length === 1) {
+          const matchObj = matches[0];
+          if (matchObj.found && matchObj.guest) {
+            const guest = matchObj.guest;
+            if (matchObj.displayName) {
+              guest.displayName = matchObj.displayName;
+            }
+            setGuestData(guest);
+            
+            // Pre-fill states from n8n guest object if they already exist
+            const existingAttending = guest["Join? from Guest"] === 'Yes' || guest["Join? from Guest"] === 'No' ? guest["Join? from Guest"] : '';
+            setAttending(existingAttending);
+            setMealPreferences(guest["Meal preferences from Guest"] || '');
+            setWishes(guest["Wish to couples from Guest"] || '');
+
+            const existingPartnerAttending = guest["Join? from Partner"] === 'Yes' || guest["Join? from Partner"] === 'No' ? guest["Join? from Partner"] : '';
+            setPartnerAttending(existingPartnerAttending);
+            setPartnerMealPreferences(guest["Meal preferences from Partner"] || '');
+            setPartnerWishes(guest["Wish to couples from Partner"] || '');
+
+            setActiveTab('guest');
+            setFormStep('details');
+            setStatus('idle');
+          } else {
+            setSubmitError(copy.errorNotFound);
+            setStatus('error');
           }
-          setGuestData(guest);
-          
-          // Pre-fill states from n8n guest object if they already exist
-          const existingAttending = guest["Join? from Guest"] === 'Yes' || guest["Join? from Guest"] === 'No' ? guest["Join? from Guest"] : '';
-          setAttending(existingAttending);
-          setMealPreferences(guest["Meal preferences from Guest"] || '');
-          setWishes(guest["Wish to couples from Guest"] || '');
-
-          const existingPartnerAttending = guest["Join? from Partner"] === 'Yes' || guest["Join? from Partner"] === 'No' ? guest["Join? from Partner"] : '';
-          setPartnerAttending(existingPartnerAttending);
-          setPartnerMealPreferences(guest["Meal preferences from Partner"] || '');
-          setPartnerWishes(guest["Wish to couples from Partner"] || '');
-
-          setActiveTab('guest');
-          
-          setFormStep('details');
+        } else if (matches.length > 1) {
+          setMatchedGuests(matches);
+          setFormStep('disambiguate');
           setStatus('idle');
         } else {
-          // If name is not matched, display an error message
+          // If name is not matched
           setSubmitError(copy.errorNotFound);
           setStatus('error');
         }
@@ -122,6 +134,29 @@ export default function RSVP() {
       console.error('Error looking up RSVP:', error);
       setSubmitError(copy.errorWebhook);
       setStatus('error');
+    }
+  };
+
+  const handleSelectDisambiguatedGuest = (matchObj: any) => {
+    if (matchObj.found && matchObj.guest) {
+      const guest = matchObj.guest;
+      if (matchObj.displayName) {
+        guest.displayName = matchObj.displayName;
+      }
+      setGuestData(guest);
+      
+      const existingAttending = guest["Join? from Guest"] === 'Yes' || guest["Join? from Guest"] === 'No' ? guest["Join? from Guest"] : '';
+      setAttending(existingAttending);
+      setMealPreferences(guest["Meal preferences from Guest"] || '');
+      setWishes(guest["Wish to couples from Guest"] || '');
+
+      const existingPartnerAttending = guest["Join? from Partner"] === 'Yes' || guest["Join? from Partner"] === 'No' ? guest["Join? from Partner"] : '';
+      setPartnerAttending(existingPartnerAttending);
+      setPartnerMealPreferences(guest["Meal preferences from Partner"] || '');
+      setPartnerWishes(guest["Wish to couples from Partner"] || '');
+
+      setActiveTab('guest');
+      setFormStep('details');
     }
   };
 
@@ -240,6 +275,37 @@ export default function RSVP() {
                 </span>
               </div>
             )}
+          </div>
+                ) : formStep === 'disambiguate' ? (
+          <div className="w-full mt-6 animate-fade-in flex flex-col items-center">
+            <Body variant="regular" className="mb-8 text-ink-muted leading-relaxed">
+              {lang === 'en'
+                ? `It looks like there are multiple guests with the name "${fullName}". Please select your correct entry below:`
+                : `Có vẻ như có nhiều hơn 1 khách trùng tên "${fullName}". Vui lòng chọn đúng thông tin của bạn bên dưới:`}
+            </Body>
+            <div className="w-full flex flex-col gap-4">
+              {matchedGuests.map((match, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => handleSelectDisambiguatedGuest(match)}
+                  className="w-full py-5 px-6 border border-ink/20 hover:border-ink hover:bg-ink/5 transition-all duration-300 flex items-center justify-center text-sm tracking-widest font-body uppercase text-ink-soft group"
+                >
+                  <span className="group-hover:scale-105 transition-transform duration-300">
+                    {match.displayName || match.guest["Guest name"]}
+                  </span>
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => {
+                setFormStep('name');
+                setSubmitError('');
+              }}
+              className="mt-8 text-xs tracking-widest uppercase text-ink-muted hover:text-ink transition-colors underline underline-offset-4"
+            >
+              {lang === 'en' ? 'Go Back' : 'Quay lại'}
+            </button>
           </div>
         ) : formStep === 'details' ? (
           <div className="w-full mt-6">
