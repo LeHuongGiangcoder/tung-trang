@@ -212,7 +212,7 @@ export const COPY: Record<Lang, {
       title: 'Bạn sẽ tham dự chứ?',
       description: 'Vui lòng cho chúng mình biết sự hiện diện của bạn bằng cách điền vào mẫu bên dưới.',
       nameLabel: 'Họ và tên',
-      namePlaceholder: 'VD: Nguyễn Văn A',
+      namePlaceholder: 'VD: Trang Nguyen',
       nameHelper: 'Vui lòng viết đầy đủ họ và tên, viết hoa các chữ cái đầu.',
       submitBtn: 'Gửi xác nhận',
       submitBtnLoading: 'Đang gửi...',
