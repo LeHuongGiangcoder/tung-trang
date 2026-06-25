@@ -45,7 +45,7 @@ body::after {
 /* Lock scroll while entrance is active */
 body.entrance-locked {
   overflow: hidden;
-  height: 100dvh;
+  height: 100vh;
   touch-action: none;
 }
 
