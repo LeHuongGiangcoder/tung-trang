@@ -249,7 +249,8 @@ export const FLASHBACK_IMAGES = [
   '/images/moment-02-beach.webp',
   '/images/moment-03-crosswalk.webp',
   '/images/moment-04-shadows.webp',
-  '/images/moment-05-doors.webp',
-  '/images/moment-06-street.webp',
-  '/images/moment-07-ring.webp',
+  '/images/moment-05-forest.jpg',
+  '/images/moment-06-house.jpg',
+  '/images/moment-07-bridge.jpg',
+  '/images/moment-08-ring.jpg',
 ] as const;
