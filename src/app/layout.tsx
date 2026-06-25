@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { Analytics } from '@vercel/analytics/next';
 import { display, body } from '@/lib/fonts';
 import { LangProvider } from '@/hooks/useLang';
 import './globals.css';
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${display.variable} ${body.variable}`}>
       <body>
         <LangProvider>{children}</LangProvider>
+        <Analytics />
       </body>
     </html>
   );
