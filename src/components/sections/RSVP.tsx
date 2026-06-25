@@ -100,9 +100,9 @@ export default function RSVP() {
           setFormStep('details');
           setStatus('idle');
         } else {
-          // If name is not matched, transition directly to the success (thank you) screen
-          setFormStep('success');
-          setStatus('idle');
+          // If name is not matched, display an error message
+          setSubmitError(copy.errorNotFound);
+          setStatus('error');
         }
       } else {
         setSubmitError(result?.error || copy.errorWebhook);
@@ -127,7 +127,10 @@ export default function RSVP() {
 
     setValidationError('');
     setSubmitError('');
-    setStatus('loading');
+    
+    // Optimistic UI update: transition to success immediately
+    setFormStep('success');
+    setStatus('idle');
 
     try {
       const payload = {
@@ -140,7 +143,8 @@ export default function RSVP() {
         action: 'update'
       };
 
-      const response = await fetch(
+      // Fire and forget fetch request
+      fetch(
         '/api/rsvp',
         {
           method: 'POST',
@@ -149,21 +153,10 @@ export default function RSVP() {
           },
           body: JSON.stringify(payload),
         }
-      );
+      ).catch((error) => console.error('Background RSVP fetch error:', error));
 
-      const result = await response.json().catch(() => null);
-
-      if (response.ok && result?.success) {
-        setFormStep('success');
-        setStatus('idle');
-      } else {
-        setSubmitError(result?.error || copy.errorWebhook);
-        setStatus('error');
-      }
     } catch (error) {
       console.error('Error submitting RSVP details:', error);
-      setSubmitError(copy.errorWebhook);
-      setStatus('error');
     }
   };
 
@@ -191,24 +184,38 @@ export default function RSVP() {
         </Heading>
         
         {formStep === 'success' ? (
-          <div className="mt-8 p-8 rounded-none bg-white/20 backdrop-blur-sm w-full flex flex-col items-center gap-4 animate-fade-in">
-            <svg 
-              width="40" 
-              height="40" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="1.5" 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              className="text-tan animate-fade-in"
-            >
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-              <polyline points="22 4 12 14.01 9 11.01" />
-            </svg>
-            <Body variant="large" className="text-ink-soft">
-              {copy.successMsg}
-            </Body>
+          <div className="w-full flex flex-col items-center">
+            <div className="mt-8 p-8 rounded-none bg-white/20 backdrop-blur-sm w-full flex flex-col items-center gap-4 animate-fade-in">
+              <svg 
+                width="40" 
+                height="40" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="1.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className="text-tan animate-fade-in"
+              >
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
+              </svg>
+              <Body variant="large" className="text-ink-soft">
+                {copy.successMsg}
+              </Body>
+            </div>
+
+            {guestData && (
+              <div className="w-full mt-16 pt-16 border-t border-ink/10 flex flex-col items-center gap-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+                <Heading variant="h2" className="text-ink-soft opacity-80 text-center">
+                  {COPY[lang].eventDetails.schedule} & {COPY[lang].eventDetails.dresscode}
+                </Heading>
+                <div className="w-8 h-[1px] bg-ink/10"></div>
+                <span className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted">
+                  {COPY[lang].eventDetails.comingSoon}
+                </span>
+              </div>
+            )}
           </div>
         ) : formStep === 'details' ? (
           <div className="w-full mt-6">
