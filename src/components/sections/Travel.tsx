@@ -344,7 +344,7 @@ export default function Travel() {
                           <div className="flex flex-col">
                             <span className="font-display italic text-base text-ink font-medium">Michelin Food Guide</span>
                             <span className="font-body text-[8.5px] text-ink-muted uppercase tracking-[0.1em] mt-0.5 leading-snug">
-                              {lang === 'en' ? 'Skip food tour means you have never visited Hanoi.' : 'Đến Hà Nội là phải đi food tour.'}
+                              {lang === 'en' ? 'Skipping food tour means you have never visited Hanoi.' : 'Đến Hà Nội là phải đi food tour.'}
                             </span>
                           </div>
                         </div>
