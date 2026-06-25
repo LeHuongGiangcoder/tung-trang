@@ -20,9 +20,14 @@ export default function RSVP() {
 
   // RSVP Form fields state
   const [attending, setAttending] = useState<'Yes' | 'No' | ''>('');
-
   const [mealPreferences, setMealPreferences] = useState<string>('');
   const [wishes, setWishes] = useState<string>('');
+
+  const [partnerAttending, setPartnerAttending] = useState<'Yes' | 'No' | ''>('');
+  const [partnerMealPreferences, setPartnerMealPreferences] = useState<string>('');
+  const [partnerWishes, setPartnerWishes] = useState<string>('');
+  
+  const [activeTab, setActiveTab] = useState<'guest' | 'partner'>('guest');
 
   const handleBlur = () => {
     if (!fullName) return;
@@ -90,12 +95,17 @@ export default function RSVP() {
           setGuestData(guest);
           
           // Pre-fill states from n8n guest object if they already exist
-          const existingAttending = guest.No === 'Yes' || guest.No === 'No' ? guest.No : '';
+          const existingAttending = guest["Join? from Guest"] === 'Yes' || guest["Join? from Guest"] === 'No' ? guest["Join? from Guest"] : '';
           setAttending(existingAttending);
-          
+          setMealPreferences(guest["Meal preferences from Guest"] || '');
+          setWishes(guest["Wish to couples from Guest"] || '');
 
-          setMealPreferences(guest["Meal preferences"] || '');
-          setWishes(guest["Your wish to couples"] || '');
+          const existingPartnerAttending = guest["Join? from Partner"] === 'Yes' || guest["Join? from Partner"] === 'No' ? guest["Join? from Partner"] : '';
+          setPartnerAttending(existingPartnerAttending);
+          setPartnerMealPreferences(guest["Meal preferences from Partner"] || '');
+          setPartnerWishes(guest["Wish to couples from Partner"] || '');
+
+          setActiveTab('guest');
           
           setFormStep('details');
           setStatus('idle');
@@ -118,12 +128,19 @@ export default function RSVP() {
   const handleDetailsSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const hasPartner = !!guestData?.["Name of other guest"];
+
     if (!attending) {
-      setValidationError(lang === 'en' ? 'Please select if you will be attending.' : 'Vui lòng xác nhận bạn có tham dự hay không.');
+      setValidationError(lang === 'en' ? `Please select if ${guestData?.["Guest name"] || fullName} will be attending.` : `Vui lòng xác nhận ${guestData?.["Guest name"] || fullName} có tham dự hay không.`);
+      setActiveTab('guest');
       return;
     }
 
-
+    if (hasPartner && !partnerAttending) {
+      setValidationError(lang === 'en' ? `Please select if ${guestData?.["Name of other guest"]} will be attending.` : `Vui lòng xác nhận ${guestData?.["Name of other guest"]} có tham dự hay không.`);
+      setActiveTab('partner');
+      return;
+    }
 
     setValidationError('');
     setSubmitError('');
@@ -136,10 +153,17 @@ export default function RSVP() {
       const payload = {
         row_number: guestData.row_number,
         "Guest name": guestData["Guest name"] || fullName,
-        "No": attending,
+        "Name of other guest": guestData["Name of other guest"] || '',
+        
+        "Join? from Guest": attending,
+        "Join? from Partner": hasPartner ? partnerAttending : '',
 
-        "Meal preferences": attending === 'Yes' ? mealPreferences : '',
-        "Your wish to couples": wishes,
+        "Meal preferences from Guest": attending === 'Yes' ? mealPreferences : '',
+        "Meal preferences from Partner": partnerAttending === 'Yes' ? partnerMealPreferences : '',
+        
+        "Wish to couples from Guest": wishes,
+        "Wish to couples from Partner": hasPartner ? partnerWishes : '',
+        
         action: 'update'
       };
 
@@ -219,86 +243,200 @@ export default function RSVP() {
           </div>
         ) : formStep === 'details' ? (
           <div className="w-full mt-6">
-            <Body variant="regular" className="mb-10 text-ink-muted leading-relaxed">
+            <Body variant="regular" className="mb-6 text-ink-muted leading-relaxed">
               {lang === 'en' 
                 ? `Hi ${guestData?.displayName || guestData?.["Guest name"] || fullName}, please complete your RSVP details below:` 
                 : `Chào ${guestData?.displayName || guestData?.["Guest name"] || fullName}, vui lòng hoàn thành thông tin xác nhận bên dưới:`}
             </Body>
             
-            <form onSubmit={handleDetailsSubmit} className="w-full flex flex-col items-start gap-8 text-left">
-              {/* Yes/No Attendance */}
-              <div className="w-full flex flex-col gap-2.5">
-                <label className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal">
-                  {copy.attendingLabel} <span className="text-tan font-normal">*</span>
-                </label>
-                <div className="flex gap-4 w-full mt-1.5">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setAttending('Yes');
-                      setValidationError('');
-                      if (submitError) setSubmitError('');
-                    }}
-                    className={`flex-1 py-4 px-4 text-[10px] tracking-[0.25em] uppercase transition-all duration-300 font-body font-light border ${
-                      attending === 'Yes' 
-                        ? 'border-ink bg-ink text-cream' 
-                        : 'border-ink/10 text-ink-soft hover:border-ink/30 bg-transparent'
-                    }`}
-                  >
-                    {copy.attendingYes}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setAttending('No');
-                      setValidationError('');
-                      if (submitError) setSubmitError('');
-                    }}
-                    className={`flex-1 py-4 px-4 text-[10px] tracking-[0.25em] uppercase transition-all duration-300 font-body font-light border ${
-                      attending === 'No' 
-                        ? 'border-ink bg-ink text-cream' 
-                        : 'border-ink/10 text-ink-soft hover:border-ink/30 bg-transparent'
-                    }`}
-                  >
-                    {copy.attendingNo}
-                  </button>
-                </div>
+            {guestData?.["Name of other guest"] && (
+              <div className="flex w-full mb-8 border-b border-ink/10">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('guest')}
+                  className={`flex-1 pb-3 text-xs tracking-widest uppercase transition-all duration-300 font-body font-light relative ${
+                    activeTab === 'guest' ? 'text-ink' : 'text-ink-muted/50 hover:text-ink-muted'
+                  }`}
+                >
+                  {guestData["Guest name"] || fullName}
+                  {activeTab === 'guest' && (
+                    <div className="absolute bottom-0 left-0 w-full h-0.5 bg-ink animate-fade-in" />
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('partner')}
+                  className={`flex-1 pb-3 text-xs tracking-widest uppercase transition-all duration-300 font-body font-light relative ${
+                    activeTab === 'partner' ? 'text-ink' : 'text-ink-muted/50 hover:text-ink-muted'
+                  }`}
+                >
+                  {guestData["Name of other guest"]}
+                  {activeTab === 'partner' && (
+                    <div className="absolute bottom-0 left-0 w-full h-0.5 bg-ink animate-fade-in" />
+                  )}
+                </button>
               </div>
+            )}
 
-              {attending === 'Yes' && (
-                <div className="w-full flex flex-col gap-8 animate-fade-in">
-                  {/* Meal Preferences */}
-                  <div className="w-full flex flex-col gap-2.5">
-                    <label htmlFor="mealPreferences" className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal">
-                      {copy.mealLabel}
-                    </label>
-                    <input
-                      type="text"
-                      id="mealPreferences"
-                      value={mealPreferences}
-                      onChange={(e) => setMealPreferences(e.target.value)}
-                      placeholder={copy.mealPlaceholder}
-                      className="w-full bg-transparent border-b border-ink/20 focus:border-ink py-3 text-ink-soft placeholder-ink-muted/30 focus:outline-none transition-colors font-body text-base font-light"
-                      autoComplete="off"
-                    />
+            <form onSubmit={handleDetailsSubmit} className="w-full flex flex-col items-start gap-8 text-left">
+              
+              {/* --- GUEST TAB CONTENT --- */}
+              <div className={`w-full flex flex-col gap-8 transition-opacity duration-300 ${activeTab === 'guest' ? 'block animate-fade-in' : 'hidden'}`}>
+                {/* Yes/No Attendance */}
+                <div className="w-full flex flex-col gap-2.5">
+                  <label className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal">
+                    {copy.attendingLabel} <span className="text-tan font-normal">*</span>
+                  </label>
+                  <div className="flex gap-4 w-full mt-1.5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAttending('Yes');
+                        setValidationError('');
+                        if (submitError) setSubmitError('');
+                      }}
+                      className={`flex-1 py-4 px-4 text-[10px] tracking-[0.25em] uppercase transition-all duration-300 font-body font-light border ${
+                        attending === 'Yes' 
+                          ? 'border-ink bg-ink text-cream' 
+                          : 'border-ink/10 text-ink-soft hover:border-ink/30 bg-transparent'
+                      }`}
+                    >
+                      {copy.attendingYes}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAttending('No');
+                        setValidationError('');
+                        if (submitError) setSubmitError('');
+                      }}
+                      className={`flex-1 py-4 px-4 text-[10px] tracking-[0.25em] uppercase transition-all duration-300 font-body font-light border ${
+                        attending === 'No' 
+                          ? 'border-ink bg-ink text-cream' 
+                          : 'border-ink/10 text-ink-soft hover:border-ink/30 bg-transparent'
+                      }`}
+                    >
+                      {copy.attendingNo}
+                    </button>
                   </div>
                 </div>
-              )}
 
-              {/* Wishes / Message - Always visible if attending is selected */}
-              {attending !== '' && (
-                <div className="w-full flex flex-col gap-2.5 animate-fade-in">
-                  <label htmlFor="wishes" className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal">
-                    {copy.wishesLabel}
-                  </label>
-                  <textarea
-                    id="wishes"
-                    value={wishes}
-                    onChange={(e) => setWishes(e.target.value)}
-                    placeholder={copy.wishesPlaceholder}
-                    rows={3}
-                    className="w-full bg-transparent border-b border-ink/20 focus:border-ink py-3 text-ink-soft placeholder-ink-muted/30 focus:outline-none transition-colors font-body text-base font-light resize-none rounded-none"
-                  />
+                {attending === 'Yes' && (
+                  <div className="w-full flex flex-col gap-8 animate-fade-in">
+                    {/* Meal Preferences */}
+                    <div className="w-full flex flex-col gap-2.5">
+                      <label htmlFor="mealPreferences" className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal">
+                        {copy.mealLabel}
+                      </label>
+                      <input
+                        type="text"
+                        id="mealPreferences"
+                        value={mealPreferences}
+                        onChange={(e) => setMealPreferences(e.target.value)}
+                        placeholder={copy.mealPlaceholder}
+                        className="w-full bg-transparent border-b border-ink/20 focus:border-ink py-3 text-ink-soft placeholder-ink-muted/30 focus:outline-none transition-colors font-body text-base font-light"
+                        autoComplete="off"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Wishes / Message */}
+                {attending !== '' && (
+                  <div className="w-full flex flex-col gap-2.5 animate-fade-in">
+                    <label htmlFor="wishes" className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal">
+                      {copy.wishesLabel}
+                    </label>
+                    <textarea
+                      id="wishes"
+                      value={wishes}
+                      onChange={(e) => setWishes(e.target.value)}
+                      placeholder={copy.wishesPlaceholder}
+                      rows={3}
+                      className="w-full bg-transparent border-b border-ink/20 focus:border-ink py-3 text-ink-soft placeholder-ink-muted/30 focus:outline-none transition-colors font-body text-base font-light resize-none rounded-none"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* --- PARTNER TAB CONTENT --- */}
+              {guestData?.["Name of other guest"] && (
+                <div className={`w-full flex flex-col gap-8 transition-opacity duration-300 ${activeTab === 'partner' ? 'block animate-fade-in' : 'hidden'}`}>
+                  {/* Yes/No Attendance */}
+                  <div className="w-full flex flex-col gap-2.5">
+                    <label className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal">
+                      {copy.attendingLabel} <span className="text-tan font-normal">*</span>
+                    </label>
+                    <div className="flex gap-4 w-full mt-1.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPartnerAttending('Yes');
+                          setValidationError('');
+                          if (submitError) setSubmitError('');
+                        }}
+                        className={`flex-1 py-4 px-4 text-[10px] tracking-[0.25em] uppercase transition-all duration-300 font-body font-light border ${
+                          partnerAttending === 'Yes' 
+                            ? 'border-ink bg-ink text-cream' 
+                            : 'border-ink/10 text-ink-soft hover:border-ink/30 bg-transparent'
+                        }`}
+                      >
+                        {copy.attendingYes}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPartnerAttending('No');
+                          setValidationError('');
+                          if (submitError) setSubmitError('');
+                        }}
+                        className={`flex-1 py-4 px-4 text-[10px] tracking-[0.25em] uppercase transition-all duration-300 font-body font-light border ${
+                          partnerAttending === 'No' 
+                            ? 'border-ink bg-ink text-cream' 
+                            : 'border-ink/10 text-ink-soft hover:border-ink/30 bg-transparent'
+                        }`}
+                      >
+                        {copy.attendingNo}
+                      </button>
+                    </div>
+                  </div>
+
+                  {partnerAttending === 'Yes' && (
+                    <div className="w-full flex flex-col gap-8 animate-fade-in">
+                      {/* Meal Preferences */}
+                      <div className="w-full flex flex-col gap-2.5">
+                        <label htmlFor="partnerMealPreferences" className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal">
+                          {copy.mealLabel}
+                        </label>
+                        <input
+                          type="text"
+                          id="partnerMealPreferences"
+                          value={partnerMealPreferences}
+                          onChange={(e) => setPartnerMealPreferences(e.target.value)}
+                          placeholder={copy.mealPlaceholder}
+                          className="w-full bg-transparent border-b border-ink/20 focus:border-ink py-3 text-ink-soft placeholder-ink-muted/30 focus:outline-none transition-colors font-body text-base font-light"
+                          autoComplete="off"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Wishes / Message */}
+                  {partnerAttending !== '' && (
+                    <div className="w-full flex flex-col gap-2.5 animate-fade-in">
+                      <label htmlFor="partnerWishes" className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal">
+                        {copy.wishesLabel}
+                      </label>
+                      <textarea
+                        id="partnerWishes"
+                        value={partnerWishes}
+                        onChange={(e) => setPartnerWishes(e.target.value)}
+                        placeholder={copy.wishesPlaceholder}
+                        rows={3}
+                        className="w-full bg-transparent border-b border-ink/20 focus:border-ink py-3 text-ink-soft placeholder-ink-muted/30 focus:outline-none transition-colors font-body text-base font-light resize-none rounded-none"
+                      />
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -331,7 +469,7 @@ export default function RSVP() {
                   type="submit" 
                   variant="primary" 
                   className="flex items-center justify-center gap-2 px-8" 
-                  disabled={status === 'loading' || attending === ''}
+                  disabled={status === 'loading' || attending === '' || (!!guestData?.["Name of other guest"] && partnerAttending === '')}
                 >
                   {status === 'loading' ? (
                     <>
