@@ -1,4 +1,4 @@
-# Tung & Trang Wedding Website
+# Trang & Tung Wedding Website
 
 Editorial, timeless wedding invitation built with Next.js 15, Tailwind, and a sketch-to-reveal entrance.
 

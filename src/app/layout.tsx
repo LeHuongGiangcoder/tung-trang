@@ -5,11 +5,11 @@ import { LangProvider } from '@/hooks/useLang';
 import './globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://tungtrang.gloweb.site'),
-  title: 'Tung & Trang — 01.03.2027',
+  metadataBase: new URL('https://trangtung.gloweb.site'),
+  title: 'Trang & Tung — 01.03.2027',
   description: 'We are getting married in Hanoi, Vietnam.',
   openGraph: {
-    title: 'Tung & Trang',
+    title: 'Trang & Tung',
     description: 'Save the date — 03 January 2027, Hanoi.',
     type: 'website',
     images: [
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
         url: '/images/moment-06-street.webp',
         width: 1200,
         height: 800,
-        alt: 'Tung & Trang',
+        alt: 'Trang & Tung',
       },
     ],
   },

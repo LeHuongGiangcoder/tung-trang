@@ -56,7 +56,7 @@ export default function Hero({ startAnimation }: HeroProps) {
           className="mt-8 md:mt-6 text-center"
         >
           <span className="block" style={{ fontSize: 'clamp(3rem, 11vw, 8rem)' }}>
-            Tùng <span className="italic font-light text-ink-soft">&amp;</span> Trang
+          Trang <span className="italic font-light text-ink-soft">&amp;</span> Tùng
           </span>
         </Heading>
 
