@@ -62,7 +62,6 @@ export default function Nav() {
             <li><a href="#visa" className="hover:text-ink transition-colors">{nav.visa}</a></li>
             <li><a href="#travel" className="hover:text-ink transition-colors">{nav.travel}</a></li>
             <li><a href="#rsvp" className="hover:text-ink transition-colors">{nav.rsvp}</a></li>
-            <li><a href="#event-details" className="hover:text-ink transition-colors">{nav.schedule}</a></li>
           </ul>
         </div>
 
@@ -111,7 +110,6 @@ export default function Nav() {
           <li><a href="#visa" onClick={() => setMobileMenuOpen(false)} className="hover:text-ink transition-colors">{nav.visa}</a></li>
           <li><a href="#travel" onClick={() => setMobileMenuOpen(false)} className="hover:text-ink transition-colors">{nav.travel}</a></li>
           <li><a href="#rsvp" onClick={() => setMobileMenuOpen(false)} className="hover:text-ink transition-colors">{nav.rsvp}</a></li>
-          <li><a href="#event-details" onClick={() => setMobileMenuOpen(false)} className="hover:text-ink transition-colors">{nav.schedule}</a></li>
         </ul>
         
         {/* Subtle decorative line */}

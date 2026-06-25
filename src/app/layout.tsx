@@ -6,7 +6,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://tungtrang.gloweb.site'),
-  title: 'Tung & Trang — 03.01.2027',
+  title: 'Tung & Trang — 01.03.2027',
   description: 'We are getting married in Hanoi, Vietnam.',
   openGraph: {
     title: 'Tung & Trang',

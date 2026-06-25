@@ -16,6 +16,15 @@ export default function Home() {
   const [audioStarted, setAudioStarted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
 
+  // Always start at the top on (re)load so the entrance plays from the Hero,
+  // instead of the browser restoring the previous scroll position.
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+  }, []);
+
   const handleSketchStart = () => {
     if (!audioStarted && audioRef.current) {
       audioRef.current.currentTime = 10;
