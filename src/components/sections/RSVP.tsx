@@ -42,6 +42,8 @@ export default function RSVP() {
   const [formStep, setFormStep] = useState<'name' | 'disambiguate' | 'details' | 'success'>('name');
   const [guestData, setGuestData] = useState<any>(null);
   const [matchedGuests, setMatchedGuests] = useState<any[]>([]);
+  // True when the matched guest already has a recorded answer from a previous submission
+  const [alreadySubmitted, setAlreadySubmitted] = useState(false);
 
   // RSVP Form fields state
   const [attending, setAttending] = useState<'Yes' | 'No' | ''>('');
@@ -71,6 +73,9 @@ export default function RSVP() {
       guest.displayName = matchObj.displayName;
     }
     setGuestData(guest);
+
+    // A guest who already has a recorded Yes/No from a previous submission has RSVP'd before
+    setAlreadySubmitted(!!asYesNo(guest["Join? from Guest"]) || !!asYesNo(guest["Join? from Partner"]));
 
     // Pre-fill states from the guest object where they already exist
     setAttending(asYesNo(guest["Join? from Guest"]));
@@ -276,9 +281,22 @@ export default function RSVP() {
       : `Càm ơn vì ${comingName} sẽ tới chung vui! Chúng mình sẽ nhớ ${missingName} lắm, cảm ơn bạn đã cho tụi mình biết nhé 💛`;
   };
 
+  // Schedule & dresscode reveal, shown to attending guests once their RSVP is in
+  const scheduleDresscode = (
+    <div className="w-full mt-16 pt-16 border-t border-ink/10 flex flex-col items-center gap-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+      <Heading variant="h2" className="text-ink-soft opacity-80 text-center">
+        {COPY[lang].eventDetails.schedule} & {COPY[lang].eventDetails.dresscode}
+      </Heading>
+      <div className="w-8 h-[1px] bg-ink/10"></div>
+      <span className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted">
+        {COPY[lang].eventDetails.comingSoon}
+      </span>
+    </div>
+  );
+
   return (
-    <section 
-      id="rsvp" 
+    <section
+      id="rsvp"
       className="w-full max-w-7xl mx-auto px-5 md:px-10 py-24 md:py-32 border-t border-ink/10"
     >
       <style>{`
@@ -321,17 +339,7 @@ export default function RSVP() {
               </Body>
             </div>
 
-            {guestData && (attending === 'Yes' || partnerAttending === 'Yes') && (
-              <div className="w-full mt-16 pt-16 border-t border-ink/10 flex flex-col items-center gap-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-                <Heading variant="h2" className="text-ink-soft opacity-80 text-center">
-                  {COPY[lang].eventDetails.schedule} & {COPY[lang].eventDetails.dresscode}
-                </Heading>
-                <div className="w-8 h-[1px] bg-ink/10"></div>
-                <span className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted">
-                  {COPY[lang].eventDetails.comingSoon}
-                </span>
-              </div>
-            )}
+            {guestData && (attending === 'Yes' || partnerAttending === 'Yes') && scheduleDresscode}
           </div>
                 ) : formStep === 'disambiguate' ? (
           <div className="w-full mt-6 animate-fade-in flex flex-col items-center">
@@ -612,6 +620,13 @@ export default function RSVP() {
                 </Button>
               </div>
             </form>
+
+            {/* Returning guests who already RSVP'd (and are attending) get the schedule & dresscode reveal too */}
+            {alreadySubmitted && (attending === 'Yes' || partnerAttending === 'Yes') && (
+              <div className="flex flex-col items-center text-center">
+                {scheduleDresscode}
+              </div>
+            )}
           </div>
         ) : (
           <div className="w-full mt-6">

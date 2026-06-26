@@ -234,12 +234,12 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
         } else {
           setFlashIndex(i);
           const isLast = i === FLASHBACK_IMAGES.length - 1;
-          const delay = isLast ? 1200 : 620;
+          const delay = isLast ? 1200 : 650;
           timeoutId = setTimeout(next, delay);
         }
       };
 
-      timeoutId = setTimeout(next, 620);
+      timeoutId = setTimeout(next, 650);
 
       return () => clearTimeout(timeoutId);
     }
