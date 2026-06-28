@@ -137,7 +137,7 @@ export const COPY: Record<Lang, {
       attendingYes: "Yes, I'll be there!",
       attendingNo: "No, can't make it ˙◠˙",
 
-      mealLabel: 'Dietary preferences (optional)',
+      mealLabel: 'Dietary restrictions (optional)',
       mealPlaceholder: 'e.g. Vegetarian, food allergies...',
       wishesLabel: 'Leave us a note',
       wishesPlaceholder: 'A wish, a memory, anything...',
