@@ -15,6 +15,10 @@
  *       Writes only the six answer columns on that row, after checking the row
  *       still belongs to that guest (so a re-sorted sheet can't get the wrong row).
  *
+ *   List    GET ?action=list&secret=…
+ *     → { guests: [{ row_number, ...columns }] }
+ *       The site caches this and matches names itself, so guests don't wait on Apps Script.
+ *
  * Errors come back as { error } — Apps Script web apps always answer HTTP 200,
  * so the Next.js route turns these into a failed response.
  *
@@ -64,9 +68,21 @@ function doPost(e) {
   }
 }
 
-// Handy for checking the deployment is live in a browser; never returns guest data
-function doGet() {
-  return json_({ ok: true });
+// GET ?action=list&secret=… → { guests: [...] }, the whole list for the site to cache and
+// match against (much faster than a lookup round-trip per guest). Without action it's a
+// plain health check that returns no guest data.
+function doGet(e) {
+  try {
+    const params = (e && e.parameter) || {};
+    if (params.action !== 'list') return json_({ ok: true });
+
+    checkSecret_(params.secret);
+    const { headers, rows } = readSheet_();
+    return json_({ guests: rows.map(({ rowNumber, values }) => toGuest_(headers, values, rowNumber)) });
+  } catch (err) {
+    console.error(err);
+    return json_({ error: String((err && err.message) || err) });
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -195,7 +211,7 @@ function columnIndex_(headers, name) {
 function nameKey_(name) {
   return String(name || '')
     .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
+    .replace(/[\u0300-\u036f]/g, '')
     .replace(/[đĐ]/g, 'd')
     .toLowerCase()
     .replace(/[^a-z0-9\s'-]/g, ' ')
