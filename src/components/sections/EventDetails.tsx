@@ -84,7 +84,7 @@ export default function EventDetails() {
   let itemIndex = 0;
 
   return (
-    <div className="w-full mt-16 pt-16 border-t border-ink/10 flex flex-col items-center gap-24 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+    <div className="w-full mt-16 pt-16 border-t border-ink/10 flex flex-col items-center gap-16 animate-fade-in" style={{ animationDelay: '0.2s' }}>
       {/* Schedule */}
       <div className="w-full flex flex-col items-center">
         <div className="flex items-end justify-center gap-3 md:gap-5 mb-4">
@@ -148,7 +148,7 @@ export default function EventDetails() {
                       {textLeft ? text : art}
                       <div
                         ref={(el) => { knotRefs.current[idx] = el; }}
-                        className="relative z-10 mx-auto w-9 h-9 md:w-11 md:h-11 rounded-full border border-ink/20 bg-cream-light flex items-center justify-center text-ink-muted text-[10px]"
+                        className="relative z-10 mx-auto px-1 py-0.5 bg-cream text-ink-muted text-xs leading-none"
                         aria-hidden
                       >
                         ✦
@@ -164,13 +164,13 @@ export default function EventDetails() {
       </div>
 
       {/* Dresscode */}
-      <div className="w-full flex flex-col items-center">
+      <div className="w-full pt-16 border-t border-ink/10 flex flex-col items-center">
         <Heading variant="h2" className="mb-4 text-center">
           {copy.dresscode}
         </Heading>
-        <Divider className="mb-8" />
+        <Divider className="mb-6" />
 
-        <img src="/component/13.webp" alt="" loading="lazy" draggable={false} className="w-20 h-auto mix-blend-multiply mb-4" />
+        <img src="/component/13.webp" alt="" loading="lazy" draggable={false} className="w-16 h-auto mix-blend-multiply mb-5" />
 
         <div className="grid grid-cols-3 gap-3 md:gap-4 w-full max-w-[280px] md:max-w-xs">
           {PALETTE.map((color) => (
