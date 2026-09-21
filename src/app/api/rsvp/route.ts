@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
 
+// Google Apps Script web app bound to the RSVP sheet (see apps-script/Code.gs)
+const SCRIPT_URL = process.env.RSVP_SCRIPT_URL;
+const SCRIPT_SECRET = process.env.RSVP_SECRET;
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -9,18 +13,23 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Full name is required' }, { status: 400 });
     }
 
-    console.log(`[RSVP API] Relaying payload to n8n:`, body);
+    if (!SCRIPT_URL) {
+      console.error('[RSVP API] RSVP_SCRIPT_URL is not set');
+      return NextResponse.json({ success: false }, { status: 500 });
+    }
 
-    const response = await fetch(
-      'https://n8n.giangle.site/webhook/087c1999-f3fb-4b16-93bd-12f06bd371df',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-      }
-    );
+    console.log(`[RSVP API] Relaying payload to Apps Script:`, body);
+
+    // Apps Script answers with a redirect to the actual response; fetch follows it
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ ...body, secret: SCRIPT_SECRET }),
+      redirect: 'follow',
+      cache: 'no-store',
+    });
 
     const contentType = response.headers.get('content-type') || '';
     let responseData: any = null;
@@ -30,17 +39,16 @@ export async function POST(request: Request) {
       responseData = await response.text().catch(() => '');
     }
 
-    console.log(`[RSVP API] n8n response status: ${response.status}`);
-    console.log(`[RSVP API] n8n response payload:`, responseData);
+    console.log(`[RSVP API] Apps Script response status: ${response.status}`);
+    console.log(`[RSVP API] Apps Script response payload:`, responseData);
 
-    if (response.ok) {
-      return NextResponse.json({ success: true, data: responseData });
-    } else {
-      return NextResponse.json(
-        { error: `Webhook error: ${response.status}`, data: responseData },
-        { status: response.status }
-      );
+    // Apps Script always returns 200, so failures arrive as { error } in the body.
+    // No error text goes to the client, so it shows its own translated fallback message.
+    if (!response.ok || !responseData || typeof responseData !== 'object' || responseData.error) {
+      return NextResponse.json({ success: false }, { status: 502 });
     }
+
+    return NextResponse.json({ success: true, data: responseData });
   } catch (error: any) {
     console.error('[RSVP API] Server-side error:', error);
     return NextResponse.json(
