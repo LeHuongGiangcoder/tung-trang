@@ -1,6 +1,6 @@
 export type Lang = 'en' | 'vi';
 
-export type AgendaIcon = 'heart' | 'rings' | 'camera' | 'sparkle' | 'cake' | 'dinner' | 'music';
+export type AgendaMoment = 'checkin' | 'vows' | 'photos' | 'welcome' | 'ceremony' | 'dinner' | 'party';
 
 export const WEDDING = {
   groom: 'Tung',
@@ -65,7 +65,7 @@ export const COPY: Record<Lang, {
     agenda: {
       title: string;
       venue?: string;
-      items: { time: string; end?: string; icon: AgendaIcon; title: string; description: string }[];
+      items: { time: string; end?: string; moment: AgendaMoment; title: string; description: string }[];
     }[];
     dresscodeNote: string;
   };
@@ -161,19 +161,19 @@ export const COPY: Record<Lang, {
         {
           title: 'The Vows',
           items: [
-            { time: '15:30', icon: 'heart', title: 'Check-in', description: 'Arrive and snap a few photos' },
-            { time: '16:00', icon: 'rings', title: 'Vows Ceremony', description: 'We say our vows and exchange rings' },
-            { time: '16:30', icon: 'camera', title: 'Photos', description: 'Pictures with family and all of you' },
+            { time: '15:30', moment: 'checkin', title: 'Check-in', description: 'Arrive and snap a few photos' },
+            { time: '16:00', moment: 'vows', title: 'Vows Ceremony', description: 'We say our vows and exchange rings' },
+            { time: '16:30', moment: 'photos', title: 'Photos', description: 'Pictures with family and all of you' },
           ],
         },
         {
           title: 'The Celebration',
           venue: 'Ballroom',
           items: [
-            { time: '18:00', icon: 'sparkle', title: 'Welcome', description: 'Photobooth pictures in the ballroom foyer' },
-            { time: '18:30', icon: 'cake', title: 'Ceremony', description: 'Cake cutting and a wine-pouring toast' },
-            { time: '19:00', icon: 'dinner', title: 'Dinner', description: 'Dinner is served' },
-            { time: '21:30', end: '02:00', icon: 'music', title: 'After Party', description: 'Games, then dancing until late' },
+            { time: '18:00', moment: 'welcome', title: 'Welcome', description: 'Photobooth pictures in the ballroom foyer' },
+            { time: '18:30', moment: 'ceremony', title: 'Ceremony', description: 'Cake cutting and a wine-pouring toast' },
+            { time: '19:00', moment: 'dinner', title: 'Dinner', description: 'Dinner is served' },
+            { time: '21:30', end: '02:00', moment: 'party', title: 'After Party', description: 'Games, then dancing until late' },
           ],
         },
       ],
@@ -271,19 +271,19 @@ export const COPY: Record<Lang, {
         {
           title: 'Lễ Vows',
           items: [
-            { time: '15:30', icon: 'heart', title: 'Đón khách', description: 'Khách mời check-in và chụp ảnh' },
-            { time: '16:00', icon: 'rings', title: 'Lễ Vows', description: 'Lễ tuyên thệ và trao nhẫn' },
-            { time: '16:30', icon: 'camera', title: 'Chụp ảnh', description: 'Chụp hình cùng gia đình và khách mời' },
+            { time: '15:30', moment: 'checkin', title: 'Đón khách', description: 'Khách mời check-in và chụp ảnh' },
+            { time: '16:00', moment: 'vows', title: 'Lễ Vows', description: 'Lễ tuyên thệ và trao nhẫn' },
+            { time: '16:30', moment: 'photos', title: 'Chụp ảnh', description: 'Chụp hình cùng gia đình và khách mời' },
           ],
         },
         {
           title: 'Tiệc cưới',
           venue: 'Ballroom',
           items: [
-            { time: '18:00', icon: 'sparkle', title: 'Đón khách', description: 'Chụp ảnh photobooth tại sảnh ballroom' },
-            { time: '18:30', icon: 'cake', title: 'Nghi thức', description: 'Cắt bánh, rót rượu và làm lễ' },
-            { time: '19:00', icon: 'dinner', title: 'Tiệc tối', description: 'Cùng dùng bữa tối' },
-            { time: '21:30', end: '02:00', icon: 'music', title: 'After Party', description: 'Gameshow và khiêu vũ' },
+            { time: '18:00', moment: 'welcome', title: 'Đón khách', description: 'Chụp ảnh photobooth tại sảnh ballroom' },
+            { time: '18:30', moment: 'ceremony', title: 'Nghi thức', description: 'Cắt bánh, rót rượu và làm lễ' },
+            { time: '19:00', moment: 'dinner', title: 'Tiệc tối', description: 'Cùng dùng bữa tối' },
+            { time: '21:30', end: '02:00', moment: 'party', title: 'After Party', description: 'Gameshow và khiêu vũ' },
           ],
         },
       ],
