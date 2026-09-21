@@ -60,7 +60,12 @@ export const COPY: Record<Lang, {
   eventDetails: {
     schedule: string;
     dresscode: string;
-    comingSoon: string;
+    agenda: {
+      title: string;
+      venue?: string;
+      items: { time: string; end?: string; title: string; description: string }[];
+    }[];
+    dresscodeNote: string;
   };
 }> = {
   en: {
@@ -150,7 +155,27 @@ export const COPY: Record<Lang, {
     eventDetails: {
       schedule: 'Schedule',
       dresscode: 'Dresscode',
-      comingSoon: 'Coming soon...'
+      agenda: [
+        {
+          title: 'The Vows',
+          items: [
+            { time: '15:30', title: 'Check-in', description: 'Arrive and snap a few photos' },
+            { time: '16:00', title: 'Vows Ceremony', description: 'We say our vows and exchange rings' },
+            { time: '16:30', title: 'Photos', description: 'Pictures with family and all of you' },
+          ],
+        },
+        {
+          title: 'The Celebration',
+          venue: 'Ballroom',
+          items: [
+            { time: '18:00', title: 'Welcome', description: 'Photobooth pictures in the ballroom foyer' },
+            { time: '18:30', title: 'Ceremony', description: 'Cake cutting and a wine-pouring toast' },
+            { time: '19:00', title: 'Dinner', description: 'Dinner is served' },
+            { time: '21:30', end: '02:00', title: 'After Party', description: 'Games, then dancing until late' },
+          ],
+        },
+      ],
+      dresscodeNote: 'We would love to see you in soft blush, warm neutrals and olive greens — whatever makes you feel your best.',
     }
   },
   vi: {
@@ -240,7 +265,27 @@ export const COPY: Record<Lang, {
     eventDetails: {
       schedule: 'Lịch trình',
       dresscode: 'Trang phục',
-      comingSoon: 'Sắp ra mắt...'
+      agenda: [
+        {
+          title: 'Lễ Vows',
+          items: [
+            { time: '15:30', title: 'Đón khách', description: 'Khách mời check-in và chụp ảnh' },
+            { time: '16:00', title: 'Lễ Vows', description: 'Lễ tuyên thệ và trao nhẫn' },
+            { time: '16:30', title: 'Chụp ảnh', description: 'Chụp hình cùng gia đình và khách mời' },
+          ],
+        },
+        {
+          title: 'Tiệc cưới',
+          venue: 'Ballroom',
+          items: [
+            { time: '18:00', title: 'Đón khách', description: 'Chụp ảnh photobooth tại sảnh ballroom' },
+            { time: '18:30', title: 'Nghi thức', description: 'Cắt bánh, rót rượu và làm lễ' },
+            { time: '19:00', title: 'Tiệc tối', description: 'Cùng dùng bữa tối' },
+            { time: '21:30', end: '02:00', title: 'After Party', description: 'Gameshow và khiêu vũ' },
+          ],
+        },
+      ],
+      dresscodeNote: 'Chúng mình rất vui nếu bạn chọn trang phục theo tông hồng phấn, be ấm hoặc xanh olive — miễn là bạn thấy thoải mái và tự tin nhất.',
     }
   },
 };
