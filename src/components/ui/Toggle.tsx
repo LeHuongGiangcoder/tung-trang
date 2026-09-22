@@ -11,7 +11,7 @@ interface ToggleProps<T> {
   options: ToggleOption<T>[];
   value: T;
   onChange: (value: T) => void;
-  variant?: 'plain' | 'pill';
+  variant?: 'plain' | 'pill' | 'segmented';
   className?: string;
 }
 
@@ -25,6 +25,29 @@ export default function Toggle<T>({
   const baseOverlay = "transition-all duration-500 pointer-events-auto";
   const pillStyle = `${baseOverlay} border bg-white/60 border-white/40 backdrop-blur-md shadow-[0_2px_10px_rgba(0,0,0,0.03)] rounded-full px-3.5 py-1.5`;
 
+  // Tab-style switch in the Button design: outlined pill, active option filled like the primary button
+  if (variant === 'segmented') {
+    return (
+      <div className={`inline-flex items-center gap-1 p-1 border border-ink/30 rounded-full ${className}`}>
+        {options.map((opt) => (
+          <button
+            key={String(opt.value)}
+            type="button"
+            onClick={() => onChange(opt.value)}
+            className={`px-5 py-2 rounded-full font-body text-[10px] tracking-[0.2em] uppercase transition-all duration-300 select-none outline-none ${
+              value === opt.value
+                ? 'bg-ink text-cream'
+                : 'text-ink-soft hover:text-ink hover:bg-ink/5'
+            }`}
+            aria-pressed={value === opt.value}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
+    );
+  }
+
   if (variant === 'pill') {
     return (
       <div className={`${pillStyle} ${className}`}>
@@ -33,6 +56,7 @@ export default function Toggle<T>({
             <React.Fragment key={String(opt.value)}>
               {idx > 0 && <span className="text-ink-muted">/</span>}
               <button
+                type="button"
                 onClick={() => onChange(opt.value)}
                 className={
                   value === opt.value
@@ -56,6 +80,7 @@ export default function Toggle<T>({
         <React.Fragment key={String(opt.value)}>
           {idx > 0 && <span className="text-ink-muted">/</span>}
           <button
+            type="button"
             onClick={() => onChange(opt.value)}
             className={
               value === opt.value
