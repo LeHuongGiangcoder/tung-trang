@@ -92,9 +92,24 @@ export default function EventDetails() {
       <div className="max-w-xl mx-auto px-4 md:px-0 flex flex-col items-center text-center gap-16">
         {/* Venue */}
         <div className="w-full flex flex-col items-center">
-          <Subtitle as="div" className="mb-6">{copy.venueLabel}</Subtitle>
-          <Heading variant="h2" className="mb-3">{WEDDING.venue}</Heading>
-          <Body variant="regular" className="italic mb-8">{copy.venueCity}</Body>
+          <Subtitle as="div" className="mb-4">{copy.venueLabel}</Subtitle>
+
+          {/* Venue name set inside the cloud held by the two cupids (cloud centre ≈ 51.7% / 50%) */}
+          <div className="relative w-full max-w-md">
+            <img src="/component/venue.webp" alt="" draggable={false} className="w-full h-auto mix-blend-multiply" />
+            <Heading
+              variant="h2"
+              as="h3"
+              className="absolute left-[51.7%] top-1/2 -translate-x-1/2 -translate-y-1/2 w-[36%] !text-[clamp(1.25rem,5vw,2rem)] !leading-[1.05] text-center"
+            >
+              <span className="sr-only">{WEDDING.venue}</span>
+              {WEDDING.venueLines.map((line) => (
+                <span key={line} className="block" aria-hidden>{line}</span>
+              ))}
+            </Heading>
+          </div>
+
+          <Body variant="regular" className="italic mt-4 mb-8">{copy.venueCity}</Body>
           <a href={WEDDING.mapsUrl} target="_blank" rel="noopener noreferrer">
             <Button variant="secondary">{copy.mapsBtn}</Button>
           </a>
