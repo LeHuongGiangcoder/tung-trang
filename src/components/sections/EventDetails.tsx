@@ -109,7 +109,7 @@ export default function EventDetails() {
     <section id="event-details" className="w-full max-w-7xl mx-auto px-5 md:px-10 py-24 md:py-32 border-t border-ink/10">
       <div className="max-w-xl mx-auto px-4 md:px-0 flex flex-col items-center text-center gap-16">
         {/* Venue */}
-        <div className="w-full flex flex-col items-center">
+        <div id="venue" className="w-full flex flex-col items-center scroll-mt-28">
           <Subtitle as="div" className="mb-1">{copy.venueLabel}</Subtitle>
 
           {/* Venue name set inside the cloud held by the two cupids (cloud centre ≈ 51.7% / 50%) */}

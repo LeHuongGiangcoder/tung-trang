@@ -42,6 +42,7 @@ export default function Nav() {
 
   // Section anchors, in page order
   const links = [
+    { href: '#venue', label: nav.venue },
     { href: '#schedule', label: nav.schedule },
     { href: '#dresscode', label: nav.dresscode },
     { href: '#visa', label: nav.visa },
@@ -67,7 +68,7 @@ export default function Nav() {
 
         {/* Center links - desktop only */}
         <div className={`hidden md:block ${pillClass}`}>
-          <ul className="flex items-center gap-8 font-body text-[10px] tracking-[0.3em] uppercase text-ink-soft">
+          <ul className="flex items-center gap-4 lg:gap-8 whitespace-nowrap font-body text-[10px] tracking-[0.2em] lg:tracking-[0.3em] uppercase text-ink-soft">
             {links.map((link) => (
               <li key={link.href}><a href={link.href} className="hover:text-ink transition-colors">{link.label}</a></li>
             ))}
