@@ -9,6 +9,8 @@ export const WEDDING = {
   city: 'Hanoi',
   country: 'Vietnam',
   venue: 'Sheraton Tay Ho',
+  // Venue name as it's set inside the cupids' cloud
+  venueLines: ['Sheraton', 'Tay Ho'],
   mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Sheraton+Hanoi+Hotel+Tay+Ho',
 } as const;
 
