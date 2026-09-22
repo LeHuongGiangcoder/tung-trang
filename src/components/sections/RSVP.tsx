@@ -5,7 +5,6 @@ import { useLang } from '@/hooks/useLang';
 import { COPY } from '@/lib/constants';
 import { Heading, Subtitle, Body } from '@/components/ui/Typography';
 import Button from '@/components/ui/Button';
-import EventDetails from '@/components/sections/EventDetails';
 
 // Given a full name (given-name-first), return just the first name for friendly references.
 // Names are given-name-first with the surname last, so the first name is everything but the
@@ -287,16 +286,6 @@ export default function RSVP() {
       id="rsvp"
       className="w-full max-w-7xl mx-auto px-5 md:px-10 py-24 md:py-32 border-t border-ink/10"
     >
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(6px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-          animation: fadeIn 0.4s ease-out forwards;
-        }
-      `}</style>
-
       <div className="max-w-xl mx-auto px-4 md:px-0 flex flex-col items-center text-center">
         <Subtitle as="div" className="mb-6">
           {copy.subtitle}
@@ -327,7 +316,6 @@ export default function RSVP() {
               </Body>
             </div>
 
-            {guestData && (attending === 'Yes' || partnerAttending === 'Yes') && <EventDetails />}
           </div>
                 ) : formStep === 'disambiguate' ? (
           <div className="w-full mt-6 animate-fade-in flex flex-col items-center">
@@ -609,12 +597,6 @@ export default function RSVP() {
               </div>
             </form>
 
-            {/* Returning guests who already RSVP'd (and are attending) get the schedule & dresscode reveal too */}
-            {alreadySubmitted && (attending === 'Yes' || partnerAttending === 'Yes') && (
-              <div className="flex flex-col items-center text-center">
-                <EventDetails />
-              </div>
-            )}
           </div>
         ) : (
           <div className="w-full mt-6">
