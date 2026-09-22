@@ -25,6 +25,24 @@ const MOMENT_ART: Record<AgendaMoment, string> = {
   party: '/component/6.webp',
 };
 
+// Sparkles (✦) and dots scattered around the venue cloud, as % of the illustration.
+// Kept clear of the cupids: left one sits in x 0–30% / y 35–100%, right one in x 72–98% / y 5–85%.
+const FAIRY_DUST: { x: number; y: number; size: number; sparkle?: boolean; red?: boolean; delay: number }[] = [
+  { x: 12, y: 14, size: 13, sparkle: true, red: true, delay: 0 },
+  { x: 21, y: 27, size: 8, sparkle: true, delay: 1.1 },
+  { x: 7, y: 31, size: 4, red: true, delay: 0.5 },
+  { x: 26, y: 7, size: 3, delay: 1.8 },
+  { x: 38, y: 22, size: 9, sparkle: true, red: true, delay: 0.6 },
+  { x: 43, y: 13, size: 3, delay: 2.1 },
+  { x: 65, y: 17, size: 7, sparkle: true, delay: 1.4 },
+  { x: 34, y: 72, size: 3, red: true, delay: 0.9 },
+  { x: 65, y: 78, size: 8, sparkle: true, delay: 2.3 },
+  { x: 59, y: 86, size: 4, red: true, delay: 0.2 },
+  { x: 86, y: 93, size: 10, sparkle: true, red: true, delay: 1.7 },
+  { x: 94, y: 88, size: 3, delay: 1 },
+  { x: 90, y: 4, size: 4, red: true, delay: 2.6 },
+];
+
 // How far (px) the string swings out between two knots
 const STRING_SWAY = 22;
 
@@ -92,25 +110,41 @@ export default function EventDetails() {
       <div className="max-w-xl mx-auto px-4 md:px-0 flex flex-col items-center text-center gap-16">
         {/* Venue */}
         <div className="w-full flex flex-col items-center">
-          <Subtitle as="div" className="mb-4">{copy.venueLabel}</Subtitle>
+          <Subtitle as="div" className="mb-1">{copy.venueLabel}</Subtitle>
 
           {/* Venue name set inside the cloud held by the two cupids (cloud centre ≈ 51.7% / 50%) */}
           <div className="relative w-full max-w-md">
             <img src="/component/venue.webp" alt="" draggable={false} className="w-full h-auto mix-blend-multiply" />
-            <Heading
-              variant="h2"
-              as="h3"
-              className="absolute left-[51.7%] top-1/2 -translate-x-1/2 -translate-y-1/2 w-[36%] !text-[clamp(1.25rem,5vw,2rem)] !leading-[1.05] text-center"
-            >
-              <span className="sr-only">{WEDDING.venue}</span>
-              {WEDDING.venueLines.map((line) => (
+
+            {FAIRY_DUST.map((d, i) => (
+              <span
+                key={i}
+                className="absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+                style={{ left: `${d.x}%`, top: `${d.y}%` }}
+                aria-hidden
+              >
+                <span
+                  className={`block animate-twinkle leading-none ${d.red ? 'text-[#D81018]' : 'text-ink-muted'}`}
+                  style={{ animationDelay: `${d.delay}s` }}
+                >
+                  {d.sparkle ? (
+                    <span style={{ fontSize: d.size }}>✦</span>
+                  ) : (
+                    <span className="block rounded-full bg-current" style={{ width: d.size, height: d.size }} />
+                  )}
+                </span>
+              </span>
+            ))}
+
+            <h3 className="absolute left-[51.7%] top-1/2 -translate-x-1/2 -translate-y-1/2 w-[40%] font-script font-semibold text-ink text-[clamp(1.35rem,5.4vw,2.15rem)] leading-[1.02] text-center">
+              <span className="sr-only">{copy.venueLines.join(' ')}</span>
+              {copy.venueLines.map((line) => (
                 <span key={line} className="block" aria-hidden>{line}</span>
               ))}
-            </Heading>
+            </h3>
           </div>
 
-          <Body variant="regular" className="italic mt-4 mb-8">{copy.venueCity}</Body>
-          <a href={WEDDING.mapsUrl} target="_blank" rel="noopener noreferrer">
+          <a href={WEDDING.mapsUrl} target="_blank" rel="noopener noreferrer" className="mt-3">
             <Button variant="secondary">{copy.mapsBtn}</Button>
           </a>
         </div>
