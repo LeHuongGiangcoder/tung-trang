@@ -4,6 +4,7 @@ import React, { useLayoutEffect, useRef, useState } from 'react';
 import { useLang } from '@/hooks/useLang';
 import { COPY, type AgendaMoment } from '@/lib/constants';
 import { Heading, Subtitle, Body } from '@/components/ui/Typography';
+import Toggle from '@/components/ui/Toggle';
 
 // Dresscode palette, rows run blush → neutrals → greens
 const PALETTE = [
@@ -56,6 +57,10 @@ export default function EventDetails() {
   const knotRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [string, setString] = useState({ width: 0, height: 0, path: '' });
 
+  // Which part of the day is shown: 0 = vows, 1 = ballroom celebration
+  const [activeGroup, setActiveGroup] = useState(0);
+  const group = copy.agenda[activeGroup];
+
   useLayoutEffect(() => {
     const timeline = timelineRef.current;
     if (!timeline) return;
@@ -79,9 +84,7 @@ export default function EventDetails() {
     const observer = new ResizeObserver(measure);
     observer.observe(timeline);
     return () => observer.disconnect();
-  }, [lang]);
-
-  let itemIndex = 0;
+  }, [lang, activeGroup]);
 
   return (
     <div className="w-full mt-16 pt-16 border-t border-ink/10 flex flex-col items-center gap-16 animate-fade-in" style={{ animationDelay: '0.2s' }}>
@@ -94,7 +97,15 @@ export default function EventDetails() {
         </div>
         <Divider className="mb-10" />
 
-        <div ref={timelineRef} className="relative w-full">
+        <Toggle
+          variant="segmented"
+          options={copy.agenda.map((g, idx) => ({ label: g.title, value: idx }))}
+          value={activeGroup}
+          onChange={setActiveGroup}
+        />
+        <Subtitle as="div" className="!tracking-[0.2em] mt-4 h-4">{group.venue}</Subtitle>
+
+        <div ref={timelineRef} key={activeGroup} className="relative w-full mt-4 animate-fade-in">
           {/* The string */}
           <svg
             className="absolute inset-0 pointer-events-none text-ink/25"
@@ -105,61 +116,48 @@ export default function EventDetails() {
             <path d={string.path} fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
           </svg>
 
-          {copy.agenda.map((group) => (
-            <div key={group.title} className="relative">
-              {/* Group label sits on the string, its background hiding the line behind it */}
-              <div className="relative z-10 flex justify-center py-6">
-                <div className="bg-cream px-4 py-1 flex flex-col items-center gap-1">
-                  <Heading variant="h3" as="h3" className="italic">{group.title}</Heading>
-                  {group.venue && <Subtitle as="span" className="!tracking-[0.2em]">{group.venue}</Subtitle>}
+          <ol>
+            {group.items.map((item, idx) => {
+              const textLeft = idx % 2 === 0;
+
+              const text = (
+                <div className={`flex flex-col gap-1.5 ${textLeft ? 'items-end text-right' : 'items-start text-left'}`}>
+                  <span className="font-display italic text-[clamp(1.6rem,4.5vw,2.2rem)] text-ink-soft leading-none font-light">
+                    {item.time}
+                    {item.end && <span className="font-body not-italic text-[10px] tracking-[0.2em] text-ink-muted ml-1.5 align-middle">– {item.end}</span>}
+                  </span>
+                  <Subtitle as="span" className="!tracking-[0.2em] mt-1">{item.title}</Subtitle>
+                  <Body variant="small" as="span" className="italic">{item.description}</Body>
                 </div>
-              </div>
+              );
 
-              <ol>
-                {group.items.map((item) => {
-                  const idx = itemIndex++;
-                  const textLeft = idx % 2 === 0;
+              const art = (
+                <div className={`flex ${textLeft ? 'justify-start' : 'justify-end'}`}>
+                  <img
+                    src={MOMENT_ART[item.moment]}
+                    alt=""
+                    loading="lazy"
+                    draggable={false}
+                    className="w-24 md:w-32 aspect-square object-contain mix-blend-multiply"
+                  />
+                </div>
+              );
 
-                  const text = (
-                    <div className={`flex flex-col gap-1.5 ${textLeft ? 'items-end text-right' : 'items-start text-left'}`}>
-                      <span className="font-display italic text-[clamp(1.6rem,4.5vw,2.2rem)] text-ink-soft leading-none font-light">
-                        {item.time}
-                        {item.end && <span className="font-body not-italic text-[10px] tracking-[0.2em] text-ink-muted ml-1.5 align-middle">– {item.end}</span>}
-                      </span>
-                      <Subtitle as="span" className="!tracking-[0.2em] mt-1">{item.title}</Subtitle>
-                      <Body variant="small" as="span" className="italic">{item.description}</Body>
-                    </div>
-                  );
-
-                  const art = (
-                    <div className={`flex ${textLeft ? 'justify-start' : 'justify-end'}`}>
-                      <img
-                        src={MOMENT_ART[item.moment]}
-                        alt=""
-                        loading="lazy"
-                        draggable={false}
-                        className="w-24 md:w-32 aspect-square object-contain mix-blend-multiply"
-                      />
-                    </div>
-                  );
-
-                  return (
-                    <li key={item.time} className="grid grid-cols-[1fr_2.75rem_1fr] md:grid-cols-[1fr_3.5rem_1fr] items-center gap-x-3 md:gap-x-5 py-5">
-                      {textLeft ? text : art}
-                      <div
-                        ref={(el) => { knotRefs.current[idx] = el; }}
-                        className="relative z-10 mx-auto px-1 py-0.5 bg-cream text-ink-muted text-xs leading-none"
-                        aria-hidden
-                      >
-                        ✦
-                      </div>
-                      {textLeft ? art : text}
-                    </li>
-                  );
-                })}
-              </ol>
-            </div>
-          ))}
+              return (
+                <li key={item.time} className="grid grid-cols-[1fr_2.75rem_1fr] md:grid-cols-[1fr_3.5rem_1fr] items-center gap-x-3 md:gap-x-5 py-5">
+                  {textLeft ? text : art}
+                  <div
+                    ref={(el) => { knotRefs.current[idx] = el; }}
+                    className="relative z-10 mx-auto px-1 py-0.5 bg-cream text-ink-muted text-xs leading-none"
+                    aria-hidden
+                  >
+                    ✦
+                  </div>
+                  {textLeft ? art : text}
+                </li>
+              );
+            })}
+          </ol>
         </div>
       </div>
 
