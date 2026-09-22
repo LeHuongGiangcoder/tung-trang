@@ -15,7 +15,7 @@ export const WEDDING = {
 export const COPY: Record<Lang, {
   entrance: { hint: string; whisper: string };
   hero: { eyebrow: string; ampersand: string; dateLine: string; location: string };
-  nav: { visa: string; travel: string; rsvp: string; };
+  nav: { schedule: string; dresscode: string; visa: string; travel: string; rsvp: string; };
   visa: {
     subtitle: string;
     title: string;
@@ -86,7 +86,7 @@ export const COPY: Record<Lang, {
       dateLine: 'Saturday, 23 January 2027',
       location: 'Hanoi, Vietnam',
     },
-    nav: { visa: 'Visa', travel: 'Travel', rsvp: 'RSVP' },
+    nav: { schedule: 'Schedule', dresscode: 'Dresscode', visa: 'Visa', travel: 'Travel', rsvp: 'RSVP' },
     visa: {
       subtitle: 'TRAVEL INFORMATION',
       title: 'E-Visa Guide',
@@ -199,7 +199,7 @@ export const COPY: Record<Lang, {
       dateLine: 'Thứ bảy, 23 tháng 01 năm 2027',
       location: 'Hà Nội, Việt Nam',
     },
-    nav: { visa: 'Visa', travel: 'Du lịch', rsvp: 'Xác nhận' },
+    nav: { schedule: 'Lịch trình', dresscode: 'Trang phục', visa: 'Visa', travel: 'Du lịch', rsvp: 'Xác nhận' },
     visa: {
       subtitle: 'THÔNG TIN DU LỊCH',
       title: 'Hướng dẫn E-Visa',

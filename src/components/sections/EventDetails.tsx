@@ -150,7 +150,7 @@ export default function EventDetails() {
         </div>
 
         {/* Schedule */}
-        <div className="w-full pt-16 border-t border-ink/10 flex flex-col items-center">
+        <div id="schedule" className="w-full pt-16 border-t border-ink/10 flex flex-col items-center scroll-mt-16">
           <div className="flex items-end justify-center gap-3 md:gap-5 mb-4">
             <img src="/component/left.webp" alt="" loading="lazy" draggable={false} className="w-10 md:w-12 h-auto mix-blend-multiply -rotate-6" />
             <Heading variant="h2" className="text-center">{copy.schedule}</Heading>
@@ -223,7 +223,7 @@ export default function EventDetails() {
         </div>
 
         {/* Dresscode */}
-        <div className="w-full pt-16 border-t border-ink/10 flex flex-col items-center">
+        <div id="dresscode" className="w-full pt-16 border-t border-ink/10 flex flex-col items-center scroll-mt-16">
           <Heading variant="h2" className="mb-4 text-center">
             {copy.dresscode}
           </Heading>

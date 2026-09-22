@@ -40,6 +40,15 @@ export default function Nav() {
     scrolled ? `${scrolledEffect} p-2` : 'border-transparent bg-transparent p-2'
   }`;
 
+  // Section anchors, in page order
+  const links = [
+    { href: '#schedule', label: nav.schedule },
+    { href: '#dresscode', label: nav.dresscode },
+    { href: '#visa', label: nav.visa },
+    { href: '#travel', label: nav.travel },
+    { href: '#rsvp', label: nav.rsvp },
+  ];
+
   const langOptions: ToggleOption<'en' | 'vi'>[] = [
     { label: 'EN', value: 'en' },
     { label: 'VI', value: 'vi' },
@@ -59,9 +68,9 @@ export default function Nav() {
         {/* Center links - desktop only */}
         <div className={`hidden md:block ${pillClass}`}>
           <ul className="flex items-center gap-8 font-body text-[10px] tracking-[0.3em] uppercase text-ink-soft">
-            <li><a href="#visa" className="hover:text-ink transition-colors">{nav.visa}</a></li>
-            <li><a href="#travel" className="hover:text-ink transition-colors">{nav.travel}</a></li>
-            <li><a href="#rsvp" className="hover:text-ink transition-colors">{nav.rsvp}</a></li>
+            {links.map((link) => (
+              <li key={link.href}><a href={link.href} className="hover:text-ink transition-colors">{link.label}</a></li>
+            ))}
           </ul>
         </div>
 
@@ -107,9 +116,9 @@ export default function Nav() {
         </button>
 
         <ul className="flex flex-col items-center gap-10 font-display text-2xl md:text-3xl tracking-widest uppercase text-ink-soft">
-          <li><a href="#visa" onClick={() => setMobileMenuOpen(false)} className="hover:text-ink transition-colors">{nav.visa}</a></li>
-          <li><a href="#travel" onClick={() => setMobileMenuOpen(false)} className="hover:text-ink transition-colors">{nav.travel}</a></li>
-          <li><a href="#rsvp" onClick={() => setMobileMenuOpen(false)} className="hover:text-ink transition-colors">{nav.rsvp}</a></li>
+          {links.map((link) => (
+            <li key={link.href}><a href={link.href} onClick={() => setMobileMenuOpen(false)} className="hover:text-ink transition-colors">{link.label}</a></li>
+          ))}
         </ul>
         
         {/* Subtle decorative line */}
