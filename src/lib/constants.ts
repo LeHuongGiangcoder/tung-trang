@@ -9,8 +9,6 @@ export const WEDDING = {
   city: 'Hanoi',
   country: 'Vietnam',
   venue: 'Sheraton Tay Ho',
-  // Venue name as it's set inside the cupids' cloud
-  venueLines: ['Sheraton', 'Tay Ho'],
   mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Sheraton+Hanoi+Hotel+Tay+Ho',
 } as const;
 
@@ -65,7 +63,7 @@ export const COPY: Record<Lang, {
   };
   eventDetails: {
     venueLabel: string;
-    venueCity: string;
+    venueLines: string[];
     mapsBtn: string;
     schedule: string;
     dresscode: string;
@@ -163,7 +161,7 @@ export const COPY: Record<Lang, {
     },
     eventDetails: {
       venueLabel: 'The Venue',
-      venueCity: 'Hanoi, Vietnam',
+      venueLines: ['Sheraton', 'Tay Ho', 'Ha Noi'],
       mapsBtn: 'Open in Google Maps',
       schedule: 'Schedule',
       dresscode: 'Dresscode',
@@ -276,7 +274,7 @@ export const COPY: Record<Lang, {
     },
     eventDetails: {
       venueLabel: 'Địa điểm',
-      venueCity: 'Hà Nội, Việt Nam',
+      venueLines: ['Sheraton', 'Tây Hồ', 'Hà Nội'],
       mapsBtn: 'Xem trên Google Maps',
       schedule: 'Lịch trình',
       dresscode: 'Trang phục',
