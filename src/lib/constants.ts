@@ -167,7 +167,7 @@ export const COPY: Record<Lang, {
           ],
         },
         {
-          title: 'The Celebration',
+          title: 'The Party',
           venue: 'Ballroom',
           items: [
             { time: '18:00', moment: 'welcome', title: 'Welcome', description: 'Photobooth pictures in the ballroom foyer' },
