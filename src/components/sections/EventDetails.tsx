@@ -2,9 +2,10 @@
 
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { useLang } from '@/hooks/useLang';
-import { COPY, type AgendaMoment } from '@/lib/constants';
+import { COPY, WEDDING, type AgendaMoment } from '@/lib/constants';
 import { Heading, Subtitle, Body } from '@/components/ui/Typography';
 import Toggle from '@/components/ui/Toggle';
+import Button from '@/components/ui/Button';
 
 // Dresscode palette, rows run blush → neutrals → greens
 const PALETTE = [
@@ -47,7 +48,7 @@ function Divider({ className = '' }: { className?: string }) {
   return <div className={`w-8 h-[1px] bg-ink/10 ${className}`}></div>;
 }
 
-// Schedule & dresscode, revealed to attending guests once their RSVP is in
+// Venue, schedule & dresscode, shown to everyone right after the hero
 export default function EventDetails() {
   const { lang } = useLang();
   const copy = COPY[lang].eventDetails;
@@ -87,104 +88,116 @@ export default function EventDetails() {
   }, [lang, activeGroup]);
 
   return (
-    <div className="w-full mt-16 pt-16 border-t border-ink/10 flex flex-col items-center gap-16 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-      {/* Schedule */}
-      <div className="w-full flex flex-col items-center">
-        <div className="flex items-end justify-center gap-3 md:gap-5 mb-4">
-          <img src="/component/left.webp" alt="" loading="lazy" draggable={false} className="w-10 md:w-12 h-auto mix-blend-multiply -rotate-6" />
-          <Heading variant="h2" className="text-center">{copy.schedule}</Heading>
-          <img src="/component/right.webp" alt="" loading="lazy" draggable={false} className="w-10 md:w-12 h-auto mix-blend-multiply rotate-6" />
+    <section id="event-details" className="w-full max-w-7xl mx-auto px-5 md:px-10 py-24 md:py-32 border-t border-ink/10">
+      <div className="max-w-xl mx-auto px-4 md:px-0 flex flex-col items-center text-center gap-16">
+        {/* Venue */}
+        <div className="w-full flex flex-col items-center">
+          <Subtitle as="div" className="mb-6">{copy.venueLabel}</Subtitle>
+          <Heading variant="h2" className="mb-3">{WEDDING.venue}</Heading>
+          <Body variant="regular" className="italic mb-8">{copy.venueCity}</Body>
+          <a href={WEDDING.mapsUrl} target="_blank" rel="noopener noreferrer">
+            <Button variant="secondary">{copy.mapsBtn}</Button>
+          </a>
         </div>
-        <Divider className="mb-10" />
 
-        <Toggle
-          variant="segmented"
-          options={copy.agenda.map((g, idx) => ({ label: g.title, value: idx }))}
-          value={activeGroup}
-          onChange={setActiveGroup}
-        />
-        <Subtitle as="div" className="!tracking-[0.2em] mt-4 h-4">{group.venue}</Subtitle>
+        {/* Schedule */}
+        <div className="w-full pt-16 border-t border-ink/10 flex flex-col items-center">
+          <div className="flex items-end justify-center gap-3 md:gap-5 mb-4">
+            <img src="/component/left.webp" alt="" loading="lazy" draggable={false} className="w-10 md:w-12 h-auto mix-blend-multiply -rotate-6" />
+            <Heading variant="h2" className="text-center">{copy.schedule}</Heading>
+            <img src="/component/right.webp" alt="" loading="lazy" draggable={false} className="w-10 md:w-12 h-auto mix-blend-multiply rotate-6" />
+          </div>
+          <Divider className="mb-10" />
 
-        <div ref={timelineRef} key={activeGroup} className="relative w-full mt-4 animate-fade-in">
-          {/* The string */}
-          <svg
-            className="absolute inset-0 pointer-events-none text-ink/25"
-            width={string.width}
-            height={string.height}
-            aria-hidden
-          >
-            <path d={string.path} fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-          </svg>
+          <Toggle
+            variant="segmented"
+            options={copy.agenda.map((g, idx) => ({ label: g.title, value: idx }))}
+            value={activeGroup}
+            onChange={setActiveGroup}
+          />
+          <Subtitle as="div" className="!tracking-[0.2em] mt-4 h-4">{group.venue}</Subtitle>
 
-          <ol>
-            {group.items.map((item, idx) => {
-              const textLeft = idx % 2 === 0;
-
-              const text = (
-                <div className={`flex flex-col gap-1.5 ${textLeft ? 'items-end text-right' : 'items-start text-left'}`}>
-                  <span className="font-display italic text-[clamp(1.6rem,4.5vw,2.2rem)] text-ink-soft leading-none font-light">
-                    {item.time}
-                    {item.end && <span className="font-body not-italic text-[10px] tracking-[0.2em] text-ink-muted ml-1.5 align-middle">– {item.end}</span>}
-                  </span>
-                  <Subtitle as="span" className="!tracking-[0.2em] mt-1">{item.title}</Subtitle>
-                  <Body variant="small" as="span" className="italic">{item.description}</Body>
-                </div>
-              );
-
-              const art = (
-                <div className={`flex ${textLeft ? 'justify-start' : 'justify-end'}`}>
-                  <img
-                    src={MOMENT_ART[item.moment]}
-                    alt=""
-                    loading="lazy"
-                    draggable={false}
-                    className="w-24 md:w-32 aspect-square object-contain mix-blend-multiply"
-                  />
-                </div>
-              );
-
-              return (
-                <li key={item.time} className="grid grid-cols-[1fr_2.75rem_1fr] md:grid-cols-[1fr_3.5rem_1fr] items-center gap-x-3 md:gap-x-5 py-5">
-                  {textLeft ? text : art}
-                  <div
-                    ref={(el) => { knotRefs.current[idx] = el; }}
-                    className="relative z-10 mx-auto px-1 py-0.5 bg-cream text-ink-muted text-xs leading-none"
-                    aria-hidden
-                  >
-                    ✦
-                  </div>
-                  {textLeft ? art : text}
-                </li>
-              );
-            })}
-          </ol>
-        </div>
-      </div>
-
-      {/* Dresscode */}
-      <div className="w-full pt-16 border-t border-ink/10 flex flex-col items-center">
-        <Heading variant="h2" className="mb-4 text-center">
-          {copy.dresscode}
-        </Heading>
-        <Divider className="mb-6" />
-
-        <img src="/component/13.webp" alt="" loading="lazy" draggable={false} className="w-16 h-auto mix-blend-multiply mb-5" />
-
-        <div className="grid grid-cols-3 gap-3 md:gap-4 w-full max-w-[280px] md:max-w-xs">
-          {PALETTE.map((color) => (
-            <div
-              key={color}
-              className="aspect-[3/4] rounded-2xl border border-ink/10"
-              style={{ backgroundColor: color }}
+          <div ref={timelineRef} key={activeGroup} className="relative w-full mt-4 animate-fade-in">
+            {/* The string */}
+            <svg
+              className="absolute inset-0 pointer-events-none text-ink/25"
+              width={string.width}
+              height={string.height}
               aria-hidden
-            />
-          ))}
+            >
+              <path d={string.path} fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+            </svg>
+
+            <ol>
+              {group.items.map((item, idx) => {
+                const textLeft = idx % 2 === 0;
+
+                const text = (
+                  <div className={`flex flex-col gap-1.5 ${textLeft ? 'items-end text-right' : 'items-start text-left'}`}>
+                    <span className="font-display italic text-[clamp(1.6rem,4.5vw,2.2rem)] text-ink-soft leading-none font-light">
+                      {item.time}
+                      {item.end && <span className="font-body not-italic text-[10px] tracking-[0.2em] text-ink-muted ml-1.5 align-middle">– {item.end}</span>}
+                    </span>
+                    <Subtitle as="span" className="!tracking-[0.2em] mt-1">{item.title}</Subtitle>
+                    <Body variant="small" as="span" className="italic">{item.description}</Body>
+                  </div>
+                );
+
+                const art = (
+                  <div className={`flex ${textLeft ? 'justify-start' : 'justify-end'}`}>
+                    <img
+                      src={MOMENT_ART[item.moment]}
+                      alt=""
+                      loading="lazy"
+                      draggable={false}
+                      className="w-24 md:w-32 aspect-square object-contain mix-blend-multiply"
+                    />
+                  </div>
+                );
+
+                return (
+                  <li key={item.time} className="grid grid-cols-[1fr_2.75rem_1fr] md:grid-cols-[1fr_3.5rem_1fr] items-center gap-x-3 md:gap-x-5 py-5">
+                    {textLeft ? text : art}
+                    <div
+                      ref={(el) => { knotRefs.current[idx] = el; }}
+                      className="relative z-10 mx-auto px-1 py-0.5 bg-cream text-ink-muted text-xs leading-none"
+                      aria-hidden
+                    >
+                      ✦
+                    </div>
+                    {textLeft ? art : text}
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
         </div>
 
-        <Body variant="regular" className="mt-10 max-w-sm text-center italic">
-          {copy.dresscodeNote}
-        </Body>
+        {/* Dresscode */}
+        <div className="w-full pt-16 border-t border-ink/10 flex flex-col items-center">
+          <Heading variant="h2" className="mb-4 text-center">
+            {copy.dresscode}
+          </Heading>
+          <Divider className="mb-6" />
+
+          <img src="/component/13.webp" alt="" loading="lazy" draggable={false} className="w-16 h-auto mix-blend-multiply mb-5" />
+
+          <div className="grid grid-cols-3 gap-3 md:gap-4 w-full max-w-[280px] md:max-w-xs">
+            {PALETTE.map((color) => (
+              <div
+                key={color}
+                className="aspect-[3/4] rounded-2xl border border-ink/10"
+                style={{ backgroundColor: color }}
+                aria-hidden
+              />
+            ))}
+          </div>
+
+          <Body variant="regular" className="mt-10 max-w-sm text-center italic">
+            {copy.dresscodeNote}
+          </Body>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

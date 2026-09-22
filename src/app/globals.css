@@ -65,3 +65,12 @@ body.entrance-locked {
   background: var(--ink);
   opacity: 0.15;
 }
+
+/* Gentle fade-up for content that appears (RSVP steps, schedule tabs) */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}

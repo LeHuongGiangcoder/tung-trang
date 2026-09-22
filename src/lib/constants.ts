@@ -8,6 +8,8 @@ export const WEDDING = {
   dateISO: '2027-01-03T16:00:00+07:00',
   city: 'Hanoi',
   country: 'Vietnam',
+  venue: 'Sheraton Tay Ho',
+  mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Sheraton+Hanoi+Hotel+Tay+Ho',
 } as const;
 
 export const COPY: Record<Lang, {
@@ -60,6 +62,9 @@ export const COPY: Record<Lang, {
     body: string;
   };
   eventDetails: {
+    venueLabel: string;
+    venueCity: string;
+    mapsBtn: string;
     schedule: string;
     dresscode: string;
     agenda: {
@@ -155,6 +160,9 @@ export const COPY: Record<Lang, {
       body: "We can't wait to see you!"
     },
     eventDetails: {
+      venueLabel: 'The Venue',
+      venueCity: 'Hanoi, Vietnam',
+      mapsBtn: 'Open in Google Maps',
       schedule: 'Schedule',
       dresscode: 'Dresscode',
       agenda: [
@@ -265,6 +273,9 @@ export const COPY: Record<Lang, {
       body: 'Rất mong được gặp bạn!'
     },
     eventDetails: {
+      venueLabel: 'Địa điểm',
+      venueCity: 'Hà Nội, Việt Nam',
+      mapsBtn: 'Xem trên Google Maps',
       schedule: 'Lịch trình',
       dresscode: 'Trang phục',
       agenda: [
