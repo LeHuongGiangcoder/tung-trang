@@ -180,6 +180,7 @@ export const COPY: Record<Lang, {
       agenda: [
         {
           title: 'The Vows',
+          venue: 'Sunday, 3 January · Sheraton',
           items: [
             { time: '15:30', moment: 'checkin', title: 'Check-in', description: 'Arrive and snap a few photos' },
             { time: '16:00', moment: 'vows', title: 'Vows Ceremony', description: 'We say our vows and exchange rings' },
@@ -188,7 +189,7 @@ export const COPY: Record<Lang, {
         },
         {
           title: 'The Party',
-          venue: 'Ballroom',
+          venue: 'Sunday, 3 January · Ballroom',
           items: [
             { time: '18:00', moment: 'welcome', title: 'Welcome', description: 'Photobooth pictures in the ballroom foyer' },
             { time: '18:30', moment: 'ceremony', title: 'Ceremony', description: 'Cake cutting and a wine-pouring toast' },
@@ -306,6 +307,7 @@ export const COPY: Record<Lang, {
       agenda: [
         {
           title: 'Lễ Vows',
+          venue: 'Chủ nhật, 03/01 · Sheraton',
           items: [
             { time: '15:30', moment: 'checkin', title: 'Đón khách', description: 'Khách mời check-in và chụp ảnh' },
             { time: '16:00', moment: 'vows', title: 'Lễ Vows', description: 'Lễ tuyên thệ và trao nhẫn' },
@@ -314,7 +316,7 @@ export const COPY: Record<Lang, {
         },
         {
           title: 'Tiệc cưới',
-          venue: 'Ballroom',
+          venue: 'Chủ nhật, 03/01 · Ballroom',
           items: [
             { time: '18:00', moment: 'welcome', title: 'Đón khách', description: 'Chụp ảnh photobooth tại sảnh ballroom' },
             { time: '18:30', moment: 'ceremony', title: 'Nghi thức', description: 'Cắt bánh, rót rượu và làm lễ' },
