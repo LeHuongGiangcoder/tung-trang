@@ -1,6 +1,6 @@
 export type Lang = 'en' | 'vi';
 
-export type AgendaMoment = 'checkin' | 'vows' | 'photos' | 'welcome' | 'ceremony' | 'dinner' | 'party';
+export type AgendaMoment = 'checkin' | 'vows' | 'photos' | 'welcome' | 'ceremony' | 'dinner' | 'party' | 'brunch';
 
 export const WEDDING = {
   groom: 'Tung',
@@ -56,6 +56,12 @@ export const COPY: Record<Lang, {
     wishesLabel: string;
     wishesPlaceholder: string;
     submitDetailsBtn: string;
+
+    brunchLabel: string;
+    brunchHelper: string;
+    brunchYes: string;
+    brunchNo: string;
+    brunchNewNote: string;
   };
   thankYou: {
     title: string;
@@ -83,7 +89,7 @@ export const COPY: Record<Lang, {
     hero: {
       eyebrow: 'save the date',
       ampersand: 'and',
-      dateLine: 'Saturday, 23 January 2027',
+      dateLine: 'Sunday, 3 January 2027',
       location: 'Hanoi, Vietnam',
     },
     nav: { venue: 'Venue', schedule: 'Schedule', dresscode: 'Dresscode', visa: 'Visa', travel: 'Travel', rsvp: 'RSVP' },
@@ -153,7 +159,13 @@ export const COPY: Record<Lang, {
       mealPlaceholder: 'e.g. Vegetarian, food allergies...',
       wishesLabel: 'Leave us a note',
       wishesPlaceholder: 'A wish, a memory, anything...',
-      submitDetailsBtn: 'Send it in'
+      submitDetailsBtn: 'Send it in',
+
+      brunchLabel: 'Brunch the next day?',
+      brunchHelper: 'Monday 4 January, 12:00 at the Sheraton — a slow, easy goodbye before everyone heads home.',
+      brunchYes: 'Yes, see you there!',
+      brunchNo: "Can't make brunch",
+      brunchNewNote: "You've already RSVP'd — thank you! We've since added a brunch the day after, so we'd love to know if you can stay for it."
     },
     thankYou: {
       title: 'Thank You',
@@ -184,6 +196,13 @@ export const COPY: Record<Lang, {
             { time: '21:30', end: '02:00', moment: 'party', title: 'After Party', description: 'Games, then dancing until late' },
           ],
         },
+        {
+          title: 'Brunch',
+          venue: 'Monday, 4 January · Sheraton',
+          items: [
+            { time: '12:00', moment: 'brunch', title: 'Farewell Brunch', description: 'One last long lunch before you head home' },
+          ],
+        },
       ],
       dresscodeNote: 'We would love to see you in soft blush, warm neutrals and olive greens — whatever makes you feel your best.',
     }
@@ -196,7 +215,7 @@ export const COPY: Record<Lang, {
     hero: {
       eyebrow: 'lưu lại ngày',
       ampersand: 'và',
-      dateLine: 'Thứ bảy, 23 tháng 01 năm 2027',
+      dateLine: 'Chủ nhật, 03 tháng 01 năm 2027',
       location: 'Hà Nội, Việt Nam',
     },
     nav: { venue: 'Địa điểm', schedule: 'Lịch trình', dresscode: 'Trang phục', visa: 'Visa', travel: 'Du lịch', rsvp: 'Xác nhận' },
@@ -266,7 +285,13 @@ export const COPY: Record<Lang, {
       mealPlaceholder: 'VD: Ăn chay, dị ứng hải sản...',
       wishesLabel: 'Để lại đôi lời nhé',
       wishesPlaceholder: 'Một lời chúc, một kỷ niệm, gì cũng được...',
-      submitDetailsBtn: 'Gửi nhé'
+      submitDetailsBtn: 'Gửi nhé',
+
+      brunchLabel: 'Ở lại brunch hôm sau nhé?',
+      brunchHelper: 'Thứ hai, 04/01, 12:00 tại Sheraton — một bữa trưa thong thả trước khi mọi người về.',
+      brunchYes: 'Có chứ, hẹn gặp bạn!',
+      brunchNo: 'Mình không ở lại được',
+      brunchNewNote: 'Bạn đã xác nhận rồi — cảm ơn bạn nhiều! Chúng mình vừa thêm một bữa brunch vào hôm sau, bạn cho tụi mình biết có ở lại được không nhé.'
     },
     thankYou: {
       title: 'Cảm Ơn Bạn',
@@ -295,6 +320,13 @@ export const COPY: Record<Lang, {
             { time: '18:30', moment: 'ceremony', title: 'Nghi thức', description: 'Cắt bánh, rót rượu và làm lễ' },
             { time: '19:00', moment: 'dinner', title: 'Tiệc tối', description: 'Cùng dùng bữa tối' },
             { time: '21:30', end: '02:00', moment: 'party', title: 'After Party', description: 'Gameshow và khiêu vũ' },
+          ],
+        },
+        {
+          title: 'Brunch',
+          venue: 'Thứ hai, 04/01 · Sheraton',
+          items: [
+            { time: '12:00', moment: 'brunch', title: 'Brunch chia tay', description: 'Bữa trưa thong thả trước khi mọi người về' },
           ],
         },
       ],

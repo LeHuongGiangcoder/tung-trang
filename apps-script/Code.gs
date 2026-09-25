@@ -12,8 +12,9 @@
  *
  *   Update  { action: 'update', row_number, "Guest name", "Join? from Guest", ... }
  *     → { success: true }
- *       Writes only the six answer columns on that row, after checking the row
- *       still belongs to that guest (so a re-sorted sheet can't get the wrong row).
+ *       Writes only the answer columns listed in JOIN_COLS / TEXT_COLS on that row, after
+ *       checking the row still belongs to that guest (so a re-sorted sheet can't get the
+ *       wrong row).
  *
  *   List    GET ?action=list&secret=…
  *     → { guests: [{ row_number, ...columns }] }
@@ -24,6 +25,8 @@
  *
  * SETUP
  *   1. Open the "Anh Tùng & Chị Trang RSVP" sheet → Extensions → Apps Script.
+ *      The RSVP tab needs a header for every column in JOIN_COLS and TEXT_COLS below;
+ *      order doesn't matter, headers are matched by name.
  *   2. Paste this file in as Code.gs and save.
  *   3. Project Settings → Script properties → add RSVP_SECRET = <a long random string>.
  *   4. Deploy → New deployment → type "Web app":
@@ -42,7 +45,12 @@ const GUEST_COL = 'Guest name';
 const PARTNER_COL = 'Name of other guest';
 
 // The only columns the site is allowed to write
-const JOIN_COLS = ['Join? from Guest', 'Join? from Partner'];
+const JOIN_COLS = [
+  'Join? from Guest',
+  'Join? from Partner',
+  'Brunch? from Guest',
+  'Brunch? from Partner',
+];
 const TEXT_COLS = [
   'Meal preferences from Guest',
   'Meal preferences from Partner',
@@ -136,14 +144,15 @@ function updateRsvp_(body) {
       throw new Error('Row does not match guest');
     }
 
+    // A column the sheet doesn't have yet is skipped, so the rest of the answers still land
     JOIN_COLS.forEach((col) => {
-      if (!(col in body)) return;
+      if (!(col in body) || headers.indexOf(col) === -1) return;
       const value = body[col] === 'Yes' || body[col] === 'No' ? body[col] : '';
       sheet.getRange(rowNumber, columnIndex_(headers, col) + 1).setValue(value);
     });
 
     TEXT_COLS.forEach((col) => {
-      if (!(col in body)) return;
+      if (!(col in body) || headers.indexOf(col) === -1) return;
       sheet.getRange(rowNumber, columnIndex_(headers, col) + 1).setValue(cleanText_(body[col]));
     });
 
