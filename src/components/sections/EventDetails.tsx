@@ -23,6 +23,7 @@ const MOMENT_ART: Record<AgendaMoment, string> = {
   ceremony: '/component/15.webp',
   dinner: '/component/16.webp',
   party: '/component/6.webp',
+  brunch: '/component/12.webp',
 };
 
 // Sparkles (✦) and dots scattered around the venue cloud, as % of the illustration.
@@ -76,7 +77,7 @@ export default function EventDetails() {
   const knotRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [string, setString] = useState({ width: 0, height: 0, path: '' });
 
-  // Which part of the day is shown: 0 = vows, 1 = ballroom celebration
+  // Which part of the celebration is shown: 0 = vows, 1 = ballroom party, 2 = brunch the next day
   const [activeGroup, setActiveGroup] = useState(0);
   const group = copy.agenda[activeGroup];
 
@@ -164,7 +165,7 @@ export default function EventDetails() {
             value={activeGroup}
             onChange={setActiveGroup}
           />
-          <Subtitle as="div" className="!tracking-[0.2em] mt-4 h-4">{group.venue}</Subtitle>
+          <Subtitle as="div" className="!tracking-[0.2em] mt-4 min-h-4">{group.venue}</Subtitle>
 
           <div ref={timelineRef} key={activeGroup} className="relative w-full mt-4 animate-fade-in">
             {/* The string */}

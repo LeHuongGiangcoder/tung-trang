@@ -28,6 +28,53 @@ const formatName = (str: string) =>
 // Coerce a sheet value to a known Yes/No answer (or empty)
 const asYesNo = (v: unknown): 'Yes' | 'No' | '' => (v === 'Yes' || v === 'No' ? v : '');
 
+// A required Yes/No question: two outlined buttons, the chosen one filled in ink
+function YesNoField({
+  label,
+  helper,
+  error,
+  value,
+  yesLabel,
+  noLabel,
+  onSelect,
+}: {
+  label: string;
+  helper?: string;
+  error: boolean;
+  value: 'Yes' | 'No' | '';
+  yesLabel: string;
+  noLabel: string;
+  onSelect: (answer: 'Yes' | 'No') => void;
+}) {
+  const buttonClass = (selected: boolean) =>
+    `flex-1 py-4 px-4 text-[10px] tracking-[0.25em] uppercase transition-all duration-300 font-body font-light border ${
+      selected
+        ? 'border-ink bg-ink text-cream'
+        : error
+          ? 'border-red-400 text-red-500 hover:border-red-500 bg-transparent'
+          : 'border-ink/10 text-ink-soft hover:border-ink/30 bg-transparent'
+    }`;
+
+  return (
+    <div className="w-full flex flex-col gap-2.5">
+      <label className={`font-body text-[10px] md:text-xs tracking-[0.4em] uppercase font-normal ${error ? 'text-red-500' : 'text-ink-muted'}`}>
+        {label} <span className={error ? 'text-red-500 font-normal' : 'text-tan font-normal'}>*</span>
+      </label>
+      {helper && (
+        <span className="text-xs text-ink-muted font-light leading-relaxed">{helper}</span>
+      )}
+      <div className="flex gap-4 w-full mt-1.5">
+        <button type="button" onClick={() => onSelect('Yes')} className={buttonClass(value === 'Yes')}>
+          {yesLabel}
+        </button>
+        <button type="button" onClick={() => onSelect('No')} className={buttonClass(value === 'No')}>
+          {noLabel}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function RSVP() {
   const { lang } = useLang();
   const copy = COPY[lang].rsvp;
@@ -47,10 +94,12 @@ export default function RSVP() {
 
   // RSVP Form fields state
   const [attending, setAttending] = useState<'Yes' | 'No' | ''>('');
+  const [brunch, setBrunch] = useState<'Yes' | 'No' | ''>('');
   const [mealPreferences, setMealPreferences] = useState<string>('');
   const [wishes, setWishes] = useState<string>('');
 
   const [partnerAttending, setPartnerAttending] = useState<'Yes' | 'No' | ''>('');
+  const [partnerBrunch, setPartnerBrunch] = useState<'Yes' | 'No' | ''>('');
   const [partnerMealPreferences, setPartnerMealPreferences] = useState<string>('');
   const [partnerWishes, setPartnerWishes] = useState<string>('');
 
@@ -59,6 +108,8 @@ export default function RSVP() {
   // Highlight flags for missing attendance selections
   const [attendingError, setAttendingError] = useState(false);
   const [partnerAttendingError, setPartnerAttendingError] = useState(false);
+  const [brunchError, setBrunchError] = useState(false);
+  const [partnerBrunchError, setPartnerBrunchError] = useState(false);
 
   const handleBlur = () => {
     if (!fullName) return;
@@ -79,10 +130,12 @@ export default function RSVP() {
 
     // Pre-fill states from the guest object where they already exist
     setAttending(asYesNo(guest["Join? from Guest"]));
+    setBrunch(asYesNo(guest["Brunch? from Guest"]));
     setMealPreferences(guest["Meal preferences from Guest"] || '');
     setWishes(guest["Wish to couples from Guest"] || '');
 
     setPartnerAttending(asYesNo(guest["Join? from Partner"]));
+    setPartnerBrunch(asYesNo(guest["Brunch? from Partner"]));
     setPartnerMealPreferences(guest["Meal preferences from Partner"] || '');
     setPartnerWishes(guest["Wish to couples from Partner"] || '');
 
@@ -178,18 +231,25 @@ export default function RSVP() {
 
     const guestMissing = !attending;
     const partnerMissing = hasPartner && !partnerAttending;
+    // Brunch is only asked of people who are coming to the wedding
+    const guestBrunchMissing = attending === 'Yes' && !brunch;
+    const partnerBrunchMissing = hasPartner && partnerAttending === 'Yes' && !partnerBrunch;
 
-    if (guestMissing || partnerMissing) {
+    if (guestMissing || partnerMissing || guestBrunchMissing || partnerBrunchMissing) {
       setAttendingError(guestMissing);
       setPartnerAttendingError(partnerMissing);
+      setBrunchError(guestBrunchMissing);
+      setPartnerBrunchError(partnerBrunchMissing);
 
       // Jump to the first tab that needs attention
-      setActiveTab(guestMissing ? 'guest' : 'partner');
+      setActiveTab(guestMissing || guestBrunchMissing ? 'guest' : 'partner');
       return;
     }
 
     setAttendingError(false);
     setPartnerAttendingError(false);
+    setBrunchError(false);
+    setPartnerBrunchError(false);
     setSubmitError('');
     
     // Optimistic UI update: transition to success immediately
@@ -204,6 +264,9 @@ export default function RSVP() {
         
         "Join? from Guest": attending,
         "Join? from Partner": hasPartner ? partnerAttending : '',
+
+        "Brunch? from Guest": attending === 'Yes' ? brunch : '',
+        "Brunch? from Partner": hasPartner && partnerAttending === 'Yes' ? partnerBrunch : '',
 
         "Meal preferences from Guest": attending === 'Yes' ? mealPreferences : '',
         "Meal preferences from Partner": partnerAttending === 'Yes' ? partnerMealPreferences : '',
@@ -231,16 +294,36 @@ export default function RSVP() {
     }
   };
 
+  // Guests who replied before the brunch was added come back to an unanswered brunch question
+  const needsBrunchAnswer =
+    alreadySubmitted && ((attending === 'Yes' && !brunch) || (partnerAttending === 'Yes' && !partnerBrunch));
+
+  // A tab is flagged when either of its questions is unanswered
+  const guestTabError = attendingError || brunchError;
+  const partnerTabError = partnerAttendingError || partnerBrunchError;
+
   // Attendance validation message, derived from the missing flags so it re-translates on language switch
   const attendanceError = (() => {
-    if (!attendingError && !partnerAttendingError) return '';
-    const names: string[] = [];
-    if (attendingError) names.push(firstName(guestData?.["Guest name"] || fullName));
-    if (partnerAttendingError) names.push(firstName(guestData?.["Name of other guest"]));
-    const joined = names.join(lang === 'en' ? ' and ' : ' và ');
+    const joinNames: string[] = [];
+    if (attendingError) joinNames.push(firstName(guestData?.["Guest name"] || fullName));
+    if (partnerAttendingError) joinNames.push(firstName(guestData?.["Name of other guest"]));
+
+    if (joinNames.length) {
+      const joined = joinNames.join(lang === 'en' ? ' and ' : ' và ');
+      return lang === 'en'
+        ? `We still need to know if ${joined} can make it.`
+        : `Chúng mình vẫn chưa biết ${joined} có tới được không nè.`;
+    }
+
+    const brunchNames: string[] = [];
+    if (brunchError) brunchNames.push(firstName(guestData?.["Guest name"] || fullName));
+    if (partnerBrunchError) brunchNames.push(firstName(guestData?.["Name of other guest"]));
+
+    if (!brunchNames.length) return '';
+    const joined = brunchNames.join(lang === 'en' ? ' and ' : ' và ');
     return lang === 'en'
-      ? `We still need to know if ${joined} can make it.`
-      : `Chúng mình vẫn chưa biết ${joined} có tới được không nè.`;
+      ? `One more thing — can ${joined} stay for brunch?`
+      : `Còn một chút nữa thôi — ${joined} có ở lại brunch được không nè?`;
   })();
 
   // Resolve known error keys through copy so they re-translate on language switch
@@ -355,6 +438,12 @@ export default function RSVP() {
                 ? `Hi ${greetingNames}! Just a couple of details and you're all set:`
                 : `Chào ${greetingNames}! Thêm vài thông tin nữa là xong nhé:`}
             </Body>
+
+            {needsBrunchAnswer && (
+              <Body variant="small" className="mb-6 text-ink-soft italic leading-relaxed animate-fade-in">
+                {copy.brunchNewNote}
+              </Body>
+            )}
             
             {guestData?.["Name of other guest"] && (
               <div className="flex w-full mb-8 border-b border-ink/10">
@@ -362,11 +451,11 @@ export default function RSVP() {
                   type="button"
                   onClick={() => setActiveTab('guest')}
                   className={`flex-1 pb-3 text-xs tracking-widest uppercase transition-all duration-300 font-body font-light relative ${
-                    activeTab === 'guest' ? 'text-ink' : attendingError ? 'text-red-500' : 'text-ink-muted/50 hover:text-ink-muted'
+                    activeTab === 'guest' ? 'text-ink' : guestTabError ? 'text-red-500' : 'text-ink-muted/50 hover:text-ink-muted'
                   }`}
                 >
                   {guestData["Guest name"] || fullName}
-                  {attendingError && (
+                  {guestTabError && (
                     <span className="absolute top-0 right-1 w-1.5 h-1.5 rounded-full bg-red-500 animate-fade-in" />
                   )}
                   {activeTab === 'guest' && (
@@ -377,11 +466,11 @@ export default function RSVP() {
                   type="button"
                   onClick={() => setActiveTab('partner')}
                   className={`flex-1 pb-3 text-xs tracking-widest uppercase transition-all duration-300 font-body font-light relative ${
-                    activeTab === 'partner' ? 'text-ink' : partnerAttendingError ? 'text-red-500' : 'text-ink-muted/50 hover:text-ink-muted'
+                    activeTab === 'partner' ? 'text-ink' : partnerTabError ? 'text-red-500' : 'text-ink-muted/50 hover:text-ink-muted'
                   }`}
                 >
                   {guestData["Name of other guest"]}
-                  {partnerAttendingError && (
+                  {partnerTabError && (
                     <span className="absolute top-0 right-1 w-1.5 h-1.5 rounded-full bg-red-500 animate-fade-in" />
                   )}
                   {activeTab === 'partner' && (
@@ -395,51 +484,35 @@ export default function RSVP() {
               
               {/* --- GUEST TAB CONTENT --- */}
               <div className={`w-full flex flex-col gap-8 transition-opacity duration-300 ${activeTab === 'guest' ? 'block animate-fade-in' : 'hidden'}`}>
-                {/* Yes/No Attendance */}
-                <div className="w-full flex flex-col gap-2.5">
-                  <label className={`font-body text-[10px] md:text-xs tracking-[0.4em] uppercase font-normal ${attendingError ? 'text-red-500' : 'text-ink-muted'}`}>
-                    {copy.attendingLabel} <span className={attendingError ? 'text-red-500 font-normal' : 'text-tan font-normal'}>*</span>
-                  </label>
-                  <div className="flex gap-4 w-full mt-1.5">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setAttending('Yes');
-                        setAttendingError(false);
-                        if (submitError) setSubmitError('');
-                      }}
-                      className={`flex-1 py-4 px-4 text-[10px] tracking-[0.25em] uppercase transition-all duration-300 font-body font-light border ${
-                        attending === 'Yes'
-                          ? 'border-ink bg-ink text-cream'
-                          : attendingError
-                            ? 'border-red-400 text-red-500 hover:border-red-500 bg-transparent'
-                            : 'border-ink/10 text-ink-soft hover:border-ink/30 bg-transparent'
-                      }`}
-                    >
-                      {copy.attendingYes}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setAttending('No');
-                        setAttendingError(false);
-                        if (submitError) setSubmitError('');
-                      }}
-                      className={`flex-1 py-4 px-4 text-[10px] tracking-[0.25em] uppercase transition-all duration-300 font-body font-light border ${
-                        attending === 'No'
-                          ? 'border-ink bg-ink text-cream'
-                          : attendingError
-                            ? 'border-red-400 text-red-500 hover:border-red-500 bg-transparent'
-                            : 'border-ink/10 text-ink-soft hover:border-ink/30 bg-transparent'
-                      }`}
-                    >
-                      {copy.attendingNo}
-                    </button>
-                  </div>
-                </div>
+                <YesNoField
+                  label={copy.attendingLabel}
+                  error={attendingError}
+                  value={attending}
+                  yesLabel={copy.attendingYes}
+                  noLabel={copy.attendingNo}
+                  onSelect={(answer) => {
+                    setAttending(answer);
+                    setAttendingError(false);
+                    if (submitError) setSubmitError('');
+                  }}
+                />
 
                 {attending === 'Yes' && (
                   <div className="w-full flex flex-col gap-8 animate-fade-in">
+                    <YesNoField
+                      label={copy.brunchLabel}
+                      helper={copy.brunchHelper}
+                      error={brunchError}
+                      value={brunch}
+                      yesLabel={copy.brunchYes}
+                      noLabel={copy.brunchNo}
+                      onSelect={(answer) => {
+                        setBrunch(answer);
+                        setBrunchError(false);
+                        if (submitError) setSubmitError('');
+                      }}
+                    />
+
                     {/* Meal Preferences */}
                     <div className="w-full flex flex-col gap-2.5">
                       <label htmlFor="mealPreferences" className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal">
@@ -479,51 +552,35 @@ export default function RSVP() {
               {/* --- PARTNER TAB CONTENT --- */}
               {guestData?.["Name of other guest"] && (
                 <div className={`w-full flex flex-col gap-8 transition-opacity duration-300 ${activeTab === 'partner' ? 'block animate-fade-in' : 'hidden'}`}>
-                  {/* Yes/No Attendance */}
-                  <div className="w-full flex flex-col gap-2.5">
-                    <label className={`font-body text-[10px] md:text-xs tracking-[0.4em] uppercase font-normal ${partnerAttendingError ? 'text-red-500' : 'text-ink-muted'}`}>
-                      {copy.attendingLabel} <span className={partnerAttendingError ? 'text-red-500 font-normal' : 'text-tan font-normal'}>*</span>
-                    </label>
-                    <div className="flex gap-4 w-full mt-1.5">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setPartnerAttending('Yes');
-                          setPartnerAttendingError(false);
-                          if (submitError) setSubmitError('');
-                        }}
-                        className={`flex-1 py-4 px-4 text-[10px] tracking-[0.25em] uppercase transition-all duration-300 font-body font-light border ${
-                          partnerAttending === 'Yes'
-                            ? 'border-ink bg-ink text-cream'
-                            : partnerAttendingError
-                              ? 'border-red-400 text-red-500 hover:border-red-500 bg-transparent'
-                              : 'border-ink/10 text-ink-soft hover:border-ink/30 bg-transparent'
-                        }`}
-                      >
-                        {copy.attendingYes}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setPartnerAttending('No');
-                          setPartnerAttendingError(false);
-                          if (submitError) setSubmitError('');
-                        }}
-                        className={`flex-1 py-4 px-4 text-[10px] tracking-[0.25em] uppercase transition-all duration-300 font-body font-light border ${
-                          partnerAttending === 'No'
-                            ? 'border-ink bg-ink text-cream'
-                            : partnerAttendingError
-                              ? 'border-red-400 text-red-500 hover:border-red-500 bg-transparent'
-                              : 'border-ink/10 text-ink-soft hover:border-ink/30 bg-transparent'
-                        }`}
-                      >
-                        {copy.attendingNo}
-                      </button>
-                    </div>
-                  </div>
+                  <YesNoField
+                    label={copy.attendingLabel}
+                    error={partnerAttendingError}
+                    value={partnerAttending}
+                    yesLabel={copy.attendingYes}
+                    noLabel={copy.attendingNo}
+                    onSelect={(answer) => {
+                      setPartnerAttending(answer);
+                      setPartnerAttendingError(false);
+                      if (submitError) setSubmitError('');
+                    }}
+                  />
 
                   {partnerAttending === 'Yes' && (
                     <div className="w-full flex flex-col gap-8 animate-fade-in">
+                      <YesNoField
+                        label={copy.brunchLabel}
+                        helper={copy.brunchHelper}
+                        error={partnerBrunchError}
+                        value={partnerBrunch}
+                        yesLabel={copy.brunchYes}
+                        noLabel={copy.brunchNo}
+                        onSelect={(answer) => {
+                          setPartnerBrunch(answer);
+                          setPartnerBrunchError(false);
+                          if (submitError) setSubmitError('');
+                        }}
+                      />
+
                       {/* Meal Preferences */}
                       <div className="w-full flex flex-col gap-2.5">
                         <label htmlFor="partnerMealPreferences" className="font-body text-[10px] md:text-xs tracking-[0.4em] uppercase text-ink-muted font-normal">

@@ -34,7 +34,7 @@ export default function Toggle<T>({
             key={String(opt.value)}
             type="button"
             onClick={() => onChange(opt.value)}
-            className={`px-5 py-2 rounded-full font-body text-[10px] tracking-[0.2em] uppercase transition-all duration-300 select-none outline-none ${
+            className={`px-3.5 md:px-5 py-2 rounded-full font-body text-[10px] tracking-[0.2em] uppercase transition-all duration-300 select-none outline-none ${
               value === opt.value
                 ? 'bg-ink text-cream'
                 : 'text-ink-soft hover:text-ink hover:bg-ink/5'
