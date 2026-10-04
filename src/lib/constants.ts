@@ -9,8 +9,15 @@ export const WEDDING = {
   city: 'Hanoi',
   country: 'Vietnam',
   venue: 'Sheraton Tay Ho',
-  mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Sheraton+Hanoi+Hotel+Tay+Ho',
 } as const;
+
+// Google Maps links for every place we gather, keyed the way the venue tabs refer to them
+export const VENUE_MAPS = {
+  sheraton: 'https://www.google.com/maps/search/?api=1&query=Sheraton+Hanoi+Hotel+Tay+Ho',
+  sen: 'https://www.google.com/maps/search/?api=1&query=Sen+Tay+Ho+Hanoi',
+} as const;
+
+export type VenueKey = keyof typeof VENUE_MAPS;
 
 export const COPY: Record<Lang, {
   entrance: { hint: string; whisper: string };
@@ -69,7 +76,7 @@ export const COPY: Record<Lang, {
   };
   eventDetails: {
     venueLabel: string;
-    venueLines: string[];
+    venues: { title: string; lines: string[]; maps: VenueKey; note?: string }[];
     mapsBtn: string;
     schedule: string;
     dresscode: string;
@@ -162,7 +169,7 @@ export const COPY: Record<Lang, {
       submitDetailsBtn: 'Send it in',
 
       brunchLabel: 'Brunch the next day?',
-      brunchHelper: 'Monday 4 January, 12:00 at the Sheraton — a slow, easy goodbye before everyone heads home.',
+      brunchHelper: 'Monday 4 January, 12:00 at Sen Tay Ho — a slow, easy goodbye before everyone heads home.',
       brunchYes: 'Yes, see you there!',
       brunchNo: "Can't make brunch",
       brunchNewNote: "You've already RSVP'd — thank you! We've since added a brunch the day after, so we'd love to know if you can stay for it."
@@ -173,7 +180,16 @@ export const COPY: Record<Lang, {
     },
     eventDetails: {
       venueLabel: 'The Venue',
-      venueLines: ['Sheraton', 'Tay Ho', 'Ha Noi'],
+      venues: [
+        { title: 'The Vows', lines: ['Sheraton', 'Tay Ho', 'Ha Noi'], maps: 'sheraton' },
+        {
+          title: 'The Party',
+          lines: ['Sheraton', 'Tay Ho', 'Ha Noi'],
+          maps: 'sheraton',
+          note: 'The after party location is tentative — we will update it here as soon as it is confirmed.',
+        },
+        { title: 'Brunch', lines: ['Sen', 'Tay Ho', 'Ha Noi'], maps: 'sen' },
+      ],
       mapsBtn: 'Open in Google Maps',
       schedule: 'Schedule',
       dresscode: 'Dresscode',
@@ -199,7 +215,7 @@ export const COPY: Record<Lang, {
         },
         {
           title: 'Brunch',
-          venue: 'Monday, 4 January · Sheraton',
+          venue: 'Monday, 4 January · Sen Tay Ho',
           items: [
             { time: '12:00', moment: 'brunch', title: 'Farewell Brunch', description: 'One last long lunch before you head home' },
           ],
@@ -289,7 +305,7 @@ export const COPY: Record<Lang, {
       submitDetailsBtn: 'Gửi nhé',
 
       brunchLabel: 'Ở lại brunch hôm sau nhé?',
-      brunchHelper: 'Thứ hai, 04/01, 12:00 tại Sheraton — một bữa trưa thong thả trước khi mọi người về.',
+      brunchHelper: 'Thứ hai, 04/01, 12:00 tại Sen Tây Hồ — một bữa trưa thong thả trước khi mọi người về.',
       brunchYes: 'Có chứ, hẹn gặp bạn!',
       brunchNo: 'Mình không ở lại được',
       brunchNewNote: 'Bạn đã xác nhận rồi — cảm ơn bạn nhiều! Chúng mình vừa thêm một bữa brunch vào hôm sau, bạn cho tụi mình biết có ở lại được không nhé.'
@@ -300,7 +316,16 @@ export const COPY: Record<Lang, {
     },
     eventDetails: {
       venueLabel: 'Địa điểm',
-      venueLines: ['Sheraton', 'Tây Hồ', 'Hà Nội'],
+      venues: [
+        { title: 'Lễ Vows', lines: ['Sheraton', 'Tây Hồ', 'Hà Nội'], maps: 'sheraton' },
+        {
+          title: 'Tiệc cưới',
+          lines: ['Sheraton', 'Tây Hồ', 'Hà Nội'],
+          maps: 'sheraton',
+          note: 'Địa điểm after party vẫn đang được chốt — chúng mình sẽ cập nhật ngay tại đây khi có thông tin chính thức.',
+        },
+        { title: 'Brunch', lines: ['Sen', 'Tây Hồ', 'Hà Nội'], maps: 'sen' },
+      ],
       mapsBtn: 'Xem trên Google Maps',
       schedule: 'Lịch trình',
       dresscode: 'Trang phục',
@@ -326,7 +351,7 @@ export const COPY: Record<Lang, {
         },
         {
           title: 'Brunch',
-          venue: 'Thứ hai, 04/01 · Sheraton',
+          venue: 'Thứ hai, 04/01 · Sen Tây Hồ',
           items: [
             { time: '12:00', moment: 'brunch', title: 'Brunch chia tay', description: 'Bữa trưa thong thả trước khi mọi người về' },
           ],

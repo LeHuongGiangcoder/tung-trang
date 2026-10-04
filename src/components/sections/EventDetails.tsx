@@ -2,7 +2,7 @@
 
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { useLang } from '@/hooks/useLang';
-import { COPY, WEDDING, type AgendaMoment } from '@/lib/constants';
+import { COPY, VENUE_MAPS, type AgendaMoment } from '@/lib/constants';
 import { Heading, Subtitle, Body } from '@/components/ui/Typography';
 import Toggle from '@/components/ui/Toggle';
 import Button from '@/components/ui/Button';
@@ -77,9 +77,11 @@ export default function EventDetails() {
   const knotRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [string, setString] = useState({ width: 0, height: 0, path: '' });
 
-  // Which part of the celebration is shown: 0 = vows, 1 = ballroom party, 2 = brunch the next day
-  const [activeGroup, setActiveGroup] = useState(0);
-  const group = copy.agenda[activeGroup];
+  // Which part of the celebration is shown: 0 = vows, 1 = ballroom party, 2 = brunch the next day.
+  // One switcher sits at the top and drives both the venue and the schedule below it.
+  const [activeEvent, setActiveEvent] = useState(0);
+  const venue = copy.venues[activeEvent];
+  const group = copy.agenda[activeEvent];
 
   useLayoutEffect(() => {
     const timeline = timelineRef.current;
@@ -104,17 +106,24 @@ export default function EventDetails() {
     const observer = new ResizeObserver(measure);
     observer.observe(timeline);
     return () => observer.disconnect();
-  }, [lang, activeGroup]);
+  }, [lang, activeEvent]);
 
   return (
     <section id="event-details" className="w-full max-w-7xl mx-auto px-5 md:px-10 py-24 md:py-32 border-t border-ink/10">
-      <div className="max-w-xl mx-auto px-4 md:px-0 flex flex-col items-center text-center gap-16">
+      <div className="max-w-xl mx-auto px-4 md:px-0 flex flex-col items-center text-center gap-10">
         {/* Venue */}
         <div id="venue" className="w-full flex flex-col items-center scroll-mt-28">
-          <Subtitle as="div" className="mb-1">{copy.venueLabel}</Subtitle>
+          <Toggle
+            variant="segmented"
+            options={copy.venues.map((v, idx) => ({ label: v.title, value: idx }))}
+            value={activeEvent}
+            onChange={setActiveEvent}
+          />
+
+          <Subtitle as="div" className="mt-8">{copy.venueLabel}</Subtitle>
 
           {/* Venue name set inside the cloud held by the two cupids (cloud centre ≈ 51.7% / 50%) */}
-          <div className="relative w-full max-w-md">
+          <div key={activeEvent} className="relative w-full max-w-md mt-1 animate-fade-in">
             <img src="/component/venue.webp" alt="" draggable={false} className="w-full h-auto mix-blend-multiply" />
 
             {FAIRY_DUST.map((d, i) => (
@@ -138,36 +147,36 @@ export default function EventDetails() {
             ))}
 
             <h3 className="absolute left-[51.7%] top-1/2 -translate-x-1/2 -translate-y-1/2 w-[40%] font-script font-semibold text-ink text-[clamp(1.35rem,5.4vw,2.15rem)] leading-[1.02] text-center">
-              <span className="sr-only">{copy.venueLines.join(' ')}</span>
-              {copy.venueLines.map((line) => (
+              <span className="sr-only">{venue.lines.join(' ')}</span>
+              {venue.lines.map((line) => (
                 <span key={line} className="block" aria-hidden>{line}</span>
               ))}
             </h3>
           </div>
 
-          <a href={WEDDING.mapsUrl} target="_blank" rel="noopener noreferrer" className="mt-3">
+          <a href={VENUE_MAPS[venue.maps]} target="_blank" rel="noopener noreferrer" className="mt-3">
             <Button variant="secondary">{copy.mapsBtn}</Button>
           </a>
+
+          {venue.note && (
+            <Body variant="small" className="mt-4 max-w-sm text-center italic">
+              {venue.note}
+            </Body>
+          )}
         </div>
 
         {/* Schedule */}
-        <div id="schedule" className="w-full pt-16 border-t border-ink/10 flex flex-col items-center scroll-mt-16">
+        <div id="schedule" className="w-full flex flex-col items-center scroll-mt-28">
           <div className="flex items-end justify-center gap-3 md:gap-5 mb-4">
             <img src="/component/left.webp" alt="" loading="lazy" draggable={false} className="w-10 md:w-12 h-auto mix-blend-multiply -rotate-6" />
             <Heading variant="h2" className="text-center">{copy.schedule}</Heading>
             <img src="/component/right.webp" alt="" loading="lazy" draggable={false} className="w-10 md:w-12 h-auto mix-blend-multiply rotate-6" />
           </div>
-          <Divider className="mb-10" />
+          <Divider className="mb-6" />
 
-          <Toggle
-            variant="segmented"
-            options={copy.agenda.map((g, idx) => ({ label: g.title, value: idx }))}
-            value={activeGroup}
-            onChange={setActiveGroup}
-          />
-          <Subtitle as="div" className="!tracking-[0.2em] mt-4 min-h-4">{group.venue}</Subtitle>
+          <Subtitle as="div" className="!tracking-[0.2em] min-h-4">{group.venue}</Subtitle>
 
-          <div ref={timelineRef} key={activeGroup} className="relative w-full mt-4 animate-fade-in">
+          <div ref={timelineRef} key={activeEvent} className="relative w-full mt-4 animate-fade-in">
             {/* The string */}
             <svg
               className="absolute inset-0 pointer-events-none text-ink/25"
@@ -224,7 +233,7 @@ export default function EventDetails() {
         </div>
 
         {/* Dresscode */}
-        <div id="dresscode" className="w-full pt-16 border-t border-ink/10 flex flex-col items-center scroll-mt-16">
+        <div id="dresscode" className="w-full mt-6 pt-16 border-t border-ink/10 flex flex-col items-center scroll-mt-16">
           <Heading variant="h2" className="mb-4 text-center">
             {copy.dresscode}
           </Heading>

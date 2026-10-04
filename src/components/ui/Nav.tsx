@@ -45,9 +45,9 @@ export default function Nav() {
     { href: '#venue', label: nav.venue },
     { href: '#schedule', label: nav.schedule },
     { href: '#dresscode', label: nav.dresscode },
+    { href: '#rsvp', label: nav.rsvp },
     { href: '#visa', label: nav.visa },
     { href: '#travel', label: nav.travel },
-    { href: '#rsvp', label: nav.rsvp },
   ];
 
   const langOptions: ToggleOption<'en' | 'vi'>[] = [

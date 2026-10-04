@@ -95,9 +95,9 @@ export default function HomePage({ skipIntro = false }: { skipIntro?: boolean })
         <Nav />
         <Hero startAnimation={revealContent} />
         <EventDetails />
+        <RSVP />
         <Visa />
         <Travel />
-        <RSVP />
 
         {/* Audio Toggle */}
         <div className="fixed bottom-6 right-6 z-40">
