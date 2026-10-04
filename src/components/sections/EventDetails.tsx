@@ -10,7 +10,7 @@ import Button from '@/components/ui/Button';
 // Dresscode palette, rows run blush → neutrals → greens
 const PALETTE = [
   '#F6D8DD', '#DBAAB5', '#C98795',
-  '#F3EDE7', '#E5DFCC', '#B29475',
+  '#E6DAC3', '#D0C1A5', '#A68A6B',
   '#9BA271', '#717232', '#1F1B17',
 ];
 
