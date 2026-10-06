@@ -7,10 +7,9 @@ import { Heading, Subtitle, Body } from '@/components/ui/Typography';
 import Toggle from '@/components/ui/Toggle';
 import Button from '@/components/ui/Button';
 
-// Dresscode palette, rows run blush → neutrals → greens
+// Dresscode palette, rows run blush → greens
 const PALETTE = [
   '#F6D8DD', '#DBAAB5', '#C98795',
-  '#E6DAC3', '#D0C1A5', '#A68A6B',
   '#9BA271', '#717232', '#1F1B17',
 ];
 
