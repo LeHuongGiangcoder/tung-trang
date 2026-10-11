@@ -105,6 +105,8 @@ export default function Hero({ startAnimation }: HeroProps) {
           <Subtitle className="mt-2">
             {copy.location}
           </Subtitle>
+
+          <Countdown start={startAnimation} />
         </div>
 
         {/* Scroll cue, kept in the flow so it always sits below the location */}
@@ -127,6 +129,88 @@ export default function Hero({ startAnimation }: HeroProps) {
         }
       `}</style>
     </section>
+  );
+}
+
+// Calendar days until the wedding, counted in Hanoi time so every guest sees the same number
+function daysUntilWedding() {
+  const hanoiToday = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' }).format(new Date());
+  const toUTC = (ymd: string) => {
+    const [y, m, d] = ymd.split('-').map(Number);
+    return Date.UTC(y, m - 1, d);
+  };
+  return Math.round((toUTC(WEDDING.dateISO.slice(0, 10)) - toUTC(hanoiToday)) / 86_400_000);
+}
+
+// Big "84 / days to go" under the location. Computed in the browser (the page is
+// prerendered, so a build-time number would go stale), then counts up from 0 once.
+function Countdown({ start }: { start: boolean }) {
+  const { lang } = useLang();
+  const copy = COPY[lang].hero.countdown;
+  const [days, setDays] = useState<number | null>(null);
+  const [shown, setShown] = useState(0);
+
+  useEffect(() => {
+    const update = () => setDays(daysUntilWedding());
+    update();
+    const id = setInterval(update, 60_000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Count up to the real number once the page is revealed (after the intro, if any)
+  useEffect(() => {
+    if (!start || days === null || days < 2) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setShown(days);
+      return;
+    }
+    const t0 = performance.now();
+    const duration = 1400;
+    let frame: number;
+    const tick = (now: number) => {
+      const t = Math.min((now - t0) / duration, 1);
+      setShown(Math.round(days * (1 - Math.pow(1 - t, 3))));
+      if (t < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [start, days]);
+
+  const sparkle = (delay: number) => (
+    <span className="animate-twinkle text-tan text-sm md:text-base leading-none" style={{ animationDelay: `${delay}s` }} aria-hidden>
+      ✦
+    </span>
+  );
+
+  // Close to (and after) the day, a short phrase replaces the number
+  const phrase = days === null || days > 1 ? null : days === 1 ? copy.tomorrow : days === 0 ? copy.today : copy.married;
+
+  return (
+    <div
+      className="mt-6 flex flex-col items-center min-h-[5.5rem] transition-opacity duration-700"
+      style={{ opacity: days === null ? 0 : 1 }}
+    >
+      {phrase ? (
+        <div className="flex items-center gap-4">
+          {sparkle(0)}
+          <span className="font-display italic font-light text-ink text-[clamp(1.6rem,5vw,2.25rem)] leading-none">{phrase}</span>
+          {sparkle(1.3)}
+        </div>
+      ) : (
+        <>
+          <div className="flex items-center gap-4 md:gap-5">
+            {sparkle(0)}
+            <span className="font-display italic font-light text-ink text-[clamp(3.25rem,11vw,4.75rem)] leading-none tabular-nums">
+              {shown}
+            </span>
+            {sparkle(1.3)}
+          </div>
+          <span className="mt-2 font-body text-[10px] md:text-[11px] tracking-[0.35em] uppercase text-ink-soft">
+            {copy.days}
+          </span>
+        </>
+      )}
+    </div>
   );
 }
 

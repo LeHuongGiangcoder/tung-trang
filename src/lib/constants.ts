@@ -21,7 +21,14 @@ export type VenueKey = keyof typeof VENUE_MAPS;
 
 export const COPY: Record<Lang, {
   entrance: { hint: string; whisper: string; skip: string };
-  hero: { eyebrow: string; ampersand: string; dateLine: string; location: string };
+  hero: {
+    eyebrow: string;
+    ampersand: string;
+    dateLine: string;
+    location: string;
+    // `days` is the label shown under the big number of days left
+    countdown: { days: string; tomorrow: string; today: string; married: string };
+  };
   nav: { story: string; details: string; dresscode: string; visa: string; travel: string; rsvp: string; };
   visa: {
     subtitle: string;
@@ -102,6 +109,7 @@ export const COPY: Record<Lang, {
       ampersand: 'and',
       dateLine: 'Sunday, 3 January 2027',
       location: 'Hanoi, Vietnam',
+      countdown: { days: 'days to go', tomorrow: 'Tomorrow!', today: 'Today ♡', married: 'Married · 3 January 2027 ♡' },
     },
     nav: { story: 'Our Story', details: 'Details', dresscode: 'Dresscode', visa: 'Visa', travel: 'Travel', rsvp: 'RSVP' },
     visa: {
@@ -156,7 +164,7 @@ export const COPY: Record<Lang, {
     },
     photos: {
       subtitle: 'Our story so far',
-      story: "Our story began at a Tết celebration on Roosevelt Island, New York. With some gentle nudging from mutual friends (and a little quiet scheming from Tùng), one conversation turned into many. And now we're bringing it home to Hanoi ♡",
+      story: "Our story began at a Tết celebration on Roosevelt Island, New York. With some gentle nudging from mutual friends (and a little quiet scheming from Tùng), one conversation turned into many. And now, we're bringing it home to Hanoi ♡",
       hint: 'Tap to flip through',
       restart: 'Tap to start over',
     },
@@ -251,6 +259,7 @@ export const COPY: Record<Lang, {
       ampersand: 'và',
       dateLine: 'Chủ nhật, 03 tháng 01 năm 2027',
       location: 'Hà Nội, Việt Nam',
+      countdown: { days: 'ngày nữa', tomorrow: 'Ngày mai!', today: 'Hôm nay ♡', married: 'Đã nên duyên · 03.01.2027 ♡' },
     },
     nav: { story: 'Câu chuyện', details: 'Thông tin', dresscode: 'Trang phục', visa: 'Visa', travel: 'Du lịch', rsvp: 'Xác nhận' },
     visa: {
