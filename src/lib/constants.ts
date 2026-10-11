@@ -221,7 +221,7 @@ export const COPY: Record<Lang, {
           ],
         },
       ],
-      dresscodeNote: 'We would love to see you in soft blush or olive greens — whatever makes you feel your best.',
+      dresscodeNote: 'We would love to see you in soft blush or olive greens — dark suits are perfect too. Whatever makes you feel your best.',
     }
   },
   vi: {
@@ -357,7 +357,7 @@ export const COPY: Record<Lang, {
           ],
         },
       ],
-      dresscodeNote: 'Chúng mình rất vui nếu bạn chọn trang phục theo tông hồng phấn hoặc xanh olive — miễn là bạn thấy thoải mái và tự tin nhất.',
+      dresscodeNote: 'Chúng mình rất vui nếu bạn chọn trang phục theo tông hồng phấn hoặc xanh olive — vest tối màu cũng rất hợp. Miễn là bạn thấy thoải mái và tự tin nhất.',
     }
   },
 };
