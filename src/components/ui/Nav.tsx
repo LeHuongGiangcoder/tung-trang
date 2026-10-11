@@ -56,7 +56,8 @@ export default function Nav() {
   ];
 
   return (
-    <nav className="fixed top-0 inset-x-0 z-30 pointer-events-none">
+    // Lifted above the floating music button while the mobile menu is open
+    <nav className={`fixed top-0 inset-x-0 pointer-events-none ${mobileMenuOpen ? 'z-[60]' : 'z-30'}`}>
       {/* Main Top Bar */}
       <div className="mx-auto max-w-7xl px-3 md:px-6 py-4 md:py-6 flex items-center justify-between">
         {/* Monogram */}
@@ -99,15 +100,16 @@ export default function Nav() {
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Overlay. Overhangs the viewport by 6rem top and bottom (padded back in) so it
+          also covers the strips behind mobile browser toolbars as they grow and shrink. */}
       <div 
-        className={`fixed inset-0 bg-[#F5F2EA]/95 backdrop-blur-xl z-50 flex flex-col items-center justify-center transition-all duration-500 md:hidden pointer-events-auto ${
+        className={`fixed inset-x-0 -top-24 -bottom-24 py-24 bg-[#F5F2EA]/95 backdrop-blur-xl z-50 flex flex-col items-center justify-center transition-all duration-500 md:hidden pointer-events-auto ${
           mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
         }`}
       >
         <button 
           onClick={() => setMobileMenuOpen(false)}
-          className="absolute top-6 right-6 p-4 text-ink-soft hover:text-ink transition-colors"
+          className="absolute top-[7.5rem] right-6 p-4 text-ink-soft hover:text-ink transition-colors"
           aria-label="Close menu"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -123,7 +125,7 @@ export default function Nav() {
         </ul>
         
         {/* Subtle decorative line */}
-        <div className="absolute bottom-16 w-px h-16 bg-ink/20"></div>
+        <div className="absolute bottom-40 w-px h-16 bg-ink/20"></div>
       </div>
     </nav>
   );
