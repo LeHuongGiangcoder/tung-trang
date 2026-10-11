@@ -156,7 +156,7 @@ export const COPY: Record<Lang, {
     },
     photos: {
       subtitle: 'Our story so far',
-      story: "Our story began at a Tết celebration on Roosevelt Island, New York. With some gentle nudging from mutual friends (and a little quiet scheming from Tùng), one conversation turned into many. Now we're bringing it home to Hanoi ♡",
+      story: "Our story began at a Tết celebration on Roosevelt Island, New York. With some gentle nudging from mutual friends (and a little quiet scheming from Tùng), one conversation turned into many. And now we're bringing it home to Hanoi ♡",
       hint: 'Tap to flip through',
       restart: 'Tap to start over',
     },
