@@ -10,7 +10,6 @@ import Visa from '@/components/sections/Visa';
 import Travel from '@/components/sections/Travel';
 import RSVP from '@/components/sections/RSVP';
 import ThankYou from '@/components/sections/ThankYou';
-import Button from '@/components/ui/Button';
 
 // The whole invitation page. skipIntro opens straight on the hero with no sketch entrance,
 // for direct links like /schedule.
@@ -93,33 +92,13 @@ export default function HomePage({ skipIntro = false }: { skipIntro?: boolean })
           sketch overlay owns the whole screen (no content peeking on mobile), then
           crossfades in as the overlay fades away. */}
       <div className={`transition-opacity duration-1000 ${revealContent ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-        <Nav />
+        <Nav isPlaying={isPlaying} onToggleAudio={toggleAudio} />
         <Hero startAnimation={revealContent} />
         <PhotoStack />
         <EventDetails />
         <RSVP />
         <Visa />
         <Travel />
-
-        {/* Audio Toggle */}
-        <div className="fixed bottom-6 right-6 z-40">
-          <Button
-            variant="circle"
-            onClick={toggleAudio}
-            aria-label={isPlaying ? 'Pause music' : 'Play music'}
-          >
-            {isPlaying ? (
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                <rect x="6" y="4" width="4" height="16" />
-                <rect x="14" y="4" width="4" height="16" />
-              </svg>
-            ) : (
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden className="ml-0.5">
-                <polygon points="5 3 19 12 5 21 5 3" />
-              </svg>
-            )}
-          </Button>
-        </div>
 
         <ThankYou />
       </div>
