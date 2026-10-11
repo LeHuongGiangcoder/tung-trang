@@ -32,7 +32,6 @@ export default function Nav({ isPlaying, onToggleAudio }: NavProps) {
   const links = [
     { href: '#story', label: nav.story },
     { href: '#details', label: nav.details },
-    { href: '#dresscode', label: nav.dresscode },
     { href: '#rsvp', label: nav.rsvp },
     { href: '#travel', label: nav.travel },
   ];

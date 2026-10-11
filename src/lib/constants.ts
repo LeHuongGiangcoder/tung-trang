@@ -29,7 +29,7 @@ export const COPY: Record<Lang, {
     // Unit labels under the live countdown, then the phrases for the day itself and after
     countdown: { days: string; hours: string; minutes: string; seconds: string; today: string; married: string };
   };
-  nav: { story: string; details: string; dresscode: string; travel: string; rsvp: string; };
+  nav: { story: string; details: string; travel: string; rsvp: string; };
   visa: {
     subtitle: string;
     title: string;
@@ -112,7 +112,7 @@ export const COPY: Record<Lang, {
       location: 'Hanoi, Vietnam',
       countdown: { days: 'days', hours: 'hours', minutes: 'min', seconds: 'sec', today: 'Today ♡', married: 'Married · 3 January 2027 ♡' },
     },
-    nav: { story: 'Our Story', details: 'Details', dresscode: 'Dresscode', travel: 'Travel', rsvp: 'RSVP' },
+    nav: { story: 'Our Story', details: 'Details', travel: 'Travel', rsvp: 'RSVP' },
     visa: {
       subtitle: 'Before you fly',
       title: 'E-Visa Guide',
@@ -164,7 +164,7 @@ export const COPY: Record<Lang, {
       ],
     },
     photos: {
-      subtitle: 'Our story so far',
+      subtitle: 'Our Story So Far',
       story: "Our story began at a Tết celebration on Roosevelt Island, New York. With some gentle nudging from mutual friends (and a little quiet scheming from Tùng), one conversation turned into many. And now, we're bringing it home to Hanoi ♡",
       hint: 'Tap to flip through',
       restart: 'Tap to start over',
@@ -262,7 +262,7 @@ export const COPY: Record<Lang, {
       location: 'Hà Nội, Việt Nam',
       countdown: { days: 'ngày', hours: 'giờ', minutes: 'phút', seconds: 'giây', today: 'Hôm nay ♡', married: 'Đã nên duyên · 03.01.2027 ♡' },
     },
-    nav: { story: 'Câu chuyện', details: 'Thông tin', dresscode: 'Trang phục', travel: 'Du lịch', rsvp: 'Xác nhận' },
+    nav: { story: 'Câu chuyện', details: 'Thông tin', travel: 'Du lịch', rsvp: 'Xác nhận' },
     visa: {
       subtitle: 'Trước khi lên đường',
       title: 'Hướng dẫn E-Visa',

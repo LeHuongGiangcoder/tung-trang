@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useLang } from '@/hooks/useLang';
 import { COPY, FLASHBACK_IMAGES, PILE_LAYOUT } from '@/lib/constants';
-import { Subtitle } from '@/components/ui/Typography';
+import { Heading } from '@/components/ui/Typography';
 
 // Same prints as the sketch intro: the bench portrait sits at the bottom of the pile
 const PHOTOS = ['/images/bench-portrait.webp', ...FLASHBACK_IMAGES];
@@ -23,9 +23,10 @@ export default function PhotoStack() {
       {/* Story text: above the photos on phones, to their right on desktop */}
       <div className="md:order-2 flex flex-col items-center md:items-start text-center md:text-left">
         <img src="/component/17.webp" alt="" loading="lazy" draggable={false} className="w-28 md:w-32 h-auto mix-blend-multiply mb-5 select-none" />
-        <Subtitle as="div" className="mb-8">
+        <Heading variant="h2" className="mb-4">
           {copy.subtitle}
-        </Subtitle>
+        </Heading>
+        <div className="w-8 h-[1px] bg-ink/10 mb-10" />
 
         {/* Told like a quote: oversized faint opening mark, signed by the two of us */}
         <figure className="relative max-w-sm">
