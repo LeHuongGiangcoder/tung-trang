@@ -212,7 +212,7 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
 
     if (phase === 'morphing') {
       // Hold sketch, then crossfade with blur to bench photo
-      const t = setTimeout(() => setPhase('flashback'), 2400);
+      const t = setTimeout(() => setPhase('flashback'), 1900);
       return () => clearTimeout(t);
     }
 
