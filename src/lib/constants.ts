@@ -20,7 +20,7 @@ export const VENUE_MAPS = {
 export type VenueKey = keyof typeof VENUE_MAPS;
 
 export const COPY: Record<Lang, {
-  entrance: { hint: string; whisper: string };
+  entrance: { hint: string; whisper: string; skip: string };
   hero: { eyebrow: string; ampersand: string; dateLine: string; location: string };
   nav: { story: string; details: string; dresscode: string; visa: string; travel: string; rsvp: string; };
   visa: {
@@ -95,6 +95,7 @@ export const COPY: Record<Lang, {
     entrance: {
       hint: "Let's sketch with us",
       whisper: 'draw anywhere on the screen',
+      skip: 'Skip intro',
     },
     hero: {
       eyebrow: 'save the date',
@@ -243,6 +244,7 @@ export const COPY: Record<Lang, {
     entrance: {
       hint: 'Cùng phác hoạ với chúng mình',
       whisper: 'hãy vẽ tự do trên màn hình',
+      skip: 'Bỏ qua',
     },
     hero: {
       eyebrow: 'lưu lại ngày',

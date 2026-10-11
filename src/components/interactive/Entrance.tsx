@@ -389,7 +389,32 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
         </span>
       </div>
 
+      {/* Layer 7: Skip, for guests who want straight to the details. Fades in after a beat
+          so it doesn't compete with the sketch hint. */}
+      <button
+        type="button"
+        onClick={() => {
+          onSketchStart?.();
+          setPhase('done');
+        }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 px-4 py-2 flex items-center gap-2 font-body text-[10px] tracking-[0.3em] uppercase text-ink-muted hover:text-ink transition-colors"
+        style={{
+          opacity: phase === 'done' ? 0 : 0.8,
+          pointerEvents: phase === 'done' ? 'none' : 'auto',
+          animation: 'skipIn 600ms var(--ease-smooth) 1.2s both',
+        }}
+      >
+        {copy.skip}
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <polyline points="13 17 18 12 13 7" />
+          <polyline points="6 17 11 12 6 7" />
+        </svg>
+      </button>
+
       <style>{`
+        @keyframes skipIn {
+          from { opacity: 0; }
+        }
         @keyframes breathe {
           0%, 100% { opacity: 0.6; transform: translateY(0); }
           50% { opacity: 1; transform: translateY(-2px); }
