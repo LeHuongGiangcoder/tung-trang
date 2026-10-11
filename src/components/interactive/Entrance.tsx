@@ -269,7 +269,8 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
     <div
       ref={rootRef}
       className="fixed inset-0 z-50 overflow-hidden no-select h-[100vh] w-[100vw]"
-      style={{ background: CREAM, pointerEvents: exiting ? 'none' : undefined }}
+      // 100dvh = the visible screen on phones (100vh, kept as fallback, runs behind Safari's toolbar)
+      style={{ background: CREAM, height: '100dvh', pointerEvents: exiting ? 'none' : undefined }}
       aria-label="Sketch entrance"
     >
       {/* Layer 1: Sketch portrait (image 1) */}
@@ -406,7 +407,7 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
           onSketchStart?.();
           setExiting(true);
         }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 px-5 py-3 flex items-center gap-2.5 font-body text-xs md:text-[13px] tracking-[0.3em] uppercase text-ink-soft hover:text-ink transition-colors"
+        className="absolute top-[calc(2.5rem+env(safe-area-inset-top))] md:top-14 left-1/2 -translate-x-1/2 z-10 px-5 py-3 flex items-center gap-2.5 font-body text-xs md:text-[13px] tracking-[0.3em] uppercase text-ink-soft hover:text-ink transition-colors"
         style={{
           opacity: exiting ? 0 : 0.8,
           pointerEvents: exiting ? 'none' : 'auto',
