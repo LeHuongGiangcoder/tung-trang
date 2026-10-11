@@ -40,6 +40,10 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
   const drawStartRef = useRef<number | null>(null);
 
   const [phase, setPhase] = useState<Phase>('idle');
+  // True once the overlay starts fading out, either at the natural end or on skip.
+  // Kept apart from phase so a skip freezes whatever is on screen instead of
+  // jumping ahead to the photo montage.
+  const [exiting, setExiting] = useState(false);
   const [hintVisible, setHintVisible] = useState(true);
   const [flashIndex, setFlashIndex] = useState(0);
   const [canvasReady, setCanvasReady] = useState(false);
@@ -179,6 +183,8 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
 
   // Phase transitions
   useEffect(() => {
+    if (exiting) return;
+
     if (phase === 'sketching') {
       // Poll threshold even when pointer is idle, so the time fallback fires
       // and we don't depend purely on pointermove events.
@@ -233,24 +239,27 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
       return () => clearTimeout(timeoutId);
     }
 
-    if (phase === 'done') {
-      const root = rootRef.current;
-      if (!root) return;
-      // Reveal the page now so it crossfades in as the overlay fades out
-      onReveal?.();
-      root.style.transition = 'opacity 1600ms var(--ease-smooth)';
-      requestAnimationFrame(() => {
-        root.style.opacity = '0';
-      });
-      const t = setTimeout(() => onDone(), 1600);
-      return () => clearTimeout(t);
-    }
-  }, [phase, onDone, onReveal]);
+    if (phase === 'done') setExiting(true);
+  }, [phase, exiting]);
+
+  useEffect(() => {
+    if (!exiting) return;
+    const root = rootRef.current;
+    if (!root) return;
+    // Reveal the page now so it crossfades in as the overlay fades out
+    onReveal?.();
+    root.style.transition = 'opacity 1600ms var(--ease-smooth)';
+    requestAnimationFrame(() => {
+      root.style.opacity = '0';
+    });
+    const t = setTimeout(() => onDone(), 1600);
+    return () => clearTimeout(t);
+  }, [exiting, onDone, onReveal]);
 
   // Allow keyboard skip (dev convenience) — press Esc
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setPhase('done');
+      if (e.key === 'Escape') setExiting(true);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -260,7 +269,7 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
     <div
       ref={rootRef}
       className="fixed inset-0 z-50 overflow-hidden no-select h-[100vh] w-[100vw]"
-      style={{ background: CREAM }}
+      style={{ background: CREAM, pointerEvents: exiting ? 'none' : undefined }}
       aria-label="Sketch entrance"
     >
       {/* Layer 1: Sketch portrait (image 1) */}
@@ -395,12 +404,12 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
         type="button"
         onClick={() => {
           onSketchStart?.();
-          setPhase('done');
+          setExiting(true);
         }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 px-4 py-2 flex items-center gap-2 font-body text-[10px] tracking-[0.3em] uppercase text-ink-muted hover:text-ink transition-colors"
         style={{
-          opacity: phase === 'done' ? 0 : 0.8,
-          pointerEvents: phase === 'done' ? 'none' : 'auto',
+          opacity: exiting ? 0 : 0.8,
+          pointerEvents: exiting ? 'none' : 'auto',
           animation: 'skipIn 600ms var(--ease-smooth) 1.2s both',
         }}
       >
