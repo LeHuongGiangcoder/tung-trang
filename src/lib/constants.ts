@@ -39,6 +39,8 @@ export const COPY: Record<Lang, {
     subtitle: string;
     title: string;
     body: string;
+    stepsTitle: string;
+    steps: string[];
   };
   rsvp: {
     subtitle: string;
@@ -142,7 +144,13 @@ export const COPY: Record<Lang, {
     travel: {
       subtitle: 'TRAVEL GUIDE',
       title: 'Vietnam',
-      body: 'Vietnam: 100 million people, 2,000 miles of coast, and arguably the <strong><em>best street food on Earth.</em></strong>'
+      body: 'Vietnam: 100 million people, 2,000 miles of coast, and arguably the <strong><em>best street food on Earth.</em></strong>',
+      stepsTitle: 'How to explore',
+      steps: [
+        'Tap the map to zoom into Hanoi',
+        'Scroll through the places we love',
+        'Tap “Next” for a video & our food picks',
+      ],
     },
     rsvp: {
       subtitle: 'RSVP',
@@ -278,7 +286,13 @@ export const COPY: Record<Lang, {
     travel: {
       subtitle: 'HƯỚNG DẪN DU LỊCH',
       title: 'Việt Nam',
-      body: 'Việt Nam: 100 triệu dân, hơn 3.200 km bờ biển, và có lẽ là nơi có <strong><em>ẩm thực đường phố tuyệt vời nhất hành tinh.</em></strong>'
+      body: 'Việt Nam: 100 triệu dân, hơn 3.200 km bờ biển, và có lẽ là nơi có <strong><em>ẩm thực đường phố tuyệt vời nhất hành tinh.</em></strong>',
+      stepsTitle: 'Cách khám phá',
+      steps: [
+        'Chạm vào bản đồ để phóng to Hà Nội',
+        'Lướt xem những địa điểm chúng mình yêu thích',
+        'Bấm “Tiếp theo” để xem video & gợi ý ăn uống',
+      ],
     },
     rsvp: {
       subtitle: 'XÁC NHẬN THAM DỰ',

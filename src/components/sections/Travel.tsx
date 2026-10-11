@@ -122,6 +122,21 @@ export default function Travel() {
           <div className="max-w-md">
             <Body variant="regular" className="text-ink-soft leading-relaxed" dangerouslySetInnerHTML={{ __html: copy.body }} />
           </div>
+
+          {/* How to use the map, since the interaction isn't obvious */}
+          <div className="mt-10 flex flex-col items-center md:items-start">
+            <Subtitle as="div" className="mb-4">
+              {copy.stepsTitle}
+            </Subtitle>
+            <ol className="flex flex-col gap-2.5 text-left">
+              {copy.steps.map((step, idx) => (
+                <li key={idx} className="flex items-baseline gap-3">
+                  <span className="font-display italic text-lg text-ink/60 leading-none w-4 shrink-0">{idx + 1}</span>
+                  <span className="font-body text-sm text-ink-soft font-light leading-relaxed">{step}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
         </div>
 
         {/* Right Column: Image Frame */}
