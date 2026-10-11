@@ -6,12 +6,13 @@ import { COPY } from '@/lib/constants';
 import { Heading, Subtitle, Body } from '@/components/ui/Typography';
 import Button from '@/components/ui/Button';
 
+// Visa guide, shown as the first half of the Travel section
 export default function Visa() {
   const { lang } = useLang();
   const copy = COPY[lang].visa;
 
   return (
-    <section id="visa" className="w-full max-w-7xl mx-auto px-5 md:px-10 py-16 md:py-24">
+    <div id="visa" className="w-full scroll-mt-16">
       <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-16 md:mb-24">
         <Subtitle as="div" className="mb-6">
           {copy.subtitle}
@@ -67,7 +68,7 @@ export default function Visa() {
         <InfoBlock title={copy.afterApproval.title} items={copy.afterApproval.items} />
         <InfoBlock title={copy.arrivalTips.title} items={copy.arrivalTips.items} />
       </div>
-    </section>
+    </div>
   );
 }
 

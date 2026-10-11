@@ -29,7 +29,7 @@ export const COPY: Record<Lang, {
     // Unit labels under the live countdown, then the phrases for the day itself and after
     countdown: { days: string; hours: string; minutes: string; seconds: string; today: string; married: string };
   };
-  nav: { story: string; details: string; dresscode: string; visa: string; travel: string; rsvp: string; };
+  nav: { story: string; details: string; dresscode: string; travel: string; rsvp: string; };
   visa: {
     subtitle: string;
     title: string;
@@ -43,7 +43,8 @@ export const COPY: Record<Lang, {
     arrivalTips: { title: string; items: string[] };
   };
   travel: {
-    subtitle: string;
+    // Heading over the whole section (visa guide + Vietnam map)
+    heading: string;
     title: string;
     body: string;
     stepsTitle: string;
@@ -111,9 +112,9 @@ export const COPY: Record<Lang, {
       location: 'Hanoi, Vietnam',
       countdown: { days: 'days', hours: 'hours', minutes: 'min', seconds: 'sec', today: 'Today ♡', married: 'Married · 3 January 2027 ♡' },
     },
-    nav: { story: 'Our Story', details: 'Details', dresscode: 'Dresscode', visa: 'Visa', travel: 'Travel', rsvp: 'RSVP' },
+    nav: { story: 'Our Story', details: 'Details', dresscode: 'Dresscode', travel: 'Travel', rsvp: 'RSVP' },
     visa: {
-      subtitle: 'TRAVEL INFORMATION',
+      subtitle: 'Before you fly',
       title: 'E-Visa Guide',
       introParagraph1: 'If you are not a Vietnamese citizen, you may need to obtain a visa to enter Vietnam. The process is <strong><em>simple, affordable, and completed online.</em></strong>',
       applyLabel: 'Apply here:',
@@ -152,8 +153,8 @@ export const COPY: Record<Lang, {
       }
     },
     travel: {
-      subtitle: 'TRAVEL GUIDE',
-      title: 'Vietnam',
+      heading: 'Travel',
+      title: 'Exploring Vietnam',
       body: 'Vietnam: 100 million people, 2,000 miles of coast, and arguably the <strong><em>best street food on Earth.</em></strong>',
       stepsTitle: 'How to explore',
       steps: [
@@ -261,9 +262,9 @@ export const COPY: Record<Lang, {
       location: 'Hà Nội, Việt Nam',
       countdown: { days: 'ngày', hours: 'giờ', minutes: 'phút', seconds: 'giây', today: 'Hôm nay ♡', married: 'Đã nên duyên · 03.01.2027 ♡' },
     },
-    nav: { story: 'Câu chuyện', details: 'Thông tin', dresscode: 'Trang phục', visa: 'Visa', travel: 'Du lịch', rsvp: 'Xác nhận' },
+    nav: { story: 'Câu chuyện', details: 'Thông tin', dresscode: 'Trang phục', travel: 'Du lịch', rsvp: 'Xác nhận' },
     visa: {
-      subtitle: 'THÔNG TIN DU LỊCH',
+      subtitle: 'Trước khi lên đường',
       title: 'Hướng dẫn E-Visa',
       introParagraph1: 'Nếu bạn không phải là công dân Việt Nam, bạn có thể cần có visa để nhập cảnh vào Việt Nam. Quy trình xin visa <strong><em>rất đơn giản, chi phí hợp lý và được thực hiện hoàn toàn trực tuyến.</em></strong>',
       applyLabel: 'Đăng ký tại đây:',
@@ -302,8 +303,8 @@ export const COPY: Record<Lang, {
       }
     },
     travel: {
-      subtitle: 'HƯỚNG DẪN DU LỊCH',
-      title: 'Việt Nam',
+      heading: 'Du lịch',
+      title: 'Khám phá Việt Nam',
       body: 'Việt Nam: 100 triệu dân, hơn 3.200 km bờ biển, và có lẽ là nơi có <strong><em>ẩm thực đường phố tuyệt vời nhất hành tinh.</em></strong>',
       stepsTitle: 'Cách khám phá',
       steps: [

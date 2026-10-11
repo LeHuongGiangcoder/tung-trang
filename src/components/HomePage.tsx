@@ -6,7 +6,6 @@ import Nav from '@/components/ui/Nav';
 import Hero from '@/components/sections/Hero';
 import PhotoStack from '@/components/sections/PhotoStack';
 import EventDetails from '@/components/sections/EventDetails';
-import Visa from '@/components/sections/Visa';
 import Travel from '@/components/sections/Travel';
 import RSVP from '@/components/sections/RSVP';
 import ThankYou from '@/components/sections/ThankYou';
@@ -97,7 +96,6 @@ export default function HomePage({ skipIntro = false }: { skipIntro?: boolean })
         <PhotoStack />
         <EventDetails />
         <RSVP />
-        <Visa />
         <Travel />
 
         <ThankYou />

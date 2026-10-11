@@ -34,7 +34,6 @@ export default function Nav({ isPlaying, onToggleAudio }: NavProps) {
     { href: '#details', label: nav.details },
     { href: '#dresscode', label: nav.dresscode },
     { href: '#rsvp', label: nav.rsvp },
-    { href: '#visa', label: nav.visa },
     { href: '#travel', label: nav.travel },
   ];
 

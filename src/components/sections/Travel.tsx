@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useLang } from '@/hooks/useLang';
 import { COPY } from '@/lib/constants';
 import { Heading, Subtitle, Body } from '@/components/ui/Typography';
+import Visa from '@/components/sections/Visa';
 
 export default function Travel() {
   const { lang } = useLang();
@@ -13,7 +14,8 @@ export default function Travel() {
   const [hasInteracted, setHasInteracted] = useState(false);
   const [showHanoiDetails, setShowHanoiDetails] = useState(false);
   const [hanoiSlide, setHanoiSlide] = useState<0 | 1>(0);
-  const sectionRef = useRef<HTMLElement>(null);
+  // Watches the map block (not the whole section) so its reveal plays when it's actually on screen
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -71,9 +73,20 @@ export default function Travel() {
   return (
     <section 
       id="travel" 
-      ref={sectionRef} 
-      className="w-full max-w-7xl mx-auto px-5 md:px-10 py-16 md:py-24 overflow-hidden border-t border-ink/10"
+      className="w-full max-w-7xl mx-auto px-5 md:px-10 pt-16 md:pt-24 pb-8 md:pb-12 overflow-hidden border-t border-ink/10 scroll-mt-16"
     >
+      {/* One heading for the whole section: visa guide first, then the Vietnam map */}
+      <div className="flex flex-col items-center mb-12 md:mb-16">
+        <div className="flex items-end justify-center gap-3 md:gap-5 mb-4">
+          <PaperPlane />
+          <Heading variant="h2" className="text-center">{copy.heading}</Heading>
+          <MapPin />
+        </div>
+        <div className="w-8 h-[1px] bg-ink/10" />
+      </div>
+
+      <Visa />
+
       <style>{`
         @keyframes finger-tap {
           0%, 100% {
@@ -106,19 +119,21 @@ export default function Travel() {
         }
       `}</style>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 items-center px-4 md:px-0">
+      {/* Vietnam: laid out like the Dresscode block in Details (rule, heading, small sketch, content) */}
+      <div className="max-w-xl mx-auto mt-16 md:mt-20 pt-12 border-t border-ink/10 flex flex-col items-center">
+        <Heading variant="h2" className="mb-4 text-center">
+          {copy.title}
+        </Heading>
+        <div className="w-8 h-[1px] bg-ink/10 mb-6" />
+        <NonLa />
+      </div>
+
+      <div ref={sectionRef} className="mt-10 grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 items-center px-4 md:px-0">
         {/* Left Column: Text */}
         <div 
           style={revealStyle(0)} 
           className="md:col-span-6 flex flex-col items-center md:items-start text-center md:text-left"
         >
-          <Subtitle as="div" className="mb-4">
-            {copy.subtitle}
-          </Subtitle>
-          <Heading variant="h2" className="mb-6">
-            {copy.title}
-          </Heading>
-          <div className="w-12 h-[1px] bg-ink/20 mb-8 hidden md:block"></div>
           <div className="max-w-md">
             <Body variant="regular" className="text-ink-soft leading-relaxed" dangerouslySetInnerHTML={{ __html: copy.body }} />
           </div>
@@ -412,5 +427,45 @@ export default function Travel() {
         </div>
       </div>
     </section>
+  );
+}
+
+// Small hand-drawn-style line icons in the site's ink, for the Travel heading and Vietnam block
+const inkStroke = { stroke: '#1F1B17', strokeWidth: 1.2, strokeLinecap: 'round', strokeLinejoin: 'round', fill: 'none' } as const;
+
+// Paper plane on a dotted flight path, flying in toward the heading
+function PaperPlane() {
+  return (
+    <svg width="56" height="34" viewBox="0 0 56 34" className="w-11 md:w-14 h-auto opacity-75 -mb-1" aria-hidden>
+      <path d="M3 28 C 10 30, 14 18, 22 21 S 31 27, 35 19" {...inkStroke} strokeDasharray="1.5 3.5" />
+      <path d="M36 15 L53 6 L47 26 L43 18 Z" {...inkStroke} />
+      <path d="M43 18 L53 6" {...inkStroke} />
+      <path d="M43 18 L42 23 L45.5 20.5" {...inkStroke} />
+    </svg>
+  );
+}
+
+// Map pin with a dotted path arriving at it: the destination
+function MapPin() {
+  return (
+    <svg width="56" height="34" viewBox="0 0 56 34" className="w-11 md:w-14 h-auto opacity-75 -mb-1" aria-hidden>
+      <path d="M2 22 C 8 17, 13 27, 20 23" {...inkStroke} strokeDasharray="1.5 3.5" />
+      <path d="M33 4 a8 8 0 0 1 8 8 c0 6 -8 15 -8 15 s-8 -9 -8 -15 a8 8 0 0 1 8 -8 z" {...inkStroke} />
+      <circle cx="33" cy="12" r="2.6" {...inkStroke} />
+      <path d="M24 30.5 Q33 33 42 30.5" {...inkStroke} />
+    </svg>
+  );
+}
+
+// Nón lá (conical hat), standing in for Vietnam the way the bow sketch stands in for Dresscode
+function NonLa() {
+  return (
+    <svg width="72" height="40" viewBox="0 0 72 40" className="w-16 h-auto opacity-80" aria-hidden>
+      <path d="M5 28 L36 4 L67 28" {...inkStroke} />
+      <path d="M5 28 Q36 37 67 28" {...inkStroke} />
+      {/* Woven rings around the cone */}
+      <path d="M14.7 20.5 Q36 27 57.3 20.5 M24.4 13 Q36 17.5 47.6 13" {...inkStroke} strokeWidth={0.9} opacity={0.6} />
+      <path d="M17 31 Q36 46 55 31" {...inkStroke} strokeDasharray="1.5 3" opacity={0.7} />
+    </svg>
   );
 }
