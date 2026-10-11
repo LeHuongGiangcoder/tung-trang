@@ -406,7 +406,7 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
           onSketchStart?.();
           setExiting(true);
         }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 px-4 py-2 flex items-center gap-2 font-body text-[10px] tracking-[0.3em] uppercase text-ink-muted hover:text-ink transition-colors"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 px-5 py-3 flex items-center gap-2.5 font-body text-xs md:text-[13px] tracking-[0.3em] uppercase text-ink-soft hover:text-ink transition-colors"
         style={{
           opacity: exiting ? 0 : 0.8,
           pointerEvents: exiting ? 'none' : 'auto',
@@ -414,7 +414,7 @@ export default function Entrance({ onDone, onSketchStart, onReveal }: EntrancePr
         }}
       >
         {copy.skip}
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
           <polyline points="13 17 18 12 13 7" />
           <polyline points="6 17 11 12 6 7" />
         </svg>
