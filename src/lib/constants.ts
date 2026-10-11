@@ -240,7 +240,7 @@ export const COPY: Record<Lang, {
           title: 'Brunch',
           venue: 'Monday, 4 January · Sen Tay Ho',
           items: [
-            { time: '12:00', moment: 'brunch', title: 'Farewell Brunch', description: 'One last long lunch before you head home' },
+            { time: '12:00', moment: 'brunch', title: 'Farewell Brunch', description: 'A relaxed buffet lunch before you head home' },
           ],
         },
       ],
@@ -389,7 +389,7 @@ export const COPY: Record<Lang, {
           title: 'Brunch',
           venue: 'Thứ hai, 04/01 · Sen Tây Hồ',
           items: [
-            { time: '12:00', moment: 'brunch', title: 'Brunch chia tay', description: 'Bữa trưa thong thả trước khi mọi người về' },
+            { time: '12:00', moment: 'brunch', title: 'Brunch chia tay', description: 'Bữa trưa buffet thong thả trước khi mọi người về' },
           ],
         },
       ],
