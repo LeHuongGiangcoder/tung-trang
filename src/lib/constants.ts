@@ -22,7 +22,7 @@ export type VenueKey = keyof typeof VENUE_MAPS;
 export const COPY: Record<Lang, {
   entrance: { hint: string; whisper: string };
   hero: { eyebrow: string; ampersand: string; dateLine: string; location: string };
-  nav: { venue: string; schedule: string; dresscode: string; visa: string; travel: string; rsvp: string; };
+  nav: { story: string; details: string; dresscode: string; visa: string; travel: string; rsvp: string; };
   visa: {
     subtitle: string;
     title: string;
@@ -42,6 +42,7 @@ export const COPY: Record<Lang, {
     stepsTitle: string;
     steps: string[];
   };
+  photos: { subtitle: string; story: string; hint: string; restart: string };
   rsvp: {
     subtitle: string;
     title: string;
@@ -80,7 +81,7 @@ export const COPY: Record<Lang, {
     venueLabel: string;
     venues: { title: string; lines: string[]; maps: VenueKey; note?: string }[];
     mapsBtn: string;
-    schedule: string;
+    details: string;
     dresscode: string;
     agenda: {
       title: string;
@@ -101,7 +102,7 @@ export const COPY: Record<Lang, {
       dateLine: 'Sunday, 3 January 2027',
       location: 'Hanoi, Vietnam',
     },
-    nav: { venue: 'Venue', schedule: 'Schedule', dresscode: 'Dresscode', visa: 'Visa', travel: 'Travel', rsvp: 'RSVP' },
+    nav: { story: 'Our Story', details: 'Details', dresscode: 'Dresscode', visa: 'Visa', travel: 'Travel', rsvp: 'RSVP' },
     visa: {
       subtitle: 'TRAVEL INFORMATION',
       title: 'E-Visa Guide',
@@ -152,6 +153,12 @@ export const COPY: Record<Lang, {
         'Tap “Next” for a video & our food picks',
       ],
     },
+    photos: {
+      subtitle: 'Our story so far',
+      story: "Our story began at a Tết celebration on Roosevelt Island, New York. With some gentle nudging from mutual friends (and a little quiet scheming from Tùng), one conversation turned into many. Now we're bringing it home to Hanoi ♡",
+      hint: 'Tap to flip through',
+      restart: 'Tap to start over',
+    },
     rsvp: {
       subtitle: 'RSVP',
       title: 'Will You Join Us?',
@@ -199,7 +206,7 @@ export const COPY: Record<Lang, {
         { title: 'Brunch', lines: ['Sen', 'Tay Ho', 'Ha Noi'], maps: 'sen' },
       ],
       mapsBtn: 'Open in Google Maps',
-      schedule: 'Schedule',
+      details: 'Details',
       dresscode: 'Dresscode',
       agenda: [
         {
@@ -243,7 +250,7 @@ export const COPY: Record<Lang, {
       dateLine: 'Chủ nhật, 03 tháng 01 năm 2027',
       location: 'Hà Nội, Việt Nam',
     },
-    nav: { venue: 'Địa điểm', schedule: 'Lịch trình', dresscode: 'Trang phục', visa: 'Visa', travel: 'Du lịch', rsvp: 'Xác nhận' },
+    nav: { story: 'Câu chuyện', details: 'Thông tin', dresscode: 'Trang phục', visa: 'Visa', travel: 'Du lịch', rsvp: 'Xác nhận' },
     visa: {
       subtitle: 'THÔNG TIN DU LỊCH',
       title: 'Hướng dẫn E-Visa',
@@ -294,6 +301,12 @@ export const COPY: Record<Lang, {
         'Bấm “Tiếp theo” để xem video & gợi ý ăn uống',
       ],
     },
+    photos: {
+      subtitle: 'Chuyện của chúng mình',
+      story: 'Chuyện của chúng mình bắt đầu từ một buổi đón Tết trên đảo Roosevelt, New York. Nhờ chút “se duyên” của bạn bè và chút “mưu kế” nho nhỏ của Tùng, một lần trò chuyện thành nhiều lần. Và giờ, chúng mình mang câu chuyện ấy về Hà Nội ♡',
+      hint: 'Chạm để xem tiếp',
+      restart: 'Chạm để xem lại',
+    },
     rsvp: {
       subtitle: 'XÁC NHẬN THAM DỰ',
       title: 'Bạn sẽ tham dự chứ?',
@@ -341,7 +354,7 @@ export const COPY: Record<Lang, {
         { title: 'Brunch', lines: ['Sen', 'Tây Hồ', 'Hà Nội'], maps: 'sen' },
       ],
       mapsBtn: 'Xem trên Google Maps',
-      schedule: 'Lịch trình',
+      details: 'Thông tin',
       dresscode: 'Trang phục',
       agenda: [
         {
@@ -385,3 +398,15 @@ export const FLASHBACK_IMAGES = [
   '/images/moment-07-bridge.webp',
   '/images/moment-08-ring.webp',
 ] as const;
+
+// Resting tilt/offset for each photo so a pile looks like dealt prints
+export const PILE_LAYOUT = [
+  { r: -6, x: -34, y: 20 },
+  { r: 5, x: 30, y: -16 },
+  { r: -4, x: 22, y: 28 },
+  { r: 7, x: -26, y: -22 },
+  { r: -7, x: 36, y: 14 },
+  { r: 5, x: -20, y: -28 },
+  { r: -6, x: 28, y: 24 },
+  { r: 5, x: -32, y: -18 },
+];

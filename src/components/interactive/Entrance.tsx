@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useLang } from '@/hooks/useLang';
-import { COPY, FLASHBACK_IMAGES } from '@/lib/constants';
+import { COPY, FLASHBACK_IMAGES, PILE_LAYOUT } from '@/lib/constants';
 
 type Phase = 'idle' | 'sketching' | 'revealing' | 'morphing' | 'flashback' | 'done';
 
@@ -18,17 +18,6 @@ const MAX_DRAW_MS = 6000;
 const BRUSH_RADIUS_DESKTOP = 40;
 const BRUSH_RADIUS_TOUCH = 52;
 
-// Resting tilt/offset for each photo so the montage stacks like dealt prints
-const PILE_LAYOUT = [
-  { r: -6, x: -34, y: 20 },
-  { r: 5, x: 30, y: -16 },
-  { r: -4, x: 22, y: 28 },
-  { r: 7, x: -26, y: -22 },
-  { r: -7, x: 36, y: 14 },
-  { r: 5, x: -20, y: -28 },
-  { r: -6, x: 28, y: 24 },
-  { r: 5, x: -32, y: -18 },
-];
 
 interface EntranceProps {
   onDone: () => void;

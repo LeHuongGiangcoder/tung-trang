@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Entrance from '@/components/interactive/Entrance';
 import Nav from '@/components/ui/Nav';
 import Hero from '@/components/sections/Hero';
+import PhotoStack from '@/components/sections/PhotoStack';
 import EventDetails from '@/components/sections/EventDetails';
 import Visa from '@/components/sections/Visa';
 import Travel from '@/components/sections/Travel';
@@ -94,6 +95,7 @@ export default function HomePage({ skipIntro = false }: { skipIntro?: boolean })
       <div className={`transition-opacity duration-1000 ${revealContent ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
         <Nav />
         <Hero startAnimation={revealContent} />
+        <PhotoStack />
         <EventDetails />
         <RSVP />
         <Visa />

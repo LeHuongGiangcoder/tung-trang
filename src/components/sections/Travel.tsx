@@ -72,7 +72,7 @@ export default function Travel() {
     <section 
       id="travel" 
       ref={sectionRef} 
-      className="w-full max-w-7xl mx-auto px-5 md:px-10 py-24 md:py-32 overflow-hidden border-t border-ink/10"
+      className="w-full max-w-7xl mx-auto px-5 md:px-10 py-16 md:py-24 overflow-hidden border-t border-ink/10"
     >
       <style>{`
         @keyframes finger-tap {

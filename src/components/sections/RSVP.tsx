@@ -367,7 +367,7 @@ export default function RSVP() {
   return (
     <section
       id="rsvp"
-      className="w-full max-w-7xl mx-auto px-5 md:px-10 py-24 md:py-32 border-t border-ink/10"
+      className="w-full max-w-7xl mx-auto px-5 md:px-10 py-16 md:py-24 border-t border-ink/10"
     >
       <div className="max-w-xl mx-auto px-4 md:px-0 flex flex-col items-center text-center">
         <Subtitle as="div" className="mb-6">

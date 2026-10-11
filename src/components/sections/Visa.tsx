@@ -11,7 +11,7 @@ export default function Visa() {
   const copy = COPY[lang].visa;
 
   return (
-    <section id="visa" className="w-full max-w-7xl mx-auto px-5 md:px-10 py-24 md:py-32">
+    <section id="visa" className="w-full max-w-7xl mx-auto px-5 md:px-10 py-16 md:py-24">
       <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-16 md:mb-24">
         <Subtitle as="div" className="mb-6">
           {copy.subtitle}

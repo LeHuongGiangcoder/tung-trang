@@ -30,7 +30,7 @@ export default function Hero({ startAnimation }: HeroProps) {
   return (
     <section
       id="hero"
-      className="relative min-h-[100svh] w-full flex items-center justify-center px-5 md:px-10 pt-24 md:pt-28 pb-20"
+      className="relative min-h-[100svh] w-full flex items-center justify-center px-5 md:px-10 pt-24 md:pt-28 pb-12"
     >
       <div className="w-full max-w-3xl flex flex-col items-center text-center">
         <div
@@ -106,16 +106,14 @@ export default function Hero({ startAnimation }: HeroProps) {
             {copy.location}
           </Subtitle>
         </div>
-      </div>
 
-      <div
-        style={revealStyle(5)}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-      >
-        <span
-          className="block w-px h-8 bg-ink/30"
-          style={{ animation: 'scrollLine 2.4s ease-in-out infinite' }}
-        />
+        {/* Scroll cue, kept in the flow so it always sits below the location */}
+        <div style={revealStyle(5)} className="mt-10 flex flex-col items-center">
+          <span
+            className="block w-px h-8 bg-ink/30"
+            style={{ animation: 'scrollLine 2.4s ease-in-out infinite' }}
+          />
+        </div>
       </div>
 
       <style>{`

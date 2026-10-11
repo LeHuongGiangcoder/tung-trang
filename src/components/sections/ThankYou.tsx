@@ -12,7 +12,7 @@ export default function ThankYou() {
   return (
     <section 
       id="thank-you" 
-      className="w-full max-w-7xl mx-auto px-5 md:px-10 py-24 md:py-32 flex flex-col items-center justify-center text-center border-t border-ink/10"
+      className="w-full max-w-7xl mx-auto px-5 md:px-10 py-16 md:py-24 flex flex-col items-center justify-center text-center border-t border-ink/10"
     >
       <style>{`
         @keyframes floatCupid {

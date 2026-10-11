@@ -108,10 +108,17 @@ export default function EventDetails() {
   }, [lang, activeEvent]);
 
   return (
-    <section id="event-details" className="w-full max-w-7xl mx-auto px-5 md:px-10 py-24 md:py-32 border-t border-ink/10">
+    <section id="details" className="w-full max-w-7xl mx-auto px-5 md:px-10 py-16 md:py-24 border-t border-ink/10 scroll-mt-16">
       <div className="max-w-xl mx-auto px-4 md:px-0 flex flex-col items-center text-center gap-10">
-        {/* Venue */}
+        {/* Venue and schedule share one heading and one event switcher */}
         <div id="venue" className="w-full flex flex-col items-center scroll-mt-28">
+          <div className="flex items-end justify-center gap-3 md:gap-5 mb-4">
+            <img src="/component/left.webp" alt="" loading="lazy" draggable={false} className="w-10 md:w-12 h-auto mix-blend-multiply -rotate-6" />
+            <Heading variant="h2" className="text-center">{copy.details}</Heading>
+            <img src="/component/right.webp" alt="" loading="lazy" draggable={false} className="w-10 md:w-12 h-auto mix-blend-multiply rotate-6" />
+          </div>
+          <Divider className="mb-8" />
+
           <Toggle
             variant="segmented"
             options={copy.venues.map((v, idx) => ({ label: v.title, value: idx }))}
@@ -166,13 +173,6 @@ export default function EventDetails() {
 
         {/* Schedule */}
         <div id="schedule" className="w-full flex flex-col items-center scroll-mt-28">
-          <div className="flex items-end justify-center gap-3 md:gap-5 mb-4">
-            <img src="/component/left.webp" alt="" loading="lazy" draggable={false} className="w-10 md:w-12 h-auto mix-blend-multiply -rotate-6" />
-            <Heading variant="h2" className="text-center">{copy.schedule}</Heading>
-            <img src="/component/right.webp" alt="" loading="lazy" draggable={false} className="w-10 md:w-12 h-auto mix-blend-multiply rotate-6" />
-          </div>
-          <Divider className="mb-6" />
-
           <Subtitle as="div" className="!tracking-[0.2em] min-h-4">{group.venue}</Subtitle>
 
           <div ref={timelineRef} key={activeEvent} className="relative w-full mt-4 animate-fade-in">
@@ -232,7 +232,7 @@ export default function EventDetails() {
         </div>
 
         {/* Dresscode */}
-        <div id="dresscode" className="w-full mt-6 pt-16 border-t border-ink/10 flex flex-col items-center scroll-mt-16">
+        <div id="dresscode" className="w-full mt-6 pt-12 border-t border-ink/10 flex flex-col items-center scroll-mt-16">
           <Heading variant="h2" className="mb-4 text-center">
             {copy.dresscode}
           </Heading>
