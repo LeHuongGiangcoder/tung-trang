@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useLang } from '@/hooks/useLang';
 import { COPY } from '@/lib/constants';
-import { Heading, Subtitle, Body } from '@/components/ui/Typography';
+import { Heading, Body } from '@/components/ui/Typography';
 import Button from '@/components/ui/Button';
 
 // Given a full name (given-name-first), return just the first name for friendly references.
@@ -370,12 +370,10 @@ export default function RSVP() {
       className="w-full max-w-7xl mx-auto px-5 md:px-10 py-16 md:py-24 border-t border-ink/10"
     >
       <div className="max-w-xl mx-auto px-4 md:px-0 flex flex-col items-center text-center">
-        <Subtitle as="div" className="mb-6">
-          {copy.subtitle}
-        </Subtitle>
-        <Heading variant="h2" className="mb-6">
+        <Heading variant="h2" className="mb-4">
           {copy.title}
         </Heading>
+        <div className="w-8 h-[1px] bg-ink/10 mb-6" />
         
         {formStep === 'success' ? (
           <div className="w-full flex flex-col items-center">

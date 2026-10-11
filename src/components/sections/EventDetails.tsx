@@ -6,6 +6,7 @@ import { COPY, VENUE_MAPS, type AgendaMoment } from '@/lib/constants';
 import { Heading, Subtitle, Body } from '@/components/ui/Typography';
 import Toggle from '@/components/ui/Toggle';
 import Button from '@/components/ui/Button';
+import { Rings, Flutes } from '@/components/ui/LineIcons';
 
 // Dresscode palette, rows run blush → greens
 const PALETTE = [
@@ -113,9 +114,9 @@ export default function EventDetails() {
         {/* Venue and schedule share one heading and one event switcher */}
         <div id="venue" className="w-full flex flex-col items-center scroll-mt-28">
           <div className="flex items-end justify-center gap-3 md:gap-5 mb-4">
-            <img src="/component/left.webp" alt="" loading="lazy" draggable={false} className="w-10 md:w-12 h-auto mix-blend-multiply -rotate-6" />
+            <Rings />
             <Heading variant="h2" className="text-center">{copy.details}</Heading>
-            <img src="/component/right.webp" alt="" loading="lazy" draggable={false} className="w-10 md:w-12 h-auto mix-blend-multiply rotate-6" />
+            <Flutes />
           </div>
           <Divider className="mb-8" />
 

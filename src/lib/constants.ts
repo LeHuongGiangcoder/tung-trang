@@ -52,7 +52,6 @@ export const COPY: Record<Lang, {
   };
   photos: { subtitle: string; story: string; hint: string; restart: string };
   rsvp: {
-    subtitle: string;
     title: string;
     description: string;
     nameLabel: string;
@@ -170,8 +169,7 @@ export const COPY: Record<Lang, {
       restart: 'Tap to start over',
     },
     rsvp: {
-      subtitle: 'RSVP',
-      title: 'Will You Join Us?',
+      title: 'RSVP',
       description: "We can't wait to celebrate with you. Let's start with your name.",
       nameLabel: 'Name',
       namePlaceholder: 'e.g. John Smith',
@@ -320,8 +318,7 @@ export const COPY: Record<Lang, {
       restart: 'Chạm để xem lại',
     },
     rsvp: {
-      subtitle: 'XÁC NHẬN THAM DỰ',
-      title: 'Bạn sẽ tham dự chứ?',
+      title: 'Xác nhận tham dự',
       description: 'Chúng mình rất mong được chung vui cùng bạn. Hãy bắt đầu với tên của bạn nhé.',
       nameLabel: 'Tên',
       namePlaceholder: 'VD: Trang Nguyen',
