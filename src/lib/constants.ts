@@ -14,7 +14,7 @@ export const WEDDING = {
 // Google Maps links for every place we gather, keyed the way the venue tabs refer to them
 export const VENUE_MAPS = {
   sheraton: 'https://www.google.com/maps/search/?api=1&query=Sheraton+Hanoi+Hotel+Tay+Ho',
-  sen: 'https://www.google.com/maps/search/?api=1&query=Sen+Tay+Ho+Hanoi',
+  sen: 'https://maps.app.goo.gl/UjYVx8NQbZa9mw8L7',
 } as const;
 
 export type VenueKey = keyof typeof VENUE_MAPS;
@@ -26,8 +26,8 @@ export const COPY: Record<Lang, {
     ampersand: string;
     dateLine: string;
     location: string;
-    // `days` is the label shown under the big number of days left
-    countdown: { days: string; tomorrow: string; today: string; married: string };
+    // Unit labels under the live countdown, then the phrases for the day itself and after
+    countdown: { days: string; hours: string; minutes: string; seconds: string; today: string; married: string };
   };
   nav: { story: string; details: string; dresscode: string; visa: string; travel: string; rsvp: string; };
   visa: {
@@ -109,7 +109,7 @@ export const COPY: Record<Lang, {
       ampersand: 'and',
       dateLine: 'Sunday, 3 January 2027',
       location: 'Hanoi, Vietnam',
-      countdown: { days: 'days to go', tomorrow: 'Tomorrow!', today: 'Today ♡', married: 'Married · 3 January 2027 ♡' },
+      countdown: { days: 'days', hours: 'hours', minutes: 'min', seconds: 'sec', today: 'Today ♡', married: 'Married · 3 January 2027 ♡' },
     },
     nav: { story: 'Our Story', details: 'Details', dresscode: 'Dresscode', visa: 'Visa', travel: 'Travel', rsvp: 'RSVP' },
     visa: {
@@ -259,7 +259,7 @@ export const COPY: Record<Lang, {
       ampersand: 'và',
       dateLine: 'Chủ nhật, 03 tháng 01 năm 2027',
       location: 'Hà Nội, Việt Nam',
-      countdown: { days: 'ngày nữa', tomorrow: 'Ngày mai!', today: 'Hôm nay ♡', married: 'Đã nên duyên · 03.01.2027 ♡' },
+      countdown: { days: 'ngày', hours: 'giờ', minutes: 'phút', seconds: 'giây', today: 'Hôm nay ♡', married: 'Đã nên duyên · 03.01.2027 ♡' },
     },
     nav: { story: 'Câu chuyện', details: 'Thông tin', dresscode: 'Trang phục', visa: 'Visa', travel: 'Du lịch', rsvp: 'Xác nhận' },
     visa: {

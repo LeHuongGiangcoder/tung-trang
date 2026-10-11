@@ -106,7 +106,7 @@ export default function Hero({ startAnimation }: HeroProps) {
             {copy.location}
           </Subtitle>
 
-          <Countdown start={startAnimation} />
+          <Countdown />
         </div>
 
         {/* Scroll cue, kept in the flow so it always sits below the location */}
@@ -132,49 +132,27 @@ export default function Hero({ startAnimation }: HeroProps) {
   );
 }
 
-// Calendar days until the wedding, counted in Hanoi time so every guest sees the same number
-function daysUntilWedding() {
-  const hanoiToday = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' }).format(new Date());
-  const toUTC = (ymd: string) => {
-    const [y, m, d] = ymd.split('-').map(Number);
-    return Date.UTC(y, m - 1, d);
-  };
-  return Math.round((toUTC(WEDDING.dateISO.slice(0, 10)) - toUTC(hanoiToday)) / 86_400_000);
+// Today's date on the Hanoi calendar, as YYYY-MM-DD
+function hanoiToday() {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' }).format(new Date());
 }
 
-// Big "84 / days to go" under the location. Computed in the browser (the page is
-// prerendered, so a build-time number would go stale), then counts up from 0 once.
-function Countdown({ start }: { start: boolean }) {
+const pad = (n: number) => String(n).padStart(2, '0');
+
+// Live countdown to the ceremony (dateISO carries the Hanoi offset, so it's the same moment
+// for every guest). Computed in the browser since the page is prerendered, then fades in.
+function Countdown() {
   const { lang } = useLang();
   const copy = COPY[lang].hero.countdown;
-  const [days, setDays] = useState<number | null>(null);
-  const [shown, setShown] = useState(0);
+  const [msLeft, setMsLeft] = useState<number | null>(null);
 
   useEffect(() => {
-    const update = () => setDays(daysUntilWedding());
+    const target = new Date(WEDDING.dateISO).getTime();
+    const update = () => setMsLeft(target - Date.now());
     update();
-    const id = setInterval(update, 60_000);
+    const id = setInterval(update, 1000);
     return () => clearInterval(id);
   }, []);
-
-  // Count up to the real number once the page is revealed (after the intro, if any)
-  useEffect(() => {
-    if (!start || days === null || days < 2) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setShown(days);
-      return;
-    }
-    const t0 = performance.now();
-    const duration = 1400;
-    let frame: number;
-    const tick = (now: number) => {
-      const t = Math.min((now - t0) / duration, 1);
-      setShown(Math.round(days * (1 - Math.pow(1 - t, 3))));
-      if (t < 1) frame = requestAnimationFrame(tick);
-    };
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, [start, days]);
 
   const sparkle = (delay: number) => (
     <span className="animate-twinkle text-tan text-sm md:text-base leading-none" style={{ animationDelay: `${delay}s` }} aria-hidden>
@@ -182,34 +160,54 @@ function Countdown({ start }: { start: boolean }) {
     </span>
   );
 
-  // Close to (and after) the day, a short phrase replaces the number
-  const phrase = days === null || days > 1 ? null : days === 1 ? copy.tomorrow : days === 0 ? copy.today : copy.married;
+  let body: React.ReactNode = null;
+  if (msLeft !== null && msLeft > 0) {
+    const total = Math.floor(msLeft / 1000);
+    const units = [
+      { value: String(Math.floor(total / 86400)), label: copy.days },
+      { value: pad(Math.floor((total % 86400) / 3600)), label: copy.hours },
+      { value: pad(Math.floor((total % 3600) / 60)), label: copy.minutes },
+      { value: pad(total % 60), label: copy.seconds },
+    ];
+    body = (
+      <div className="flex items-center gap-3 md:gap-5">
+        {sparkle(0)}
+        <div className="flex items-start">
+          {units.map((u, i) => (
+            <div key={u.label} className="flex items-start">
+              {i > 0 && <span className="w-px h-9 md:h-11 mt-1 mx-3 md:mx-5 bg-ink/15" aria-hidden />}
+              <div className="flex flex-col items-center min-w-[2.6rem] md:min-w-[3.4rem]">
+                <span className="font-display italic font-light text-ink text-[clamp(2rem,8vw,3.25rem)] leading-none tabular-nums">
+                  {u.value}
+                </span>
+                <span className="mt-2 font-body text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-ink-soft">
+                  {u.label}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+        {sparkle(1.3)}
+      </div>
+    );
+  } else if (msLeft !== null) {
+    // From the ceremony until midnight in Hanoi it's "today", after that "married"
+    const phrase = hanoiToday() === WEDDING.dateISO.slice(0, 10) ? copy.today : copy.married;
+    body = (
+      <div className="flex items-center gap-4">
+        {sparkle(0)}
+        <span className="font-display italic font-light text-ink text-[clamp(1.6rem,5vw,2.25rem)] leading-none">{phrase}</span>
+        {sparkle(1.3)}
+      </div>
+    );
+  }
 
   return (
     <div
-      className="mt-6 flex flex-col items-center min-h-[5.5rem] transition-opacity duration-700"
-      style={{ opacity: days === null ? 0 : 1 }}
+      className="mt-6 flex flex-col items-center min-h-[4.5rem] transition-opacity duration-700"
+      style={{ opacity: msLeft === null ? 0 : 1 }}
     >
-      {phrase ? (
-        <div className="flex items-center gap-4">
-          {sparkle(0)}
-          <span className="font-display italic font-light text-ink text-[clamp(1.6rem,5vw,2.25rem)] leading-none">{phrase}</span>
-          {sparkle(1.3)}
-        </div>
-      ) : (
-        <>
-          <div className="flex items-center gap-4 md:gap-5">
-            {sparkle(0)}
-            <span className="font-display italic font-light text-ink text-[clamp(3.25rem,11vw,4.75rem)] leading-none tabular-nums">
-              {shown}
-            </span>
-            {sparkle(1.3)}
-          </div>
-          <span className="mt-2 font-body text-[10px] md:text-[11px] tracking-[0.35em] uppercase text-ink-soft">
-            {copy.days}
-          </span>
-        </>
-      )}
+      {body}
     </div>
   );
 }
