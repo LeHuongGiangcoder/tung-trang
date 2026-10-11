@@ -221,7 +221,7 @@ export const COPY: Record<Lang, {
           ],
         },
       ],
-      dresscodeNote: 'We would love to see you in soft blush, warm neutrals and olive greens — whatever makes you feel your best.',
+      dresscodeNote: 'We would love to see you in soft blush or olive greens — whatever makes you feel your best.',
     }
   },
   vi: {
@@ -305,7 +305,7 @@ export const COPY: Record<Lang, {
       submitDetailsBtn: 'Gửi nhé',
 
       brunchLabel: 'Ở lại brunch hôm sau nhé?',
-      brunchHelper: 'Thứ hai, 04/01, 12:00 tại Sen Tây Hồ — một bữa trưa thong thả trước khi mọi người về.',
+      brunchHelper: 'Thứ hai, 04/01, 12:00 tại Sen Tây Hồ — một bữa trưa ấm cúng trước khi mọi người về.',
       brunchYes: 'Có chứ, hẹn gặp bạn!',
       brunchNo: 'Mình không ở lại được',
       brunchNewNote: 'Bạn đã xác nhận rồi — cảm ơn bạn nhiều! Chúng mình vừa thêm một bữa brunch vào hôm sau, bạn cho tụi mình biết có ở lại được không nhé.'
@@ -357,7 +357,7 @@ export const COPY: Record<Lang, {
           ],
         },
       ],
-      dresscodeNote: 'Chúng mình rất vui nếu bạn chọn trang phục theo tông hồng phấn, be ấm hoặc xanh olive — miễn là bạn thấy thoải mái và tự tin nhất.',
+      dresscodeNote: 'Chúng mình rất vui nếu bạn chọn trang phục theo tông hồng phấn hoặc xanh olive — miễn là bạn thấy thoải mái và tự tin nhất.',
     }
   },
 };
