@@ -153,8 +153,8 @@ export const COPY: Record<Lang, {
     },
     travel: {
       heading: 'Travel',
-      title: 'Exploring Vietnam',
-      body: 'Vietnam: 100 million people, 2,000 miles of coast, and arguably the <strong><em>best street food on Earth.</em></strong>',
+      title: 'Exploring Hanoi',
+      body: 'Hanoi: over 1,000 years of history, a city of lakes and tree-lined streets, a buzzing Old Quarter, and arguably the <strong><em>best street food on Earth.</em></strong>',
       stepsTitle: 'How to explore',
       steps: [
         'Tap the map to zoom into Hanoi',
@@ -302,8 +302,8 @@ export const COPY: Record<Lang, {
     },
     travel: {
       heading: 'Du lịch',
-      title: 'Khám phá Việt Nam',
-      body: 'Việt Nam: 100 triệu dân, hơn 3.200 km bờ biển, và có lẽ là nơi có <strong><em>ẩm thực đường phố tuyệt vời nhất hành tinh.</em></strong>',
+      title: 'Khám phá Hà Nội',
+      body: 'Hà Nội: hơn 1.000 năm lịch sử, thành phố của hồ nước và những hàng cây, phố cổ nhộn nhịp, và có lẽ là nơi có <strong><em>ẩm thực đường phố tuyệt vời nhất hành tinh.</em></strong>',
       stepsTitle: 'Cách khám phá',
       steps: [
         'Chạm vào bản đồ để phóng to Hà Nội',
